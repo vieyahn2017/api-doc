@@ -1,0 +1,10 @@
+# sudo apt-get install libmysqld-dev python-dev libmemcached-dev zlib1g-dev libyaml-dev libjpeg62-dev libfreetype6-dev liblcms1-dev python-imaging
+tornado==4.2
+raven==5.8.1
+futures==3.0.3
+chardet==2.3.0
+pyaml==15.8.2
+Tornado-MySQL==0.5.1
+Pillow==4.1.1
+pylibmc==1.5.0
+itsdangerous==0.24

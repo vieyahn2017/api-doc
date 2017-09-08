@@ -1,0 +1,78 @@
+#用来配置每个url handler的权限,配合middleware: auth.CheckLogin 和 auth.CheckRights使用
+rights:
+    /api/login: #登录
+        login_required: false
+    /api/logout: #注销
+        login_required: true
+    /api/uploadavatar: #上传头像
+        login_required: true
+    /api/uploadstream: #上传文件
+        login_required: true
+    /api/uploadurl:    #上传url
+        login_required: true
+    /api/upload:
+        login_required: false
+    /api/grade:
+        login_required: true
+        acl:
+            get: [admin, teacher,school_admin,parents]
+    /api/section:
+        login_required: true
+        acl:
+            get: [admin, teacher,student,school_admin,parents]
+    /api/chapter:
+        login_required: true
+    /api/topic:
+        login_required: true
+    /api/topic_type:
+        login_required: true
+    /api/class:
+        login_required: true
+        acl:
+            get: [teacher, admin,school_admin,parents]
+            post: [teacher, admin,school_admin]
+            put: [teacher, admin,school_admin]
+            delete: [teacher, admin,school_admin]
+    /api/myclass:
+        login_required: true
+        acl:
+            get: [teacher]
+            post: [teacher]
+    /api/subject:
+        login_required: true
+    /api/subject_version:
+        login_required: true
+    /api/student:
+        login_required: true
+    /api/teacher:
+        login_required: true
+    /api/profile:
+        login_required: true
+    /api/checkuser:
+        login_required: true
+    /api/changepwd:
+        login_required: true
+        acl:
+            get: [admin, teacher,school_admin]
+            put: [admin, teacher,school_admin]
+    /api/passwd:
+        login_required: true
+    /api/msg:
+        login_required: true
+    /api/sendmsg:
+        login_required: false
+    #-----libs------------------
+    /api/prep:
+        login_required: true
+    /api/prep_test:
+        login_required: true
+    /api/prep_section:
+        login_required: true
+    /api/favor:
+        login_required: true
+    /api/test:
+        login_required: true
+    /api/work:
+        login_required: true
+
+

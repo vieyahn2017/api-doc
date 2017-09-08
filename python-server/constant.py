@@ -1,0 +1,51 @@
+# -*- coding:utf-8 -*-
+
+'''
+    常量放在这里
+'''
+
+PASSWORD_LENGTH = 64
+CFG_ENABLE_MULTI_POINT = "multi_point_login"
+CFG_MAXCLIENT_NUM = "max_client_number"
+NORMAL_MSG = 1
+SYSTEM_MSG = 2
+CACHE_SERVER_DOWN = "down"
+CACHE_SERVER_UP = "up"
+DATABASE_SERVER_DOWN = "down"
+DATABASE_SERVER_UP= "up"
+STATE_PENGDING=1
+STATE_RUNNING=2
+STATE_SERVER_DOWN=3
+STATE_SERVER_UP=4
+
+PERM_WRITE = "C"
+PERM_READ = "R"
+PERM_UPDATE = "U"
+PERM_DELETE = "D"
+PERM_EXPORT = "E"
+PERM_VIEW = "V"
+
+PARSE_READY = 0
+PARSE_FILE_PENDING = 1
+ADMIN_USER = u'admin'
+ADMIN_ID = 1
+NORMALUSER= 2
+ANONYMOUS = -1
+
+ACTIVATE = u'1'
+DEACTIVATE = u'0'
+
+NOTICE_DRAFT = u"1"
+NOTICE_COPY = u"2"
+UNREAD = u"0"
+READED = u"1"
+
+MSG_TO_CLASS = 1
+MSG_TO_USER = 2
+
+MSG_EVENT_MAP = {
+                    MSG_TO_CLASS: "sendto.class",
+                    MSG_TO_USER: "sendto.user"
+                }
+
+NOT_FOUND = None

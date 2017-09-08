@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/cloud.png">
+    <link rel="stylesheet" href="lib/bootstrap.min.css"/>
+    <link rel="stylesheet" href="lib/codemirror.css"/>
+
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/angular.ngRoute.js"></script>
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+
+        .error {
+            color: #815ba4;
+        }
+    </style>
+</head>
+<body>
+<div class="container" ng-app="LonWeyAPI">
+    <h1><a href="#/"><img src="img/cloud.png" /></a>LonWey</h1>
+    <div ng-view></div>
+    <footer>
+        <div class="site-info">
+            <a href="/#about">关于</a>
+            Copyright © 2017. Create By <a href="mailto:vieyahn@163.com">yanghao2017</a> </div>
+    </footer>
+</div>
+<script src="controller/index.js"></script>
+<script src="controller/add.js"></script>
+<script src="controller/api.js"></script>
+<script src="controller/about.js"></script>
+<script>
+    var app = angular.module("LonWeyAPI", ["ngRoute"]);
+
+    app.config(['$routeProvider',
+        function ($routeProvider) {
+            $routeProvider.
+                    when('/', {
+                        templateUrl: 'view/index.html',
+                        controller: 'indexController'
+                    }).when('/add', {
+                        templateUrl: 'view/add.html',
+                        controller: 'addController'
+                    }).when('/add/:href', {
+                        templateUrl: 'view/add.html',
+                        controller: 'addController'
+                    }).when('/api/:href', {
+                        templateUrl: 'view/api.html',
+                        controller: 'apiController'
+                    }).when('/api/:href/:name', {
+                        templateUrl: 'view/api.html',
+                        controller: 'apiController'
+                    }).when('/about', {
+                        templateUrl: 'view/about.html',
+                        controller: 'aboutController'
+                    }).otherwise({
+                        redirectTo: '/'
+                    });
+        }]);
+
+    app.run(function($rootScope, $location, $anchorScroll, $routeParams) {
+        //when the route is changed scroll to the proper element.
+        $rootScope.$on('$routeChangeSuccess', function(newRoute, oldRoute) {
+            $location.hash($routeParams.scrollTo);
+            $anchorScroll();
+        });
+    });
+</script>
+</body>
+</html>
