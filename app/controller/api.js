@@ -31,7 +31,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
             {
                 "name": "id",
                 "default": "",
-                "required": true,
+                "required": "false",
                 "type_": "int",
                 "description": ""
             }
@@ -75,14 +75,14 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
             {
                 "name": "id",
                 "default": "1",
-                "required": true,
+                "required": "false",
                 "type_": "int",
                 "description": "id."
             },
             {
                 "name": "name",
                 "default": "",
-                "required": true,
+                "required": "true",
                 "type_": "string",
                 "description": "the name"
             }
