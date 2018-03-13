@@ -42,12 +42,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <textarea name="description"  ng-model="current.description" style="width: 100%; height: 100px;"  placeholder="描述"></textarea>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">参数:</label>
+                <label class="col-sm-2 control-label">传入参数:</label>
                 <div class="col-sm-10">
                     <table class="table">
                         <thead>
@@ -69,7 +64,7 @@
                             <td><input type="checkbox" ng-true-value="Y" ng-false-value="N" ng-model="param.required"/></td>
                             <td>
                                 <select ng-model="param.type_">
-                                    <option ng-repeat="item in TYPES" ng-select="param.type_ == item" value="{{item}}">{{item}}</option>
+                                    <option ng-repeat="item in TYPES" ng-selected="param.type_ == item" value="{{item}}">{{item}}</option>
                                    </select>
                             </td>
                             <td><textarea style="width: 400px;" ng-model="param.description"></textarea></td>
@@ -82,8 +77,11 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">参数:</label>
+                <label class="col-sm-2 control-label">回显数据:</label>
                 <div class="col-sm-10">
+                    <label class="control-label btn btn-info">
+                        回显数据格式为 {"msg": "", "code": 1, "result": {} } &nbsp;这边是指result内部的参数字段
+                    </label>
                     <table class="table">
                         <thead>
                         <tr>
@@ -104,7 +102,7 @@
                             <td><input type="checkbox" ng-true-value="Y" ng-false-value="N" ng-model="param.required"/></td>
                             <td>
                                 <select ng-model="param.type_">
-                                    <option ng-repeat="item in TYPES" ng-select="param.type_ == item" value="{{item}}">{{item}}</option>
+                                    <option ng-repeat="item in TYPES" ng-selected="param.type_ == item" value="{{item}}">{{item}}</option>
                                 </select>
                             </td>
                             <td><textarea style="width: 400px;" ng-model="param.description"></textarea></td>
