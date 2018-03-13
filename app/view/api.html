@@ -66,7 +66,7 @@
                         <tr ng-repeat="param in current.paramsList">
                             <td><input type="text" ng-model="param.name"/></td>
                             <td><input type="text" ng-model="param.default"/></td>
-                            <td><input type="checkbox" ng-true-value="Y" ng-false-value="N" ng-model="param.required"/></td>
+                            <td><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="param.required"/></td>
                             <td>
                                 <select ng-model="param.type_">
                                     <option ng-repeat="item in TYPES" ng-selected="param.type_ == item" value="{{item}}">{{item}}</option>
@@ -104,7 +104,7 @@
                         <tr ng-repeat="param in current.responseList">
                             <td><input type="text" ng-model="param.name"/></td>
                             <td><input type="text" ng-model="param.default"/></td>
-                            <td><input type="checkbox" ng-true-value="Y" ng-false-value="N" ng-model="param.required"/></td>
+                            <td><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="param.required"/></td>
                             <td>
                                 <select ng-model="param.type_">
                                     <option ng-repeat="item in TYPES" ng-selected="param.type_ == item" value="{{item}}">{{item}}</option>
