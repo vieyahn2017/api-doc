@@ -8,7 +8,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
 
     $scope.href = href;
 
-    $scope.base_url = "http://10.0.0.161:30003/api/v1/";
+    $scope.base_url = "http://10.169.110.220:3000/api/v1/";
     // $http.get($scope.base_url + "cc/api?desc=true&href=" + href).success(function(data){  //添加的时候倒序方便点
     $http.get($scope.base_url + "cc/api?href=" + href).success(function(data){
         $scope.apiList = data.rows;
@@ -29,45 +29,66 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
         "description": "接口描述",
         "paramsList": [
             {
-                "name": "dev_id",
+                "name": "id",
                 "default": "",
                 "required": true,
-                "type_": "string",
-                "description": ""
-            },
-            {
-                "name": "xd_id",
-                "default": "",
-                "required": true,
-                "type_": "string",
+                "type_": "int",
                 "description": ""
             }
+            // {
+            //     "name": "dev_id",
+            //     "default": "",
+            //     "required": true,
+            //     "type_": "string",
+            //     "description": ""
+            // },
+            // {
+            //     "name": "xd_id",
+            //     "default": "",
+            //     "required": true,
+            //     "type_": "string",
+            //     "description": ""
+            // }
         ],
         "responseList":[
+            // {
+            //     "name": "msg",
+            //     "default": "",
+            //     "required": true,
+            //     "type_": "string",
+            //     "description": "message."
+            // },
+            // {
+            //     "name": "code",
+            //     "default": "1",
+            //     "required": true,
+            //     "type_": "int",
+            //     "description": "code = 1 success/ -1 failed"
+            // },
+            // {
+            //     "name": "rows",
+            //     "default": "",
+            //     "required": true,
+            //     "type_": "list",
+            //     "description": "the fetch data. {}"
+            // }
             {
-                "name": "msg",
-                "default": "",
-                "required": true,
-                "type_": "string",
-                "description": "message."
-            },
-            {
-                "name": "code",
+                "name": "id",
                 "default": "1",
                 "required": true,
                 "type_": "int",
-                "description": "code = 1 success/ -1 failed"
+                "description": "id."
             },
             {
-                "name": "rows",
+                "name": "name",
                 "default": "",
                 "required": true,
-                "type_": "list",
-                "description": "the fetch data."
+                "type_": "string",
+                "description": "the name"
             }
         ],
-        "responseDemo": '{  "msg": "",  "rows": [],  "code": 1} ',
-        "paramsDemo": "; ",
+        "responseDemo": '{"msg": "",  "result": {},  "code": 1} ',
+        "paramsDemo": "\\",
         "category_href": href,
 
     };
@@ -80,6 +101,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
     ];
     $scope.add = function(){
         $scope.current = angular.copy(empty);
+        console.log($scope.current);
         $scope.isNew = true;
     };
     $scope.save_me = function(){
