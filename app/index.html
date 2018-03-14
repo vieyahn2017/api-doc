@@ -21,21 +21,22 @@
     </style>
 </head>
 <body>
-<div class="container" ng-app="LonWeyAPI">
+<div class="container" ng-app="ngAPI">
     <h1><a href="#/"><img src="img/cloud.png" /></a>LonWey</h1>
     <div ng-view></div>
     <footer>
         <div class="site-info">
             <a href="/#about">关于</a>
-            Copyright © 2017. Create By <a href="mailto:vieyahn@163.com">yanghao2017</a> </div>
+            Copyright © 2017. Create By <a href="#">yanghao</a> </div>
     </footer>
 </div>
+<script src="base.js"></script>
 <script src="controller/index.js"></script>
 <script src="controller/add.js"></script>
 <script src="controller/api.js"></script>
 <script src="controller/about.js"></script>
 <script>
-    var app = angular.module("LonWeyAPI", ["ngRoute"]);
+    var app = angular.module("ngAPI", ["ngRoute"]);
 
     app.config(['$routeProvider',
         function ($routeProvider) {
