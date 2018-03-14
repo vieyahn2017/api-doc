@@ -15,7 +15,7 @@ apache-tomcat-8.0.37
 将整个app考入$tomcat\webapps
 编辑$tomcat\conf\server.xml，增加如下配置：
 ```
-    <Host name="127.0.0.1" debug="0" appBase="webapps" unpackWARs="true" autoDeploy="true" xmlValidation="false"  xmlNamespaceAware="false"
+    <Host name="127.0.0.1" debug="0" appBase="webapps" unpackWARs="true" autoDeploy="true" xmlValidation="false"   xmlNamespaceAware="false">
       <Context path="" docBase="app" debug="0" reloadable="true" crossContext="true"/>
       <Logger className="org.apache.catalina.logger.FileLogger" directory="logs" prefix="tot_log." suffix=".txt" timestamp="true"/>
     </Host>
