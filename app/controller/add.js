@@ -3,7 +3,7 @@
  */
 function addController($scope, $http, $location, $routeParams) {
 
-    var base_url = "http://10.0.0.161:30003/api/v1/";
+    var base_url = get_base_url();
     var json = "data/type.json";
 
     var href = $routeParams.href;
