@@ -8,7 +8,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
 
     $scope.href = href;
 
-    $scope.base_url = "http://10.169.110.220:3000/api/v1/";
+    $scope.base_url = get_base_url();
     // $http.get($scope.base_url + "cc/api?desc=true&href=" + href).success(function(data){  //添加的时候倒序方便点
     $http.get($scope.base_url + "cc/api?href=" + href).success(function(data){
         $scope.apiList = data.rows;
