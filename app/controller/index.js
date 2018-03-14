@@ -3,7 +3,7 @@
  */
 
 function indexController($scope, $http, $window){
-    var base_url = "http://10.0.0.161:30003/api/v1/";
+    var base_url = get_base_url();
     $http.get(base_url + "cc/api/category").success(function(data){
         $scope.typeList = data.rows;
     });
