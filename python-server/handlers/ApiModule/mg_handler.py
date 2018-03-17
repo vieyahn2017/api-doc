@@ -11,7 +11,7 @@ from tornado.gen import coroutine, Return
 from tornado.ioloop import IOLoop
 from tornado.log import app_log
 
-from handlers import BaseProxyCCHandler, Route
+from handlers import BaseProxyHandler, Route
 from core import context, cache_client
 from config import settings
 
@@ -22,7 +22,7 @@ from .mg_model import CategoryModel, ParamModel, APiModel
 
 
 
-class BaseMongoHandler(BaseProxyCCHandler):
+class BaseMongoHandler(BaseProxyHandler):
 
     @property
     def db(self):
@@ -42,7 +42,7 @@ true = True
 
 
 
-@Route("cc/api/category")
+@Route("m/api/category")
 class CategoryModelTestHandler(BaseMongoHandler):
 
     @coroutine
@@ -106,7 +106,7 @@ class CategoryModelTestHandler(BaseMongoHandler):
     #     self.write_models(objects)
 
 
-@Route("cc/api/param")
+@Route("m/api/param")
 class ParamModelTestHandler(BaseMongoHandler):
 
     @coroutine
@@ -181,7 +181,7 @@ def cmp_by_object_id_desc(x, y):
     else:
         return 1
 
-@Route("cc/api")
+@Route("m/api")
 class APiModelTestHandler(BaseMongoHandler):
 
     @coroutine

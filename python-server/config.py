@@ -1,27 +1,20 @@
 #!/usr/bin/env python
 #-*-coding:utf-8 -*-
-#
-#Author: tony - birdaccp at gmail.com
-#Create by:2015-08-11 15:50:42
-#Last modified:2017-05-27 16:26:57
-#Filename:config.py
-#Description:
 
-base_host = "10.0.0.161"
+base_host = "127.0.0.1"
 
 settings = {
     "gzip": False,
     "salt":"dL4+QD38pvumyQ+4KH1txZkNt3cez3+NtL2Sz70XNCo=",
     "token_duration": 3600,
-    "token_name":"X-Xsrf-Token",
-    "logfile": "/tmp/microcloud_server.log",
+    "token_name": "X-Xsrf-Token",
+    "logfile": "log/api_doc.log",
     "executor_number": 10  #真正运行时估计不够
 }
 
 mongodbConf = {
     "host": "{0}:27017".format(base_host), 
 }
-
 
 dbConf = {
     "host": base_host,
@@ -57,9 +50,6 @@ MIDDLEWARE_CLASSES = (
 
 RBAC_FILE = "./rights.yml"
 
-#MESSAGE_BACKEND = "message.RabbitBackend"
-#MQ_URI = "amqp://guest:guest@localhost:5672/%2F"
-
 
 UPLOAD_PATH = "/tmp/upload/%s"
 #UPLOAD_PATH = "/tmp/%s"
@@ -68,6 +58,8 @@ VALID_FILE_EXT = (".png", ".jpg", ".gif")
 
 API_VERSION = 'v1'
 
-
-DEFAULT_PORT = 30001
-LOCALHOST_PREFIX = "http://localhost:%s" % DEFAULT_PORT
+DEFAULT_PORT = 3000
+DEFAULT_MODULE = "ApiModule"
+# handlers里面按照模块组织代码，里面有个ApiModule文件夹，这边加个api模块
+# urls.py里面按照模块导入
+BASE_URL = "http://%s:%s" % (base_host, DEFAULT_PORT)

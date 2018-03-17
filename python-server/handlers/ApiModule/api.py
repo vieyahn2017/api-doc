@@ -11,9 +11,10 @@ from __future__ import absolute_import
 from tornado.gen import coroutine
 from tornado.log import app_log
 
-from handlers import BaseProxyCCHandler, Route
+from handlers import BaseProxyHandler, Route
 from core import context, cache_client
 from config import settings
+from config import BASE_URL
 
 import json
 
@@ -21,49 +22,44 @@ import json
 from handlers.fetcher import *
 
 
-@Route("cc")
-class CCApiSaveHandler(BaseProxyCCHandler):
-
+@Route("m")
+class ApiSaveHandler(BaseProxyHandler):
 
     def get(self):
-        base_url = "http://10.0.0.161:30003"
+        base_url = BASE_URL
 
         test = [
-                    'cc/api/type',
-                    'cc/api/param',
-                    'cc/api',
+                    'm/api/type',
+                    'm/api/param',
+                    'm/api',
                ]
-        api =  [ 
-                     'cc/api/save',
-                     'cc/api/delete',
+
+        api =  [
+                     'm/api/save',
+                     'm/api/delete',
               ]
 
-
         route = {
-                   "update_time": "2017-07-13",
-                   "test": ["/api/v1/" + url for url in test],  
-                   "api": ["/api/v1/" + url for url in api] 
+                   "update_time": "2018-03-17",
+                   "test": [base_url + "/api/v1/" + url for url in test],
+                   "api": [base_url + "/api/v1/" + url for url in api]
                 }
 
         self.write(route)
 
 
-@Route("cc/api/save")
-class CCApiSaveHandler(BaseProxyCCHandler):
+@Route("m/api/save")
+class ApiSaveHandler(BaseProxyHandler):
 
     @coroutine
     def post(self):
- 
         is_log = False
         body = json.loads(self.request.body)  #, encoding='utf-8')
-        # yield cc_api_fetcher.fetch_post('cc/test/interface', body={"rows": [], "url": 'cc/xd/uuid'}, is_log=is_log)
         print body
 
 
-
-@Route("cc/api/delete")
-class CCApiDeleteHandler(BaseProxyCCHandler):
-
+@Route("m/api/delete")
+class ApiDeleteHandler(BaseProxyHandler):
 
     @coroutine
     def post(self):

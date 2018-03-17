@@ -13,6 +13,7 @@ from tornado.log import app_log
 from tornado.options import define
 from core import Application, context
 from config import settings
+from config import DEFAULT_MODULE, DEFAULT_PORT
 
 def shutdown_handler():
     pass
@@ -32,9 +33,7 @@ def set_service_status():
 def before_start(app):
     app.reg_shutdown_hook(shutdown_handler)
     set_service_status()
-
     app.settings["log_function"] = log_function
-
     from concurrent.futures.thread import ThreadPoolExecutor
     works = app.settings["executor_number"]
     app.settings["executor"] = ThreadPoolExecutor(max_workers=works)
@@ -42,10 +41,9 @@ def before_start(app):
 
 def main():
     define("address", default='0.0.0.0', help="run server as address")
-    define("port", default=3000, help="run server as port", type=int)
-    define("debug", default=True, help="run as a debug model", type=bool)
-    define("module", default='api', help="load specifical modules")
-    # handlers里面按照模块组织代码，里面有个Api文件夹，这边加个api模块
+    define("port", default=DEFAULT_PORT, help="run server as port", type=int)
+    define("debug", default=False, help="run as a debug model", type=bool)
+    define("module", default=DEFAULT_MODULE, help="load specifical modules")
     Application().before(before_start).start()
 
 main()

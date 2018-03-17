@@ -6,6 +6,7 @@
 #Last modified:2017-05-26 17:13:32
 #Filename:handlers.__init__.py
 #Description:
+
 from __future__ import absolute_import
 from cStringIO import StringIO
 import os
@@ -20,9 +21,6 @@ from tornado.web import asynchronous
 from tornado.ioloop import IOLoop
 from tornado.log import app_log
 
-import utils
-import config
-import constant
 from core import context, Session
 from config import API_VERSION
 
@@ -277,27 +275,16 @@ class CrudAction(BaseHandler):
 
 from .fetcher import Fetcher, get_microcloud_url
 
-class BaseProxyCCHandler(BaseHandler):
-    """yanghao 20170616 from handlers"""
 
-    def o__init__(self, **kwargs):
-        """9.6 get_microcloud_url 
-        这样设置5个fetcher属性应该是可行的
-        不过貌似super的用法有问题，报错如下： 先暂停吧
-        TypeError: __init__() takes exactly 1 argument (3 given)
-        """
-        self.webservices_fetcher =  Fetcher(get_microcloud_url(self, 'webservices'))
-        self.compute_fetcher = Fetcher(get_microcloud_url(self, "compute"))
-        self.network_fetcher = Fetcher(get_microcloud_url(self, "network"))
-        self.storage_fetcher = Fetcher(get_microcloud_url(self, "storage"))
-        self.images_fetcher = Fetcher(get_microcloud_url(self, "images"))
-        super(BaseProxyCCHandler, self).__init__(**kwargs)
+class BaseProxyHandler(BaseHandler):
+    """yanghao 20170616 from handlers"""
 
     # @property
     # def db(self):
     #     return context['dbconn'].compute
 
-    def set_default_headers_0(self):
+    def set_default_headers_mini(self):
+        # replaced by set_default_headers
         self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header("Access-Control-Allow-Headers", 'Content-Type')
         self.set_header('Access-Control-Allow-Methods', 'PUT, DELETE, POST, GET')
@@ -352,7 +339,6 @@ class BaseProxyCCHandler(BaseHandler):
         if item.get("rows"):
             return item.get("rows")
 
-
     #@coroutine #有这个就会因为write而RuntimeError: Cannot write() after finish()
     @asynchronous
     def unblock(self, func, *args, **kwargs):
@@ -379,16 +365,14 @@ class BaseProxyCCHandler(BaseHandler):
                     functools.partial(_callback, future, rows, msg, code, callback))
             )
 
-
 @Route(r"/")
 class IndexHandler(BaseHandler):
     def get(self):
-        print self.application.handlers
+        # print self.application.handlers
         path = []
         for x in self.application.handlers[0][1]:
             path.append(x._path)
         self.write_rows(rows=path)
-
 
 
 def unblock_wraps(f):
@@ -414,4 +398,4 @@ def unblock_wraps(f):
 
 
 from . import admin
-#from handlers.Api import *
+

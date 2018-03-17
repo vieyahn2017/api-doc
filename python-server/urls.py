@@ -12,7 +12,7 @@ from tornado.log import app_log
 
 from core import context
 module = context['module'].split(",")
-module = [m.capitalize() for m in module]
+# module = [m.capitalize() for m in module]
 # module = [m.lower() for m in module]
 
 # import pdb; pdb.set_trace()
