@@ -28,15 +28,15 @@ class ApiSaveHandler(BaseProxyHandler):
     def get(self):
         base_url = BASE_URL
 
-        test = [
+        api = [
                     'm/api/type',
                     'm/api/param',
                     'm/api',
                ]
 
-        api =  [
+        test =  [
                      'm/api/save',
-                     'm/api/delete',
+                     'm/api/test',
               ]
 
         route = {
@@ -53,21 +53,16 @@ class ApiSaveHandler(BaseProxyHandler):
 
     @coroutine
     def post(self):
-        is_log = False
         body = json.loads(self.request.body)  #, encoding='utf-8')
         print body
 
 
-@Route("m/api/delete")
-class ApiDeleteHandler(BaseProxyHandler):
+@Route("m/api/test")
+class ApiTestHandler(BaseProxyHandler):
 
     @coroutine
-    def post(self):
- 
-        is_log = False
-        body = json.loads(self.request.body)  #, encoding='utf-8')
-        print body
-
+    def get(self):
+        self.write_rows()
 
 
 

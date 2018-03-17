@@ -273,9 +273,6 @@ class CrudAction(BaseHandler):
         self.write_response()
 
 
-from .fetcher import Fetcher, get_microcloud_url
-
-
 class BaseProxyHandler(BaseHandler):
     """yanghao 20170616 from handlers"""
 

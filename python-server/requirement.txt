@@ -1,4 +1,6 @@
+# if used at linux:
 # sudo apt-get install libmysqld-dev python-dev libmemcached-dev zlib1g-dev libyaml-dev libjpeg62-dev libfreetype6-dev liblcms1-dev python-imaging
+# pip list:
 tornado==4.4.2
 pymongo==3.4.0
 motor==1.1
@@ -6,7 +8,5 @@ schematics==1.1.1
 pyaml==15.8.2
 itsdangerous==0.24
 futures==3.0.3 # a backport of the concurrent.futures standard library module to Python 2.
-## 下面这一些库是之前框架遗留使用的，对目前的api-doc的功能来说不是必须的
 Tornado-MySQL==0.5.1
-Pillow==4.1.1
-pylibmc==1.5.0 #只支持linux
+pylibmc==1.5.0 # only for linux

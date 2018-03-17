@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
-import json
 from __future__ import absolute_import
+
 from tornado.gen import coroutine
 from tornado.log import app_log
+
 from core import context, Session
 from . import Route, BaseHandler
-from .model_admin import user_model
+from .admin_model import user_model
 
+import json
 
 @Route(r"/api/register")
 class RegisterHandler(BaseHandler):
