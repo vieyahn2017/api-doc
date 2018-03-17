@@ -23,7 +23,7 @@ from core import context
 class BaseAPIModel(BaseMongoModel):
     def __init__(self, *args, **kwargs):
         super(BaseAPIModel, self).__init__(*args, **kwargs)
-        default_db = context['dbconn'].cc_api
+        default_db = context['dbconn'].apidocs
         self.set_db(kwargs.pop('db', default_db))
 
 
