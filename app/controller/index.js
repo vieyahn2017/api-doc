@@ -4,13 +4,13 @@
 
 function indexController($scope, $http, $window){
     var base_url = get_base_url();
-    $http.get(base_url + "cc/api/category").success(function(data){
+    $http.get(base_url + "m/api/category").success(function(data){
         $scope.typeList = data.rows;
     });
 
     $scope.remove_href = function(href){
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-        $http.delete(base_url + "cc/api/category?href=" + href
+        $http.delete(base_url + "m/api/category?href=" + href
             ).success(function (data) {
                 $window.location.reload();
                 //$location.path("/");

@@ -8,7 +8,7 @@ function addController($scope, $http, $location, $routeParams) {
 
     var href = $routeParams.href;
     $scope.href = href;
-    $http.get(base_url + "cc/api/category?href=" + href).success(function (data) {
+    $http.get(base_url + "m/api/category?href=" + href).success(function (data) {
         item_get = data.rows[0];
 
         if (href && item_get) {
@@ -44,8 +44,8 @@ function addController($scope, $http, $location, $routeParams) {
     };
     $scope.save_me = function () {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-        $http.post(base_url + "cc/api/category", angular.toJson($scope.current, true)
-        //$http.post(base_url + "cc/api/save", {"boby": angular.toJson($scope.current, true), "href":"type"}
+        $http.post(base_url + "m/api/category", angular.toJson($scope.current, true)
+        //$http.post(base_url + "m/api/save", {"boby": angular.toJson($scope.current, true), "href":"type"}
                  // "content=" + encodeURIComponent(angular.toJson($scope.typeList, true)) + "&href=type"
             ).success(function (data) {
                 $location.path("/");
@@ -56,7 +56,7 @@ function addController($scope, $http, $location, $routeParams) {
     };
     $scope.edit_me = function () {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-        $http.put(base_url + "cc/api/category", angular.toJson($scope.current, true)
+        $http.put(base_url + "m/api/category", angular.toJson($scope.current, true)
             ).success(function (data) {
                 $location.path("/");
             }).error(function (data, status, headers, config) {

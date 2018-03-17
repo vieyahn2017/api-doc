@@ -9,8 +9,8 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
     $scope.href = href;
 
     $scope.base_url = get_base_url();
-    // $http.get($scope.base_url + "cc/api?desc=true&href=" + href).success(function(data){  //添加的时候倒序方便点
-    $http.get($scope.base_url + "cc/api?href=" + href).success(function(data){
+    // $http.get($scope.base_url + "m/api?desc=true&href=" + href).success(function(data){  //添加的时候倒序方便点
+    $http.get($scope.base_url + "m/api?href=" + href).success(function(data){
         $scope.apiList = data.rows;
         console.log($scope.apiList);
         $timeout(function(){
@@ -35,43 +35,8 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
                 "type_": "int",
                 "description": ""
             }
-            // {
-            //     "name": "dev_id",
-            //     "default": "",
-            //     "required": true,
-            //     "type_": "string",
-            //     "description": ""
-            // },
-            // {
-            //     "name": "xd_id",
-            //     "default": "",
-            //     "required": true,
-            //     "type_": "string",
-            //     "description": ""
-            // }
         ],
         "responseList":[
-            // {
-            //     "name": "msg",
-            //     "default": "",
-            //     "required": true,
-            //     "type_": "string",
-            //     "description": "message."
-            // },
-            // {
-            //     "name": "code",
-            //     "default": "1",
-            //     "required": true,
-            //     "type_": "int",
-            //     "description": "code = 1 success/ -1 failed"
-            // },
-            // {
-            //     "name": "rows",
-            //     "default": "",
-            //     "required": true,
-            //     "type_": "list",
-            //     "description": "the fetch data. {}"
-            // }
             {
                 "name": "id",
                 "default": "1",
@@ -177,7 +142,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
 
         var post_a = function() {
             var deferred = $q.defer();
-            $http.post($scope.base_url + "cc/api/param",
+            $http.post($scope.base_url + "m/api/param",
                 angular.toJson(new_item.paramsList, true)
             ).success(function (data) {
                 $scope.ret_item.paramsIdList = data.rows;
@@ -190,7 +155,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
         }
         var post_b = function() {
             var deferred = $q.defer();
-            $http.post($scope.base_url + "cc/api/param",
+            $http.post($scope.base_url + "m/api/param",
                 angular.toJson(new_item.responseList, true)
             ).success(function (data) {
                 $scope.ret_item.responseIdList = data.rows;
@@ -207,7 +172,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
             .then(function(result){
                 console.log($scope.ret_item);
                 console.log(result);
-                $http.post($scope.base_url + "cc/api",
+                $http.post($scope.base_url + "m/api",
                     angular.toJson($scope.ret_item, true)
                     //angular.toJson(result[1], true)
                 ).success(function (data) {
@@ -281,13 +246,13 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
     };
 
     //在页面上关闭删除权限，可以在postman发delete删除
-    //http://10.0.0.161:30003/api/v1/cc/api?id=5971c9aef0881b2d19f49bc4
+    //http://10.0.0.161:30003/api/v1/m/api?id=5971c9aef0881b2d19f49bc4
 
     $scope.remove_2 = function(item){
         //  <button ng-show="show_edit" class="btn btn-danger btn-xs pull-right" style="margin-right: 5px;" ng-click="remove(apiList, item); save_me();">delete</button>
         if(confirm("确认删除?")) {
 
-        $http.delete($scope.base_url + "cc/api?id=" + item._id
+        $http.delete($scope.base_url + "m/api?id=" + item._id
             ).success(function (data) {
                 $window.location.reload();
             }).error(function (data, status, headers, config) {
