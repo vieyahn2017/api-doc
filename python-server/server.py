@@ -44,7 +44,8 @@ def main():
     define("address", default='0.0.0.0', help="run server as address")
     define("port", default=3000, help="run server as port", type=int)
     define("debug", default=True, help="run as a debug model", type=bool)
-    define("module", default='compute', help="load specifical modules")
+    define("module", default='api', help="load specifical modules")
+    # handlers里面按照模块组织代码，里面有个Api文件夹，这边加个api模块
     Application().before(before_start).start()
 
 main()
