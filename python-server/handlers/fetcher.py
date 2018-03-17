@@ -16,31 +16,6 @@ class Fetcher(object):
     def __init__(self, host):
         self.host = host
 
-    # @coroutine
-    def _fetch___yanghao(self, url, method='get', body=None, is_log=True):
-        fetch_url = "%s/%s" % (self.host, url)
-        if is_log:
-            app_log.info("fetch_%s at: %s" % (method, fetch_url))
-
-        request = HTTPRequest(url=fetch_url, method=method.upper(), body=body)
-        try:
-            response = yield AsyncHTTPClient().fetch(request)
-            response_body = json.loads(response.body)
-            code = response_body.get('code')
-            rows = response_body.get('rows')
-            if is_log:
-                app_log.info(("receive_rows:" , rows, type(rows), "code: ", code, "msg: ", response_body.get("msg")))
-
-            results = {
-                "rows": rows, 
-                "msg": response_body.get("msg"),
-                "code": code, 
-                "url": response.request.url
-            }
-        except :  # http error
-            results = {"url": fetch_url, "code": -1, "msg": traceback.format_exc(), "rows": []}
-        raise Return(results)
-
     @coroutine
     def _fetch(self, url, method='get', body=None, is_log=True):
         fetch_url = "%s/%s" % (self.host, url)

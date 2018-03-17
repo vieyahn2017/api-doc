@@ -51,11 +51,6 @@ MIDDLEWARE_CLASSES = (
 RBAC_FILE = "./rights.yml"
 
 
-UPLOAD_PATH = "/tmp/upload/%s"
-#UPLOAD_PATH = "/tmp/%s"
-UPLOAD_URL  = "/upload/%s"
-VALID_FILE_EXT = (".png", ".jpg", ".gif")
-
 API_VERSION = 'v1'
 
 DEFAULT_PORT = 3000
