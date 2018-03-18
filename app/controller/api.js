@@ -20,7 +20,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     });
 
     var param_demo = {
-        "name": "new param",
+        "name": "param",
         "default": "",
         "required": "false",
         "type_": "string",
@@ -177,7 +177,20 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         //console.log($scope.save_api_item);
     };
 
-    $scope.update_me_yh = function(update_item){ //yh
+    $scope.update_me_yh = function(update_item){ //test
+        $scope.save_api_item = angular.copy(update_item);
+        $http.put($scope.base_url + "m/api/param",
+            angular.toJson(update_item.paramsList, true)
+        ).success(function (data) {
+                $scope.save_api_item.paramsIdList = data.rows;
+                //
+            }).error(function (data, status, headers, config) {
+                console.log(arguments);
+            });
+        console.log($scope.save_api_item);
+    };
+
+    $scope.update_me_yh2 = function(update_item){ //yh
         $scope.save_api_item = angular.copy(update_item);
 
         var put_paramsList = function() {
@@ -229,6 +242,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             });
         //console.log($scope.save_api_item);
     };
+
     $scope.cancel = function(){
         $scope.isNew = false;
         $scope.current = null;

@@ -135,6 +135,54 @@ class ParamModelTestHandler(BaseMongoHandler):
             id_rows.append(str(_id))
         self.write_rows(rows=id_rows)
 
+    @coroutine
+    def put(self):
+        """ update todo"""
+        bodys = json.loads(self.request.body)
+        id_rows = []
+
+        for body in bodys:
+            name = body["name"]
+            required = body["required"]
+            default = body["default"]
+            type_ = body["type_"]
+            description = body["description"]
+            api_id = body.get("api_id", "-1")
+            _id = ObjectId()
+            yield ParamModel({
+                    "name": name,
+                    "required": required,
+                    "default": default,
+                    "type_": type_,
+                    "description": description,
+                    "api_id": api_id,
+                    "_id": _id
+                }).save()
+            id_rows.append(str(_id))
+        self.write_rows(rows=id_rows)
+
+        yield ParamModel({"api_id": str(_id)}).update(query={"api_id": "-1"}, multi=True)
+        ## 这样会把ParamModel里面别的字段给搞成null
+
+        # cursor = ParamModel.get_cursor(self.db, {"api_id": "-1"})
+        # param_objects = yield ParamModel.find(cursor)
+        # yield [obj.update(update={"api_id": str(_id)}) for obj in param_objects]
+
+        # import pdb; pdb.set_trace()
+        # for obj in param_objects:
+        #     obj.api_id = str(_id)
+        #     yield obj.update()
+        #     app_log.info(("update ParamModel:", obj.to_primitive()))
+
+        ## bug 2017.7.19  暂时搞不定，只影响后面的删除，所以暂时搁这吧。。。
+        ## 在mongodb的shell里面手动修改吧：
+        # db.getCollection('params').update({"api_id": "-1"}, {$set:{"api_id": "596ecb42f0881b24e51c3e1a"}} , {multi: true})
+
+        # self.write_ok()
+        #self.write_rows(rows={"_id": str(_id)})
+        # item = yield self.parse_param_one(model.to_primitive())
+        # self.write_rows(rows=item)
+
 
 def cmp_by_object_id(x, y):
     """ using for mongodb - sort"""
