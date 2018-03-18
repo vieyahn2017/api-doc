@@ -6,4 +6,4 @@
 
 
 from . import api
-from . import mg_handler
+from . import handler

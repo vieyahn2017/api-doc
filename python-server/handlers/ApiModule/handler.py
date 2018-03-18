@@ -18,7 +18,7 @@ from config import settings
 import json
 from bson import ObjectId
 
-from .mg_model import CategoryModel, ParamModel, APiModel
+from .model import CategoryModel, ParamModel, APiModel
 
 
 class BaseMongoHandler(BaseProxyHandler):
@@ -111,7 +111,7 @@ class ParamModelTestHandler(BaseMongoHandler):
 
     @coroutine
     def post(self):
-        """ add more"""
+        """ add more; 新增加的api_id暂时设置为-1"""
         bodys = json.loads(self.request.body)
         id_rows = []
 
@@ -137,7 +137,7 @@ class ParamModelTestHandler(BaseMongoHandler):
 
     @coroutine
     def put(self):
-        """ update todo"""
+        """ update 简单处理，全部新建。并把之前params按照_id删除"""
         bodys = json.loads(self.request.body)
         id_rows = []
 
@@ -148,6 +148,9 @@ class ParamModelTestHandler(BaseMongoHandler):
             type_ = body["type_"]
             description = body["description"]
             api_id = body.get("api_id", "-1")
+            _id_old = body.get("_id")
+            if _id_old:
+                yield ParamModel.remove_entries(self.db, {"_id": _id_old})
             _id = ObjectId()
             yield ParamModel({
                     "name": name,
@@ -159,29 +162,8 @@ class ParamModelTestHandler(BaseMongoHandler):
                     "_id": _id
                 }).save()
             id_rows.append(str(_id))
+
         self.write_rows(rows=id_rows)
-
-        yield ParamModel({"api_id": str(_id)}).update(query={"api_id": "-1"}, multi=True)
-        ## 这样会把ParamModel里面别的字段给搞成null
-
-        # cursor = ParamModel.get_cursor(self.db, {"api_id": "-1"})
-        # param_objects = yield ParamModel.find(cursor)
-        # yield [obj.update(update={"api_id": str(_id)}) for obj in param_objects]
-
-        # import pdb; pdb.set_trace()
-        # for obj in param_objects:
-        #     obj.api_id = str(_id)
-        #     yield obj.update()
-        #     app_log.info(("update ParamModel:", obj.to_primitive()))
-
-        ## bug 2017.7.19  暂时搞不定，只影响后面的删除，所以暂时搁这吧。。。
-        ## 在mongodb的shell里面手动修改吧：
-        # db.getCollection('params').update({"api_id": "-1"}, {$set:{"api_id": "596ecb42f0881b24e51c3e1a"}} , {multi: true})
-
-        # self.write_ok()
-        #self.write_rows(rows={"_id": str(_id)})
-        # item = yield self.parse_param_one(model.to_primitive())
-        # self.write_rows(rows=item)
 
 
 def cmp_by_object_id(x, y):
@@ -308,6 +290,17 @@ class APiModelTestHandler(BaseMongoHandler):
             })
         yield model.save()
         app_log.info(("save APiModel:", str(_id)))
+
+        # 困扰多时的bug
+        # ## 在mongodb的shell里面手动修改吧：
+        #  db.getCollection('params').update({"api_id": "-1"}, {$set:{"api_id": "596ecb42f0881b24e51c3e1a"}} , {multi: true})
+        cursor = ParamModel.get_cursor(self.db, {"api_id": "-1"})
+        param_objects = yield ParamModel.find(cursor)
+        for obj in param_objects:
+            obj.api_id = str(_id)
+            # yield obj.update(self.db)
+            yield obj.save(self.db)
+
         # self.write_ok()
         # self.write_rows(rows={"_id": str(_id)})
         item = yield self.parse_param_one(model.to_primitive())
@@ -327,7 +320,7 @@ class APiModelTestHandler(BaseMongoHandler):
         paramsDemo = body["paramsDemo"]
         responseDemo = body["responseDemo"]
         category_href = body["category_href"]
-        _id = ObjectId()
+        _id = body["_id"]
         model = APiModel({
                 "name": name,
                 "url": url,
@@ -343,18 +336,18 @@ class APiModelTestHandler(BaseMongoHandler):
         yield model.save()
         app_log.info(("save APiModel:", str(_id)))
 
-        # yield ParamModel({"api_id": str(_id)}).update(query={"api_id": "-1"}, multi=True)
-        ## 这样会把ParamModel里面别的字段给搞成null
+        yield ParamModel({"api_id": str(_id)}).update(query={"api_id": "-1"}, multi=True)
+        # 这样会把ParamModel里面别的字段给搞成null
 
-        # cursor = ParamModel.get_cursor(self.db, {"api_id": "-1"})
-        # param_objects = yield ParamModel.find(cursor)
-        # yield [obj.update(update={"api_id": str(_id)}) for obj in param_objects]
+        cursor = ParamModel.get_cursor(self.db, {"api_id": "-1"})
+        param_objects = yield ParamModel.find(cursor)
+        yield [obj.update(update={"api_id": str(_id)}) for obj in param_objects]
 
-        # import pdb; pdb.set_trace()
-        # for obj in param_objects:
-        #     obj.api_id = str(_id)
-        #     yield obj.update()
-        #     app_log.info(("update ParamModel:", obj.to_primitive()))
+        import pdb; pdb.set_trace()
+        for obj in param_objects:
+            obj.api_id = str(_id)
+            yield obj.update()
+            app_log.info(("update ParamModel:", obj.to_primitive()))
 
         ## bug 2017.7.19  暂时搞不定，只影响后面的删除，所以暂时搁这吧。。。
         ## 在mongodb的shell里面手动修改吧：

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 # @author:yanghao 
 # @created:20170414
-## Description: motor ORM by schematics, this file is the models.
+# # Description: motor ORM by schematics, this file is the models.
 
 
 from schematics.types import StringType, IntType, BooleanType
@@ -25,8 +25,6 @@ class BaseAPIModel(BaseMongoModel):
         super(BaseAPIModel, self).__init__(*args, **kwargs)
         default_db = context['dbconn'].apidocs
         self.set_db(kwargs.pop('db', default_db))
-
-
 
 
 class CategoryModel(BaseAPIModel):
@@ -67,7 +65,8 @@ class APiModel(BaseAPIModel):
     MONGO_COLLECTION = 'api'
 
 
-
+# todo
+# add delete_flag: true/false 代替删除
 
 
 """
@@ -111,58 +110,7 @@ class APiModel(BaseAPIModel):
             "Description": "The userId parameter that is in the URI."
         }
     ], 
-    "demo": "<?php 
-
-var_dump(123);"
+    "demo": "<?php  var_dump(123);"
 }, 
-
-"""
-
-
-
-
-
-"""
-
-class CloudHostModel(BaseCCModel):
-    id = IntType()
-    instanceId = StringType()
-    name = StringType()
-    zone = StringType()
-    IPAddressList = ListType(StringType)
-    status = StringType()
-    network = StringType()
-    config = StringType()
-    monitoring = StringType()
-    warning = StringType()
-    expirationTime = StringType() # '17-08-12 00:00:00 到期' 
-    isExpiration = BooleanType()
-
-    _id = ObjectIdType(serialize_when_none=False)
-    MONGO_COLLECTION = 'cloudHost'
-
-
-
-@Route('cc/mongo/test/cloudHosts')
-class CloudHostTestHandler(BaseMongoHandler):
-
-     @coroutine  
-     def post(self):
-         test_db = context['dbconn'].test
-         yield CloudHostModel({
-             'id': 1,
-             'instanceId': 'adhuiw',
-             'name': 'cloud host1',
-             'zone': '华东 2',
-             'IPAddressList': ['139.196.3.1','139.196.3.2','139.196.3.3'],
-             'status': '运行中',
-             'network': '经典网络',
-             'config': 'XD1',
-             'monitoring': '',
-             'warning': '',
-             'expirationTime': '17-12-06 00:00:00 到期',
-             'isExpiration': false,
-         }).save(db=test_db)
-
 
 """
