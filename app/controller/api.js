@@ -25,7 +25,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         "required": "false",
         "type_": "string",
         "description": ""
-    }
+    };
 
     var empty = {
         "_id": "-1",
@@ -60,7 +60,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         ],
         "responseDemo": '{"msg": "",  "result": {},  "code": 1} ',
         "paramsDemo": "\\",
-        "category_href": href,
+        "category_href": href
     };
 
     $scope.TYPES = [
@@ -139,7 +139,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                     console.log(arguments);
                 });
             return deferred.promise;
-        }
+        };
 
         var post_responseList = function() {
             var deferred = $q.defer();
@@ -152,7 +152,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                     console.log(arguments);
                 });
             return deferred.promise;
-        }
+        };
 
         $q.all([post_paramsList(), post_responseList()])
             .then(function(result){
@@ -177,19 +177,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         //console.log($scope.save_api_item);
     };
 
-    $scope.update_test = function(update_item){ //test
-        $scope.save_api_item = angular.copy(update_item);
-        $http.put($scope.base_url + "m/api/param",
-            angular.toJson(update_item.paramsList, true)
-        ).success(function (data) {
-                $scope.save_api_item.paramsIdList = data.rows;
-                //
-            }).error(function (data, status, headers, config) {
-                console.log(arguments);
-            });
-        console.log($scope.save_api_item);
-    };
-
     $scope.update_me_yh = function(update_item){ //yh
         $scope.save_api_item = angular.copy(update_item);
 
@@ -204,7 +191,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                     console.log(arguments);
                 });
             return deferred.promise;
-        }
+        };
 
         var put_responseList = function() {
             var deferred = $q.defer();
@@ -217,7 +204,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                     console.log(arguments);
                 });
             return deferred.promise;
-        }
+        };
 
         $q.all([put_paramsList(), put_responseList()])
             .then(function(result){
@@ -228,14 +215,13 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 ).success(function (data) {
                         //console.log(data.rows);
                         angular.extend($scope.edit_api_item, data.rows);
-
+                        //这一句浅拷贝，对页面当前自动更新尤为关键
                         $scope.isNew = false;
                         $scope.current = null;
                         var scroll_id = $scope.save_api_item._id;
                         $timeout(function(){
                             $scope.scrollTo(scroll_id);
                         });
-
                     }).error(function (data, status, headers, config) {
                         console.log(arguments);
                     });

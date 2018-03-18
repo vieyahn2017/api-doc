@@ -121,7 +121,7 @@ class ParamModelTestHandler(BaseMongoHandler):
             default = body["default"]
             type_ = body["type_"]
             description = body["description"]
-            api_id = body.get("api_id", "-1")
+            api_id = "-1"  # body.get("api_id", "-1")
             _id = ObjectId()
             yield ParamModel({
                     "name": name, 
@@ -147,7 +147,7 @@ class ParamModelTestHandler(BaseMongoHandler):
             default = body["default"]
             type_ = body["type_"]
             description = body["description"]
-            api_id = body.get("api_id", "-1")
+            api_id = "-1"
             _id_old = body.get("_id")
             if _id_old:
                 yield ParamModel.remove_entries(self.db, {"_id": _id_old})
@@ -162,6 +162,9 @@ class ParamModelTestHandler(BaseMongoHandler):
                     "_id": _id
                 }).save()
             id_rows.append(str(_id))
+
+        # 这是本次update,可能存在多余的，需要被删除的参数
+        yield ParamModel.remove_entries(self.db, {"api_id": bodys[0]["api_id"]})
 
         self.write_rows(rows=id_rows)
 
