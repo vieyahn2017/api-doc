@@ -19,6 +19,13 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         $scope.apiList = [];
     });
 
+    var param_demo = {
+        "name": "new param",
+        "default": "",
+        "required": "false",
+        "type_": "string",
+        "description": ""
+    }
 
     var empty = {
         "_id": "-1",
@@ -54,7 +61,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         "responseDemo": '{"msg": "",  "result": {},  "code": 1} ',
         "paramsDemo": "\\",
         "category_href": href,
-
     };
 
     $scope.TYPES = [
@@ -63,9 +69,15 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     $scope.METHODS = [
         "GET", "POST", "PUT", "DELETE"
     ];
+
     $scope.add = function(){
         $scope.current = angular.copy(empty);
         $scope.isNew = true;
+    };
+    $scope.edit = function(api_item) {
+        $scope.current = angular.copy(api_item);
+        $scope.edit_api_item = api_item;
+        $scope.isNew = false;
     };
 
     var check_unique_un = function(new_item){
@@ -87,37 +99,33 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             });
         return $scope.isUnique;
     };
-
     var check_unique = function(new_item){
         return true;
     };
-    $scope.save_api = function(new_item){
+
+    $scope.save_api = function(current_item){
         if($scope.apiForm.$invalid) {
             return;
         }
         $scope.isUnique = true;
-        var r = check_unique(new_item);
+        var r = check_unique(current_item);
         //console.log(r);
         if(!r) {
             alert("接口名重复了，重新起一个吧");
             return;
         } else {
-            //console.log("接口名可用：" + new_item.name);
+            //console.log("接口名可用：" + current_item.name);
         }
 
         if($scope.isNew) {
-            $scope.save_me_yh(new_item);
+            $scope.save_me_yh(current_item);
         }
         else {
-            $scope.update_me_yh(new_item);
+            $scope.update_me_yh(current_item);
         }
-        $scope.edit_api = null;
-        //console.log($scope.edit_api);
-        //angular.extend($scope.edit_api, $scope.new_item);
-        //console.log($scope.edit_api);
-
     };
-    $scope.update_me_yh = function(new_item){ //yanghao
+
+    $scope.save_me_yh = function(new_item){ //yh
         $scope.save_api_item = angular.copy(new_item);
 
         var post_paramsList = function() {
@@ -132,6 +140,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 });
             return deferred.promise;
         }
+
         var post_responseList = function() {
             var deferred = $q.defer();
             $http.post($scope.base_url + "m/api/param",
@@ -154,38 +163,27 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 ).success(function (data) {
                         //console.log(data.rows);
                         $scope.apiList.push(data.rows);
-                        var scroll_id;
-                        if($scope.edit_api) {
-                            scroll_id = $scope.edit_api._id;
-                        } else {
-                            scroll_id = data.rows._id;
-                        }
-
                         $scope.isNew = false;
                         $scope.current = null;
-                        $scope.edit_api = null;
-
+                        var scroll_id = data.rows._id;
                         $timeout(function(){
                             //console.log(scroll_id);
                             $scope.scrollTo(scroll_id);
                         });
-
                     }).error(function (data, status, headers, config) {
                         console.log(arguments);
                     });
             });
-
         //console.log($scope.save_api_item);
-
     };
 
-    $scope.save_me_yh = function(new_item){ //yanghao
-        $scope.save_api_item = angular.copy(new_item);
+    $scope.update_me_yh = function(update_item){ //yh
+        $scope.save_api_item = angular.copy(update_item);
 
-        var post_paramsList = function() {
+        var put_paramsList = function() {
             var deferred = $q.defer();
-            $http.post($scope.base_url + "m/api/param",
-                angular.toJson(new_item.paramsList, true)
+            $http.put($scope.base_url + "m/api/param",
+                angular.toJson(update_item.paramsList, true)
             ).success(function (data) {
                     $scope.save_api_item.paramsIdList = data.rows;
                     deferred.resolve($scope.save_api_item);
@@ -194,10 +192,11 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 });
             return deferred.promise;
         }
-        var post_responseList = function() {
+
+        var put_responseList = function() {
             var deferred = $q.defer();
-            $http.post($scope.base_url + "m/api/param",
-                angular.toJson(new_item.responseList, true)
+            $http.put($scope.base_url + "m/api/param",
+                angular.toJson(update_item.responseList, true)
             ).success(function (data) {
                     $scope.save_api_item.responseIdList = data.rows;
                     deferred.resolve($scope.save_api_item);
@@ -207,28 +206,20 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             return deferred.promise;
         }
 
-        $q.all([post_paramsList(), post_responseList()])
+        $q.all([put_paramsList(), put_responseList()])
             .then(function(result){
                 //console.log($scope.save_api_item);
                 //console.log(result);
-                $http.post($scope.base_url + "m/api",
+                $http.put($scope.base_url + "m/api",
                     angular.toJson($scope.save_api_item, true)
                 ).success(function (data) {
                         //console.log(data.rows);
-                        $scope.apiList.push(data.rows);
-                        var scroll_id;
-                        if($scope.edit_api) {
-                            scroll_id = $scope.edit_api._id;
-                        } else {
-                            scroll_id = data.rows._id;
-                        }
+                        angular.extend($scope.edit_api_item, data.rows);
 
                         $scope.isNew = false;
                         $scope.current = null;
-                        $scope.edit_api = null;
-
+                        var scroll_id = $scope.save_api_item._id;
                         $timeout(function(){
-                            //console.log(scroll_id);
                             $scope.scrollTo(scroll_id);
                         });
 
@@ -236,20 +227,11 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                         console.log(arguments);
                     });
             });
-
         //console.log($scope.save_api_item);
-
-    };
-
-    $scope.edit = function(api_item) {
-        var copy = angular.copy(api_item);
-        $scope.current = copy;
-        $scope.edit_api = api_item;
     };
     $scope.cancel = function(){
         $scope.isNew = false;
         $scope.current = null;
-        $scope.edit_api = null;
     };
 
     $scope.editorOptions = {
@@ -290,7 +272,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     $scope.remove_api = function(item){
         //  <button ng-show="show_edit" class="btn btn-danger btn-xs pull-right" style="margin-right: 5px;" ng-click="remove(apiList, item); save_me();">delete</button>
         if(confirm("确认删除api?")) {
-
             $http.delete($scope.base_url + "m/api?id=" + item._id
             ).success(function (data) {
                     $window.location.reload();
@@ -301,11 +282,11 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         }
     };
     $scope.add_param = function(current){
-        var copy = angular.copy(empty.paramsList[0]);
+        var copy = angular.copy(param_demo);
         current.paramsList.push(copy);
     };
     $scope.add_response = function(current){
-        var copy = angular.copy(empty.responseList[0]);
+        var copy = angular.copy(param_demo);
         current.responseList.push(copy);
     };
 

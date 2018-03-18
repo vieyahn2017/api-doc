@@ -189,8 +189,6 @@ class APiModelTestHandler(BaseMongoHandler):
         responseList = []
         for id_param in responseIdList:
             query_param = {"_id" : id_param}
-            # cursor_param = ParamModel.get_cursor(self.db, query_param)
-            # object_param = yield ParamModel.find(cursor_param)
             object_param = yield ParamModel.find_one(self.db, query_param)
             if object_param:
                 responseList.append(object_param.to_primitive())
