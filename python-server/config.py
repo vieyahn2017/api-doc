@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 
 base_host = "127.0.0.1"
 
@@ -11,7 +11,6 @@ settings = {
     "logfile": "log/api_doc.log",
     "executor_number": 10  #真正运行时估计不够
 }
-
 
 dbConf = {
     "host": base_host,
@@ -47,7 +46,6 @@ MIDDLEWARE_CLASSES = (
 
 RBAC_FILE = "./rights.yml"
 
-
 API_VERSION = 'v1'
 
 DEFAULT_PORT = 3000
@@ -58,14 +56,9 @@ DEFAULT_MODULE = "ApiModule"
 
 BASE_URL = "http://%s:%s" % (base_host, DEFAULT_PORT)
 
-# 统一确定了：API用到的mongodb数据库集合名字为：apidocs
-# class BaseAPIModel(BaseMongoModel):
-# class BaseMongoHandler(BaseProxyHandler):
-# 两处。
-mongodbConf = {
-    "host": "{0}:27017".format(base_host),
-}
-
 import motor
-mongodb_client = motor.motor_tornado.MotorClient('mongodb://%s' % mongodbConf['host'])
+mongodb_host = "{0}:27017".format(base_host)
+mongodb_client = motor.motor_tornado.MotorClient('mongodb://%s' % mongodb_host)
 MONGODB_CONN = mongodb_client.apidocs
+
+# 统一确定了：API用到的mongodb数据库集合名字为：apidocs
