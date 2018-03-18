@@ -17,7 +17,7 @@
         <ul class="media-list">
             <li class="media" ng-repeat="item in typeList">
                 <a class="pull-left" href="#/api/{{item.href}}">
-                    <img class="media-object" ng-src="img/{{$index % 6}}.jpg" alt="...">
+                    <i class="fa {{loop_icon($index)}}" style="color:#0af;"></i>
                 </a>
                 <div class="media-body">
                     <h4 class="media-heading">
