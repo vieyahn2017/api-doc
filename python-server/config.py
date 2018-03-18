@@ -12,9 +12,6 @@ settings = {
     "executor_number": 10  #真正运行时估计不够
 }
 
-mongodbConf = {
-    "host": "{0}:27017".format(base_host), 
-}
 
 dbConf = {
     "host": base_host,
@@ -62,3 +59,13 @@ DEFAULT_MODULE = "ApiModule"
 BASE_URL = "http://%s:%s" % (base_host, DEFAULT_PORT)
 
 # 统一确定了：API用到的mongodb数据库集合名字为：apidocs
+# class BaseAPIModel(BaseMongoModel):
+# class BaseMongoHandler(BaseProxyHandler):
+# 两处。
+mongodbConf = {
+    "host": "{0}:27017".format(base_host),
+}
+
+import motor
+mongodb_client = motor.motor_tornado.MotorClient('mongodb://%s' % mongodbConf['host'])
+MONGODB_CONN = mongodb_client.apidocs

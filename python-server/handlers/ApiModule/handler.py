@@ -25,7 +25,7 @@ class BaseMongoHandler(BaseProxyHandler):
 
     @property
     def db(self):
-        return context['dbconn'].apidocs
+        return context['dbconn']
 
     def write_models(self, models):
         """write json, add key[datas] to the obj list"""

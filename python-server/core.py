@@ -9,17 +9,13 @@
 import sys
 import copy
 import weakref
-from tornado.log import app_log
 from collections import defaultdict
 from threading import local
-
+from tornado.log import app_log
 from tornado.ioloop import IOLoop
-
-import motor
-
 import utils
 import constant
-from config import settings, mongodbConf
+from config import settings, MONGODB_CONN
 
 class ThreadLocalStore(local):
     __metaclass__ = utils.Singleton
@@ -357,8 +353,7 @@ class Application(object):
         self.install_middleware()
         self.install_rbac()
         self.install_message_backend()
-        context['dbconn'] = motor.motor_tornado.MotorClient('mongodb://%s' % mongodbConf['host'])
-        # 6.16 add 
+        context['dbconn'] = MONGODB_CONN
         from tornado.web import Application
         return Application(self.handlers, **self._settings)
 
