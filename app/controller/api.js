@@ -2,7 +2,7 @@
  ** yanghao 2017-7-14.
  */
 
-function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll, $timeout) {
+function apiController($scope, $http, $q, $routeParams, $location, $window, $anchorScroll, $timeout) {
 
     var href = $routeParams.href;
     $scope.href = href;
@@ -103,7 +103,20 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
             alert("接口名重复了，重新起一个吧");
             return;
         } else {
-            console.log("接口名可用：" + new_item.name);
+            //console.log("接口名可用：" + new_item.name);
+        }
+
+        if($scope.isNew) {
+            //$scope.apiList.push($scope.new_item);
+            /*
+             * 以前github.com/yilujun100/snsshop-project是在这里添加到apiList
+             * 我这边没法直接套用，apiList和new_item格式已经不匹配了
+             * 目前是加入到$http.post().success(){}里面
+             * */
+
+        }
+        else {
+            angular.extend($scope.edit_api, $scope.new_item);
         }
         $scope.edit_api = null;
         //console.log($scope.edit_api);
@@ -147,25 +160,23 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
                 $http.post($scope.base_url + "m/api",
                     angular.toJson($scope.save_api_item, true)
                 ).success(function (data) {
-                    var scroll_id;
-                    if($scope.edit_api) {
-                        scroll_id = $scope.edit_api._id;
-                    } else {
-                        scroll_id = data.rows._id;
-                        console.log(scroll_id);
-                    }
-
-                    $scope.isNew = false;
-                    $scope.current = null;
-                    $scope.edit_api = null;
-
-                    $timeout(function(){
-                        //$scope.scrollTo(scroll_id);
-                        console.log(scroll_id);
-                        if(scroll_id) {
-                            $scope.scrollTo(scroll_id);
+                        console.log(data.rows);
+                        $scope.apiList.push(data.rows);
+                        var scroll_id;
+                        if($scope.edit_api) {
+                            scroll_id = $scope.edit_api._id;
+                        } else {
+                            scroll_id = data.rows._id;
                         }
-                    });
+
+                        $scope.isNew = false;
+                        $scope.current = null;
+                        $scope.edit_api = null;
+
+                        $timeout(function(){
+                            console.log(scroll_id);
+                            $scope.scrollTo(scroll_id);
+                        });
 
                 }).error(function (data, status, headers, config) {
                     console.log(arguments);
@@ -233,7 +244,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
                 alert("delete failed");
                 console.log(arguments);
             });
-
         }
     };
     $scope.add_param = function(current){

@@ -36,6 +36,12 @@ class BaseMongoHandler(BaseProxyHandler):
         except:
             self.write_failure(msg="write_models error")
 
+    def write_model(self, model):
+        """write model"""
+        try:
+            self.write_rows(rows=model.to_primitive())
+        except:
+            self.write_failure(msg="write_model error")
 
 false = False
 true = True
@@ -230,7 +236,6 @@ class APiModelTestHandler(BaseMongoHandler):
         item["responseList"] = responseList
         raise Return(item)
 
-
     @coroutine
     def get(self):
         objects_list = []
@@ -286,7 +291,7 @@ class APiModelTestHandler(BaseMongoHandler):
         responseDemo = body["responseDemo"]
         category_href = body["category_href"]
         _id = ObjectId()
-        yield APiModel({
+        model = APiModel({
                 "name": name, 
                 "url": url, 
                 "method": method, 
@@ -297,14 +302,15 @@ class APiModelTestHandler(BaseMongoHandler):
                 "responseDemo": responseDemo,
                 "category_href": category_href,
                 "_id": _id
-            }).save()
+            })
+        yield model.save()
         app_log.info(("save APiModel:", str(_id)))
 
         # yield ParamModel({"api_id": str(_id)}).update(query={"api_id": "-1"}, multi=True) 
         ## 这样会把ParamModel里面别的字段给搞成null
 
-        cursor = ParamModel.get_cursor(self.db, {"api_id": "-1"})
-        param_objects = yield ParamModel.find(cursor)
+        # cursor = ParamModel.get_cursor(self.db, {"api_id": "-1"})
+        # param_objects = yield ParamModel.find(cursor)
         # yield [obj.update(update={"api_id": str(_id)}) for obj in param_objects]
 
         # import pdb; pdb.set_trace()
@@ -318,7 +324,9 @@ class APiModelTestHandler(BaseMongoHandler):
         # db.getCollection('params').update({"api_id": "-1"}, {$set:{"api_id": "596ecb42f0881b24e51c3e1a"}} , {multi: true})
 
         # self.write_ok()
-        self.write_rows(rows={"_id": str(_id)})
+        #self.write_rows(rows={"_id": str(_id)})
+        item = yield self.parse_param_one(model.to_primitive())
+        self.write_rows(rows=item)
 
 
 
