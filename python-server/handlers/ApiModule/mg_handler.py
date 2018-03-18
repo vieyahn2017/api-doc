@@ -21,7 +21,6 @@ from bson import ObjectId
 from .mg_model import CategoryModel, ParamModel, APiModel
 
 
-
 class BaseMongoHandler(BaseProxyHandler):
 
     @property
@@ -45,7 +44,6 @@ class BaseMongoHandler(BaseProxyHandler):
 
 false = False
 true = True
-
 
 
 @Route("m/api/category")
@@ -91,26 +89,6 @@ class CategoryModelTestHandler(BaseMongoHandler):
         yield CategoryModel.remove_entries(self.db, {"href": href})
         self.write_ok()
 
-    # @coroutine
-    # def post_0(self):
-    #     """ init """
-    #     yield CategoryModel({"name":"Type1","href":"type1","description":"this is type1"}).save()
-    #     yield CategoryModel({"name":"Type2","href":"type2","description":"2 this is type2"}).save()
-    #     self.write_ok()
-
-    # @coroutine
-    # def get_0(self):
-    #     """ by id"""
-    #     objects = []
-    #     _id = self.get_argument('id', None)
-    #     if _id:
-    #         obj = yield CategoryModel.find_one(self.db, {"_id": ObjectId(_id)})
-    #         objects.append(obj)
-    #     else:
-    #         cursor = CategoryModel.get_cursor(self.db, {})
-    #         objects = yield CategoryModel.find(cursor)
-    #     self.write_models(objects)
-
 
 @Route("m/api/param")
 class ParamModelTestHandler(BaseMongoHandler):
@@ -130,7 +108,6 @@ class ParamModelTestHandler(BaseMongoHandler):
             self.write_models(objects)
         else:
             self.write_ok(msg="no result")
-
 
     @coroutine
     def post(self):
@@ -157,20 +134,6 @@ class ParamModelTestHandler(BaseMongoHandler):
                 }).save()
             id_rows.append(str(_id))
         self.write_rows(rows=id_rows)
-
-
-    # @coroutine
-    # def post_0(self):
-    #     """ init """
-    #     yield ParamModel({
-    #             "id": 1, 
-    #             "name": "param_1_name", 
-    #             "required": true, 
-    #             "default": "", 
-    #             "type_": "string", 
-    #             "description": "Description of the first parameter."
-    #         }).save()
-    #     self.write_ok()
 
 
 def cmp_by_object_id(x, y):
@@ -241,20 +204,16 @@ class APiModelTestHandler(BaseMongoHandler):
         objects_list = []
         href = self.get_argument('href', None)
         desc = self.get_argument('desc', False)
-
         query = {"category_href": href} if href else {}
         cursor = APiModel.get_cursor(self.db, query)
         objects = yield APiModel.find(cursor)
-
         for obj in objects:
             item = yield self.parse_param_one(obj.to_primitive())
             objects_list.append(item)
-
         if desc:
             self.write_rows(rows=sorted(objects_list, cmp_by_object_id_desc))
         else:
             self.write_rows(rows=sorted(objects_list, cmp_by_object_id))
-
 
     @coroutine
     def delete(self):
@@ -270,11 +229,9 @@ class APiModelTestHandler(BaseMongoHandler):
             except Exception as e:
                 app_log.info(("remove ParamModel error of ApiModel:", _id))
                 app_log.error(e)
-
             yield APiModel.remove_entries(self.db, query)
             app_log.info(("remove APiModel:", _id))
         self.write_ok()
-
 
     @coroutine
     def post(self):
@@ -305,8 +262,42 @@ class APiModelTestHandler(BaseMongoHandler):
             })
         yield model.save()
         app_log.info(("save APiModel:", str(_id)))
+        # self.write_ok()
+        # self.write_rows(rows={"_id": str(_id)})
+        item = yield self.parse_param_one(model.to_primitive())
+        self.write_rows(rows=item)
 
-        # yield ParamModel({"api_id": str(_id)}).update(query={"api_id": "-1"}, multi=True) 
+    @coroutine
+    def put(self):
+        """ update """
+        body = json.loads(self.request.body)
+        app_log.info(body)
+        name = body["name"]
+        url = body["url"]
+        method = body["method"]
+        description = body["description"]
+        paramsIdList = body["paramsIdList"]
+        responseIdList = body["responseIdList"]
+        paramsDemo = body["paramsDemo"]
+        responseDemo = body["responseDemo"]
+        category_href = body["category_href"]
+        _id = ObjectId()
+        model = APiModel({
+                "name": name,
+                "url": url,
+                "method": method,
+                "description": description,
+                "paramsIdList": paramsIdList,
+                "responseIdList": responseIdList,
+                "paramsDemo": paramsDemo,
+                "responseDemo": responseDemo,
+                "category_href": category_href,
+                "_id": _id
+            })
+        yield model.save()
+        app_log.info(("save APiModel:", str(_id)))
+
+        # yield ParamModel({"api_id": str(_id)}).update(query={"api_id": "-1"}, multi=True)
         ## 这样会把ParamModel里面别的字段给搞成null
 
         # cursor = ParamModel.get_cursor(self.db, {"api_id": "-1"})
@@ -328,31 +319,3 @@ class APiModelTestHandler(BaseMongoHandler):
         item = yield self.parse_param_one(model.to_primitive())
         self.write_rows(rows=item)
 
-
-
-
-    # @coroutine
-    # def get_0(self):
-    #     query = {}
-    #     _id = self.get_argument('id', None)
-    #     if _id:
-    #         query = {"_id": ObjectId(_id)}
-    #     cursor = APiModel.get_cursor(self.db, query)
-    #     objects = yield APiModel.find(cursor)
-    #     self.write_models(objects)
-
-
-
-    # @coroutine
-    # def post_0(self):
-    #     """ init """
-    #     yield APiModel({
-    #         "name": "接口名1", 
-    #         "url": "接口url", 
-    #         "method": "GET", 
-    #         "description": "接口描述", 
-    #         "paramsIdList": ["5967155cf0881b4acb2dd5e6", "5967155cf0881b4acb2dd5e7"] ,
-    #         "responseIdList": ["5967155cf0881b4acb2dd5e6", "5967155cf0881b4acb2dd5e7"] , 
-    #         "demo": """<?php  var_dump(123); """
-    #     }).save()
-    #     self.write_ok()

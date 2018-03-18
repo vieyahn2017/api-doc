@@ -106,22 +106,77 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         }
 
         if($scope.isNew) {
-            //$scope.apiList.push($scope.new_item);
-            /*
-             * 以前github.com/yilujun100/snsshop-project是在这里添加到apiList
-             * 我这边没法直接套用，apiList和new_item格式已经不匹配了
-             * 目前是加入到$http.post().success(){}里面
-             * */
-
+            $scope.save_me_yh(new_item);
         }
         else {
-            angular.extend($scope.edit_api, $scope.new_item);
+            $scope.update_me_yh(new_item);
         }
         $scope.edit_api = null;
         //console.log($scope.edit_api);
         //angular.extend($scope.edit_api, $scope.new_item);
         //console.log($scope.edit_api);
-        $scope.save_me_yh(new_item);
+
+    };
+    $scope.update_me_yh = function(new_item){ //yanghao
+        $scope.save_api_item = angular.copy(new_item);
+
+        var post_paramsList = function() {
+            var deferred = $q.defer();
+            $http.post($scope.base_url + "m/api/param",
+                angular.toJson(new_item.paramsList, true)
+            ).success(function (data) {
+                    $scope.save_api_item.paramsIdList = data.rows;
+                    deferred.resolve($scope.save_api_item);
+                }).error(function (data, status, headers, config) {
+                    console.log(arguments);
+                });
+            return deferred.promise;
+        }
+        var post_responseList = function() {
+            var deferred = $q.defer();
+            $http.post($scope.base_url + "m/api/param",
+                angular.toJson(new_item.responseList, true)
+            ).success(function (data) {
+                    $scope.save_api_item.responseIdList = data.rows;
+                    deferred.resolve($scope.save_api_item);
+                }).error(function (data, status, headers, config) {
+                    console.log(arguments);
+                });
+            return deferred.promise;
+        }
+
+        $q.all([post_paramsList(), post_responseList()])
+            .then(function(result){
+                //console.log($scope.save_api_item);
+                //console.log(result);
+                $http.post($scope.base_url + "m/api",
+                    angular.toJson($scope.save_api_item, true)
+                ).success(function (data) {
+                        //console.log(data.rows);
+                        $scope.apiList.push(data.rows);
+                        var scroll_id;
+                        if($scope.edit_api) {
+                            scroll_id = $scope.edit_api._id;
+                        } else {
+                            scroll_id = data.rows._id;
+                        }
+
+                        $scope.isNew = false;
+                        $scope.current = null;
+                        $scope.edit_api = null;
+
+                        $timeout(function(){
+                            //console.log(scroll_id);
+                            $scope.scrollTo(scroll_id);
+                        });
+
+                    }).error(function (data, status, headers, config) {
+                        console.log(arguments);
+                    });
+            });
+
+        //console.log($scope.save_api_item);
+
     };
 
     $scope.save_me_yh = function(new_item){ //yanghao
