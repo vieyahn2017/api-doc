@@ -5,9 +5,7 @@
 function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll, $timeout) {
 
     var href = $routeParams.href;
-
     $scope.href = href;
-
     $scope.base_url = get_base_url();
     // $http.get($scope.base_url + "m/api?desc=true&href=" + href).success(function(data){  //添加的时候倒序方便点
     $http.get($scope.base_url + "m/api?href=" + href).success(function(data){
@@ -23,7 +21,8 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
 
 
     var empty = {
-        "name":"接口名",
+        "_id": "-1",
+        "name": "接口名",
         "url": "接口url",
         "method": "GET",
         "description": "接口描述",
@@ -66,121 +65,94 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
     ];
     $scope.add = function(){
         $scope.current = angular.copy(empty);
-        console.log($scope.current);
         $scope.isNew = true;
     };
-    $scope.save_me = function(){
-        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
-        angular.forEach($scope.apiList, function(item) {
-            console.log(item.name);
-            console.log(item.paramsParamList);
-            console.log(item.responseParamList);
-            console.log("====@@@========");
-        })
-
-        $http.post("php/save.php",
-                "content=" + encodeURIComponent(angular.toJson($scope.apiList, true)) + "&href=" + href
+    var check_unique_un = function(new_item){
+        /* $scope.isUnique没法传递返回，难不成绑定过程，与$http的方法不同步。 也没法在$http.success里面return，那是闭包
+          *  api.html 里面把div id="{{item.name}} 改成了 div id="{{item._id}}
+           *
+            */
+        $scope.isUnique = true;
+        $http.get($scope.base_url + "m/api/exist?name=" + new_item.name + "&href=" + new_item.category_href
             ).success(function (data) {
-                var name;
-                if($scope.edit_api) {
-                    name = $scope.edit_api.name;
+                //console.log(data.code == 1);  //true
+                //console.log(data.code == '1'); //true
+                if(data.code == 1) {
+                    $scope.isUnique = false;
+                } else if (data.code == -1) {
+                    $scope.isUnique = true;
                 }
-
-                $scope.isNew = false;
-                $scope.current = null;
-                $scope.edit_api = null;
-
-                $timeout(function(){
-                    if(name) {
-                        $scope.scrollTo(name);
-                    }
-                });
             }).error(function (data, status, headers, config) {
-                alert("add failed");
                 console.log(arguments);
             });
-
+        return $scope.isUnique;
     };
 
-    var check_unique = function(){
-        var r = true;
-        // if($scope.edit_api && $scope.edit_api.name == $scope.current.name) {
-        //     return r;
-        // }
-        // angular.forEach($scope.apiList, function(item){
-        // if($scope.current.name == item.name) {
-        //         r = false;
-        //     }
-        // });
-        return r;
+    var check_unique = function(new_item){
+        return true;
     };
-
-    $scope.save = function(){
+    $scope.save_api = function(new_item){
         if($scope.apiForm.$invalid) {
             return;
         }
-        if(!check_unique()) {
+        $scope.isUnique = true;
+        var r = check_unique(new_item);
+        //console.log(r);
+        if(!r) {
             alert("接口名重复了，重新起一个吧");
             return;
+        } else {
+            console.log("接口名可用：" + new_item.name);
         }
-        if($scope.isNew) {
-            $scope.apiList.unshift($scope.current);
-        }
-        else {
-            angular.extend($scope.edit_api, $scope.current);
-        }
-        $scope.save_me();
+        $scope.edit_api = null;
+        //console.log($scope.edit_api);
+        //angular.extend($scope.edit_api, $scope.new_item);
+        //console.log($scope.edit_api);
+        $scope.save_new(new_item);
     };
 
+    $scope.save_new = function(new_item){ //yanghao
+        $scope.save_api_item = angular.copy(new_item);
 
-    $scope.save_new = function(new_item){//yanghao
-        if($scope.apiForm.$invalid) {
-            return;
-        }
-        $scope.ret_item = angular.copy(new_item);
-
-        var post_a = function() {
+        var post_paramsList = function() {
             var deferred = $q.defer();
             $http.post($scope.base_url + "m/api/param",
                 angular.toJson(new_item.paramsList, true)
             ).success(function (data) {
-                $scope.ret_item.paramsIdList = data.rows;
-                deferred.resolve($scope.ret_item);
-                console.log($scope.ret_item);
+                $scope.save_api_item.paramsIdList = data.rows;
+                deferred.resolve($scope.save_api_item);
             }).error(function (data, status, headers, config) {
                 console.log(arguments);
             });
             return deferred.promise;
         }
-        var post_b = function() {
+        var post_responseList = function() {
             var deferred = $q.defer();
             $http.post($scope.base_url + "m/api/param",
                 angular.toJson(new_item.responseList, true)
             ).success(function (data) {
-                $scope.ret_item.responseIdList = data.rows;
-                deferred.resolve($scope.ret_item);
-                console.log($scope.ret_item);
+                $scope.save_api_item.responseIdList = data.rows;
+                deferred.resolve($scope.save_api_item);
             }).error(function (data, status, headers, config) {
                 console.log(arguments);
             });
             return deferred.promise;
         }
 
-        // 要求上面2个执行之后，执行这个post
-        $q.all([post_a(), post_b()])
+        $q.all([post_paramsList(), post_responseList()])
             .then(function(result){
-                console.log($scope.ret_item);
-                console.log(result);
+                //console.log($scope.save_api_item);
+                //console.log(result);
                 $http.post($scope.base_url + "m/api",
-                    angular.toJson($scope.ret_item, true)
-                    //angular.toJson(result[1], true)
+                    angular.toJson($scope.save_api_item, true)
                 ).success(function (data) {
-                    //console.log(data);
-
-                    var name;
+                    var scroll_id;
                     if($scope.edit_api) {
-                        name = $scope.edit_api.name;
+                        scroll_id = $scope.edit_api._id;
+                    } else {
+                        scroll_id = data.rows._id;
+                        console.log(scroll_id);
                     }
 
                     $scope.isNew = false;
@@ -188,8 +160,10 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
                     $scope.edit_api = null;
 
                     $timeout(function(){
-                        if(name) {
-                            $scope.scrollTo(name);
+                        //$scope.scrollTo(scroll_id);
+                        console.log(scroll_id);
+                        if(scroll_id) {
+                            $scope.scrollTo(scroll_id);
                         }
                     });
 
@@ -198,7 +172,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
                 });
             });
 
-        console.log($scope.ret_item);
+        //console.log($scope.save_api_item);
 
     };
 
@@ -246,7 +220,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $anchorScroll
     };
 
     //在页面上关闭删除权限，可以在postman发delete删除
-    //http://10.0.0.161:30003/api/v1/m/api?id=5971c9aef0881b2d19f49bc4
+    //http://127.0.0.1:3000/api/v1/m/api?id=5971c9aef0881b2d19f49bc4
 
     $scope.remove_2 = function(item){
         //  <button ng-show="show_edit" class="btn btn-danger btn-xs pull-right" style="margin-right: 5px;" ng-click="remove(apiList, item); save_me();">delete</button>

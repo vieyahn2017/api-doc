@@ -133,7 +133,7 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button ng-click="save_new(current);" type="submit" class="btn btn-success">保存</button>
+                    <button ng-click="save_api(current);" type="submit" class="btn btn-success">保存</button>
                     <button ng-click="cancel();" type="submit" class="btn btn-default">取消</button>
                 </div>
             </div>
@@ -152,7 +152,7 @@
             </label>
         </div> -->
         <div class="panel panel-default" ng-repeat="item in apiList|filter: search">
-            <div id="{{item.name}}" class="panel-heading">
+            <div id="{{item._id}}" class="panel-heading">
                 <h3 class="panel-title">
                     {{item.name}}
                     <button ng-show="show_edit" class="btn btn-info btn-xs pull-right" ng-click="edit(item);">edit</button>
