@@ -30,7 +30,7 @@ function indexController($scope, $http, $window){
     $scope.loop_icon = function(id) {
         // use font-awesome icons
         var fa_icon_list = [
-            "fa-fire", "fa-gear", "fa-globe", "fa-flag",
+            "fa-gear", "fa-globe", "fa-flag", "fa-fire",
             "fa-gift", "fa-laptop", "fa-leaf", "fa-map",
             "fa-plug", "fa-paw", "fa-ship", "fa-sitemap"];
         i = id % 12 ;
