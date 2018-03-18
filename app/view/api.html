@@ -74,7 +74,7 @@
                             </td>
                             <td><textarea style="width: 400px;" ng-model="param.description"></textarea></td>
                             <td>
-                                <button class="btn btn-danger" ng-click="remove(current.paramsList, param)">删除</button>
+                                <button class="btn btn-danger" ng-click="remove_param(current.paramsList, param)">删除</button>
                             </td>
                         </tr>
                         </tbody>
@@ -112,7 +112,7 @@
                             </td>
                             <td><textarea style="width: 400px;" ng-model="param.description"></textarea></td>
                             <td>
-                                <button class="btn btn-danger" ng-click="remove(current.responseList, param)">删除</button>
+                                <button class="btn btn-danger" ng-click="remove_param(current.responseList, param)">删除</button>
                             </td>
                         </tr>
                         </tbody>
@@ -145,18 +145,18 @@
     <div ng-show="!current">
 
      <!-- 去掉可编辑的功能 -->
-<!--         <div class="clearfix" style="margin: 5px;">
+        <div class="clearfix" style="margin: 5px;">
             <button class="btn btn-sm btn-info" ng-click="show_edit = !show_edit">{{!show_edit?'开启编辑':'关闭编辑'}}</button>
             <label class="pull-right" for="search">
                 <input placeholder="search here" id="search" class="form-control input-sm " ng-model="search" style="width: 300px;" type="search"/>
             </label>
-        </div> -->
+        </div>
         <div class="panel panel-default" ng-repeat="item in apiList|filter: search">
             <div id="{{item._id}}" class="panel-heading">
                 <h3 class="panel-title">
                     {{item.name}}
                     <button ng-show="show_edit" class="btn btn-info btn-xs pull-right" ng-click="edit(item);">edit</button>
-                    <button ng-show="show_edit" class="btn btn-danger btn-xs pull-right" style="margin-right: 5px;" ng-click="remove_2(item);">delete</button>
+                    <button ng-show="show_edit" class="btn btn-danger btn-xs pull-right" style="margin-right: 5px;" ng-click="remove_api(item);">delete</button>
                 </h3>
                 <h4><kbd>{{item.method || 'GET'}}</kbd> - <kbd>{{item.url}}</kbd></h4>
             </div>
