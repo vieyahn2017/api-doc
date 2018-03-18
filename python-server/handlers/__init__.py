@@ -306,7 +306,6 @@ class BaseProxyHandler(BaseHandler):
         self.set_status(204)
         self.finish()
 
-
     def write_ok(self, msg="success"):
         self.write_rows(code=1, msg=msg)
         # self.write({"code": 1, "msg": msg})

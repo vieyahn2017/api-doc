@@ -174,12 +174,30 @@ def cmp_by_object_id(x, y):
     else:
         return 1
 
+
 def cmp_by_object_id_desc(x, y):
     """ using for mongodb - sort"""
     if x.get("_id") > y.get("_id"):
         return -1
     else:
         return 1
+
+
+@Route("m/api/exist")
+class APiModelCheckExistHandler(BaseMongoHandler):
+
+    @coroutine
+    def get(self):
+        name = self.get_argument('name')
+        href = self.get_argument('href', None)
+        query = {"category_href": href, "name": name} if href else {"name": name}
+        cursor = APiModel.get_cursor(self.db, query)
+        objects = yield APiModel.find(cursor)
+        if len(objects) > 0:
+            self.write_ok()
+        else:
+            self.write_failure()
+
 
 @Route("m/api")
 class APiModelTestHandler(BaseMongoHandler):

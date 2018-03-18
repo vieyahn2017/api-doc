@@ -29,21 +29,22 @@ class ApiSaveHandler(BaseProxyHandler):
         base_url = BASE_URL
 
         api = [
-                    'm/api/type',
-                    'm/api/param',
-                    'm/api',
-               ]
+            'm/api/type',
+            'm/api/param',
+            'm/api',
+            'm/api/exist',
+        ]
 
-        test =  [
-                     'm/api/save',
-                     'm/api/test',
-              ]
+        test = [
+            'm/api/save',
+            'm/api/test',
+        ]
 
         route = {
-                   "update_time": "2018-03-17",
-                   "test": [base_url + "/api/v1/" + url for url in test],
-                   "api": [base_url + "/api/v1/" + url for url in api]
-                }
+            "update_time": "2018-03-17",
+            "test": [base_url + "/api/v1/" + url for url in test],
+            "api": [base_url + "/api/v1/" + url for url in api]
+        }
 
         self.write(route)
 
