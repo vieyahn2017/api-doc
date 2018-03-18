@@ -177,7 +177,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         //console.log($scope.save_api_item);
     };
 
-    $scope.update_me_yh = function(update_item){ //test
+    $scope.update_test = function(update_item){ //test
         $scope.save_api_item = angular.copy(update_item);
         $http.put($scope.base_url + "m/api/param",
             angular.toJson(update_item.paramsList, true)
@@ -190,7 +190,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         console.log($scope.save_api_item);
     };
 
-    $scope.update_me_yh2 = function(update_item){ //yh
+    $scope.update_me_yh = function(update_item){ //yh
         $scope.save_api_item = angular.copy(update_item);
 
         var put_paramsList = function() {

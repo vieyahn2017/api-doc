@@ -6,7 +6,7 @@
 <div style="position: fixed; left: 0; top: 100px;" >
     <div class="btn-group-vertical">
         <button  class="btn btn-success" ng-click="add();">Add</button>
-        <a ng-show="!menu" ng-repeat="item in apiList" class="btn btn-default btn-xs" ng-href="#/api/{{href}}/{{item.name}}">{{$index+1}}.{{item.name}}</a>
+        <a ng-show="!menu" ng-repeat="item in apiList" class="btn btn-default btn-xs" ng-href="#/api/{{href}}/{{item._id}}">{{$index+1}}.{{item.name}}</a>
         <button  class="btn btn-info btn-xs" ng-click="menu=!menu">{{menu?'展开':'收起'}}目录</button>
     </div>
 </div>
