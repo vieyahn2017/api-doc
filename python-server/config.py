@@ -50,6 +50,10 @@ API_VERSION = 'v1'
 
 DEFAULT_PORT = 3000
 DEFAULT_MODULE = "ApiModule"
+# DEFAULT_MODULE = "ApiShow"
+
+
+# python server.py --module=ApiModule --port=3001
 
 # handlers里面按照模块组织代码，里面有个ApiModule文件夹，这边加个api模块
 # urls.py里面按照模块导入
@@ -59,6 +63,6 @@ BASE_URL = "http://%s:%s" % (base_host, DEFAULT_PORT)
 import motor
 mongodb_host = "{0}:27017".format(base_host)
 mongodb_client = motor.motor_tornado.MotorClient('mongodb://%s' % mongodb_host)
-MONGODB_CONN = mongodb_client.apidocs
+MONGODB_CONN = mongodb_client.apis
 
 # 统一确定了：API用到的mongodb数据库集合名字为：apidocs

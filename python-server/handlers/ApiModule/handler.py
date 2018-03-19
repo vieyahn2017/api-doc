@@ -46,6 +46,14 @@ false = False
 true = True
 
 
+@Route("m/api/authenticated")
+class APiModelCheckExistHandler(BaseMongoHandler):
+
+    @coroutine
+    def get(self):
+        self.write_ok()
+
+
 @Route("m/api/category")
 class CategoryModelTestHandler(BaseMongoHandler):
 
