@@ -139,34 +139,40 @@ class ParamModelTestHandler(BaseMongoHandler):
     def put(self):
         """ update 简单处理，全部新建。并把之前params按照_id删除"""
         bodys = json.loads(self.request.body)
-        id_rows = []
+        api_id = "0"
+        if bodys:
+            id_rows = []
 
-        for body in bodys:
-            name = body["name"]
-            required = body["required"]
-            default = body["default"]
-            type_ = body["type_"]
-            description = body["description"]
-            api_id = "-1"
-            _id_old = body.get("_id")
-            if _id_old:
-                yield ParamModel.remove_entries(self.db, {"_id": _id_old})
-            _id = ObjectId()
-            yield ParamModel({
-                    "name": name,
-                    "required": required,
-                    "default": default,
-                    "type_": type_,
-                    "description": description,
-                    "api_id": api_id,
-                    "_id": _id
-                }).save()
-            id_rows.append(str(_id))
+            for body in bodys:
+                name = body["name"]
+                required = body["required"]
+                default = body["default"]
+                type_ = body["type_"]
+                description = body["description"]
+                if body.get("api_id", None):
+                    api_id = body["api_id"]
+                _id_old = body.get("_id")
+                if _id_old:
+                    yield ParamModel.remove_entries(self.db, {"_id": _id_old})
+                _id = ObjectId()
+                yield ParamModel({
+                        "name": name,
+                        "required": required,
+                        "default": default,
+                        "type_": type_,
+                        "description": description,
+                        "api_id": "-1",
+                        "_id": _id
+                    }).save()
+                id_rows.append(str(_id))
 
-        # 这是本次update,可能存在多余的，需要被删除的参数
-        yield ParamModel.remove_entries(self.db, {"api_id": bodys[0]["api_id"]})
+            # 这是本次update,可能存在多余的，需要被删除的参数
+            if api_id != "0":
+                yield ParamModel.remove_entries(self.db, {"api_id": api_id})
 
-        self.write_rows(rows=id_rows)
+            self.write_rows(rows=id_rows)
+        else:
+            self.write_failure(msg="no bodys to load.")
 
 
 def cmp_by_object_id(x, y):
