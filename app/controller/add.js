@@ -9,8 +9,7 @@ function addController($scope, $http, $location, $routeParams) {
     var href = $routeParams.href;
     $scope.href = href;
     $http.get(base_url + "m/api/category?href=" + href).success(function (data) {
-        item_get = data.rows[0];
-
+        var item_get = data.rows[0];
         if (href && item_get) {
             $scope.current = item_get;
         }
@@ -21,11 +20,11 @@ function addController($scope, $http, $location, $routeParams) {
                 "description": ""
             };
         }
-        console.log($scope.current);
-
+        //console.log($scope.current);
     }).error(function(){
             $scope.current = undefined;
         });
+
 
     var check_unique = function(){
         var r = true;

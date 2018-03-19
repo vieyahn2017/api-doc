@@ -49,9 +49,8 @@ RBAC_FILE = "./rights.yml"
 API_VERSION = 'v1'
 
 DEFAULT_PORT = 3000
-DEFAULT_MODULE = "ApiModule"
-# DEFAULT_MODULE = "ApiShow"
-
+# DEFAULT_MODULE = "ApiModule"
+DEFAULT_MODULE = "ApiShow"
 
 # python server.py --module=ApiModule --port=3001
 

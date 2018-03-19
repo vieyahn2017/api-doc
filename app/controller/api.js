@@ -19,6 +19,17 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         $scope.apiList = [];
     });
 
+    $http.get($scope.base_url + "m/api/authenticated").success(function(data){
+        if(data.code == 1) {
+            $scope.authenticated = true;
+        } else if (data.code == -1) {
+            $scope.authenticated = false;
+        }
+        //console.log($scope.authenticated);
+    }).error(function(){
+        $scope.authenticated = false;
+    });
+
     var param_demo = {
         "name": "param",
         "default": "",
