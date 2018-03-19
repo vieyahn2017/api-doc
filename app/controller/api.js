@@ -58,7 +58,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 "description": "the name"
             }
         ],
-        "responseDemo": '{"msg": "",  "result": {},  "code": 1} ',
+        "responseDemo": "{\n    \"msg\": \"\", \n    \"result\": {},  \n    \"code\": 1\n}",
         "paramsDemo": "\\",
         "category_href": href
     };
