@@ -30,7 +30,11 @@ class BaseMongoHandler(BaseProxyHandler):
     def write_models(self, models):
         """write json, add key[datas] to the obj list"""
         try:
-            objects_list = [obj.to_primitive() for obj in models]
+            # objects_list = [obj.to_primitive() for obj in models]
+            objects_list = []
+            for obj in models:
+                if obj:
+                    objects_list.append(obj.to_primitive())
             self.write_rows(rows=objects_list)
         except:
             self.write_failure(msg="write_models error")
@@ -106,7 +110,7 @@ class ParamModelTestHandler(BaseMongoHandler):
         objects = []
         _id = self.get_argument('id', None)
         if _id:
-            obj = yield ParamModel.find_one(self.db, {"_id": ObjectId(_id)})
+            obj = yield ParamModel.find_one(self.db, {"_id": _id})
             objects.append(obj)
         else:
             cursor = ParamModel.get_cursor(self.db, {})
