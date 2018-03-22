@@ -44,6 +44,8 @@ class ParamModel(BaseAPIModel):
     default = StringType()
     type_ = StringType()
     description = StringType()
+    subParamsIdList = ListType(StringType)   # type_=="json"，此项有值。
+    parent_id = StringType() # 如果是api_id的直系节点。此字段为None；【与之对应的是type_=="json"类型参数的子节点】
     api_id = StringType()
 
     _id = ObjectIdType(serialize_when_none=False)
@@ -65,14 +67,14 @@ class APiModel(BaseAPIModel):
     MONGO_COLLECTION = 'api'
 
 
-# todo
+# to do
 # add delete_flag: true/false 代替删除
 
 
 """
 {
     "Name": "param_1_name", 
-    "Required": "Y", 
+    "Required": "false",
     "Default": "", 
     "Type": "string", 
     "Description": "Description of the first parameter."
@@ -87,7 +89,7 @@ class APiModel(BaseAPIModel):
     "params": [
         {
             "Name": "param_1_name", 
-            "Required": "Y", 
+            "Required": "true",
             "Default": "", 
             "Type": "string", 
             "Description": "Description of the first parameter."
@@ -97,14 +99,14 @@ class APiModel(BaseAPIModel):
     "response": [
         {
             "Name": "param_1_name", 
-            "Required": "Y", 
+            "Required": "true",
             "Default": "", 
             "Type": "string", 
             "Description": "Description of the first parameter."
         }, 
         {
             "Name": "userId", 
-            "Required": "Y", 
+            "Required": "true",
             "Default": "", 
             "Type": "string", 
             "Description": "The userId parameter that is in the URI."

@@ -133,19 +133,42 @@ class ParamModelTestHandler(BaseMongoHandler):
             default = body["default"]
             type_ = body["type_"]
             description = body["description"]
-            api_id = "-1"  # body.get("api_id", "-1")
+            api_id = "-1"  # TO DO param初始化设置为-1，后面api的POST里面整体修改（目前这种方式如果并发会有风险）
             _id = ObjectId()
+            parent_id = body.get("parent_id", "")
+            subParamsIdList = []
+
+            # json字段，单独处理，目前不支持多层嵌套。
+            if type_ == "json":
+                children = body["children"]
+                for child in children:
+                    child_id = ObjectId()
+                    yield ParamModel({
+                            "name": child["name"],
+                            "required": child["required"],
+                            "default": child["default"],
+                            "type_": child["type_"],
+                            "description": child["description"],
+                            "api_id": api_id,
+                            "parent_id": str(_id),
+                            "subParamsIdList": [],
+                            "_id": child_id
+                        }).save()
+                    subParamsIdList.append(str(child_id))
             yield ParamModel({
-                    "name": name, 
-                    "required": required, 
-                    "default": default, 
-                    "type_": type_, 
-                    "description": description,
-                    "api_id": api_id, 
-                    "_id": _id
-                }).save()
+                "name": name,
+                "required": required,
+                "default": default,
+                "type_": type_,
+                "description": description,
+                "api_id": api_id,
+                "parent_id": "-1",
+                "subParamsIdList": subParamsIdList,
+                "_id": _id
+            }).save()
             id_rows.append(str(_id))
         self.write_rows(rows=id_rows)
+
 
     @coroutine
     def put(self):
