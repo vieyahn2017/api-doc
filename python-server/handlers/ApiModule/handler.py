@@ -16,6 +16,7 @@ from core import context, cache_client
 from config import settings
 
 import json
+import uuid
 from bson import ObjectId
 
 from .model import CategoryModel, ParamModel, APiModel
@@ -126,6 +127,7 @@ class ParamModelTestHandler(BaseMongoHandler):
         """ add more; 新增加的api_id暂时设置为-1"""
         bodys = json.loads(self.request.body)
         id_rows = []
+        api_id = str(uuid.uuid1())
 
         for body in bodys:
             name = body["name"]
@@ -133,7 +135,6 @@ class ParamModelTestHandler(BaseMongoHandler):
             default = body["default"]
             type_ = body["type_"]
             description = body["description"]
-            api_id = "-1"  # TO DO param初始化设置为-1，后面api的POST里面整体修改（目前这种方式如果并发会有风险）
             _id = ObjectId()
             parent_id = body.get("parent_id", "")
             subParamsIdList = []
@@ -167,7 +168,10 @@ class ParamModelTestHandler(BaseMongoHandler):
                 "_id": _id
             }).save()
             id_rows.append(str(_id))
-        self.write_rows(rows=id_rows)
+        self.write_rows(rows={
+            "param_ids": id_rows,
+            "temp_api_id": api_id
+        })
 
 
     @coroutine
@@ -333,18 +337,16 @@ class APiModelTestHandler(BaseMongoHandler):
         yield model.save()
         app_log.info(("save APiModel:", str(_id)))
 
-        # 困扰多时的bug
-        # ## 之前无法更改字段，只能在mongodb的shell里面手动修改：
-        #  db.getCollection('params').update({"api_id": "-1"}, {$set:{"api_id": "596ecb42f0881b24e51c3e1a"}} , {multi: true})
-        cursor = ParamModel.get_cursor(self.db, {"api_id": "-1"})
-        param_objects = yield ParamModel.find(cursor)
-        for obj in param_objects:
-            obj.api_id = str(_id)
-            # yield obj.update(self.db)
-            yield obj.save(self.db)
+        # update temp api_id (from param: uuid)
+        temp_api_ids = body["temp_api_ids"]
+        for temp_api_id in temp_api_ids:
+            cursor = ParamModel.get_cursor(self.db, {"api_id": temp_api_id})
+            param_objects = yield ParamModel.find(cursor)
+            for obj in param_objects:
+                obj.api_id = str(_id)
+                # yield obj.update(self.db)
+                yield obj.save(self.db)
 
-        # self.write_ok()
-        # self.write_rows(rows={"_id": str(_id)})
         item = yield self.parse_param_one(model.to_primitive())
         self.write_rows(rows=item)
 

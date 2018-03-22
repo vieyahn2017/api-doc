@@ -138,13 +138,15 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
 
     $scope.save_me_yh = function(new_item){ //yh
         $scope.save_api_item = angular.copy(new_item);
+        $scope.save_api_item.temp_api_ids = [];
 
         var post_paramsList = function() {
             var deferred = $q.defer();
             $http.post($scope.base_url + "m/api/param",
                 angular.toJson(new_item.paramsList, true)
             ).success(function (data) {
-                    $scope.save_api_item.paramsIdList = data.rows;
+                    $scope.save_api_item.paramsIdList = data.rows.param_ids;
+                    $scope.save_api_item.temp_api_ids.push(data.rows.temp_api_id);
                     deferred.resolve($scope.save_api_item);
                 }).error(function (data, status, headers, config) {
                     console.log(arguments);
@@ -157,7 +159,8 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             $http.post($scope.base_url + "m/api/param",
                 angular.toJson(new_item.responseList, true)
             ).success(function (data) {
-                    $scope.save_api_item.responseIdList = data.rows;
+                    $scope.save_api_item.responseIdList = data.rows.param_ids;
+                    $scope.save_api_item.temp_api_ids.push(data.rows.temp_api_id);
                     deferred.resolve($scope.save_api_item);
                 }).error(function (data, status, headers, config) {
                     console.log(arguments);

@@ -70,6 +70,9 @@ class APiModel(BaseAPIModel):
 # to do
 # add delete_flag: true/false 代替删除
 
+# # 在mongodb的shell里面手动修改：
+#  db.getCollection('params').update({"api_id": "-1"}, {$set:{"api_id": "596ecb42f0881b24e51c3e1a"}} , {multi: true})
+
 
 """
 {
