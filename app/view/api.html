@@ -77,6 +77,28 @@
                             <td>
                                 <button class="btn btn-danger" ng-click="remove_param(current.paramsList, param)">删除</button>
                             </td>
+                             <td>
+                                <button class="btn btn-info" ng-show="param.type_ == TYPES[4]"
+                                        ng-click="add_json_param_children(param)">新增子项</button>
+                            </td>
+                            <td>
+                                <table>
+                                    <tr ng-repeat="child in param.children">
+                                        <td><input type="text" ng-model="child.name"/></td>
+                                        <td><input type="text" ng-model="child.default"/></td>
+                                        <td><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="child.required"/></td>
+                                        <td>
+                                            <select ng-model="child.type_">
+                                                <option ng-repeat="item in TYPES" ng-selected="child.type_ == item" value="{{item}}">{{item}}</option>
+                                               </select>
+                                        </td>
+                                        <td><textarea style="width: 400px;" ng-model="child.description"></textarea></td>
+                                        <td>
+                                            <button class="btn btn-danger" ng-click="remove_json_param_children(param.children, child)">删除</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

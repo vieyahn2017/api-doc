@@ -35,7 +35,8 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         "default": "",
         "required": "false",
         "type_": "string",
-        "description": ""
+        "description": "",
+        "children": []
     };
 
     var empty = {
@@ -50,7 +51,8 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 "default": "",
                 "required": "false",
                 "type_": "int",
-                "description": ""
+                "description": "",
+                "children": []
             }
         ],
         "responseList":[
@@ -59,14 +61,16 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 "default": "1",
                 "required": "false",
                 "type_": "int",
-                "description": "id."
+                "description": "id.",
+                "children": []
             },
             {
                 "name": "name",
                 "default": "",
                 "required": "true",
                 "type_": "string",
-                "description": "the name"
+                "description": "the name",
+                "children": []
             }
         ],
         "responseDemo": "{\n    \"msg\": \"\", \n    \"result\": {},  \n    \"code\": 1\n}",
@@ -75,7 +79,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     };
 
     $scope.TYPES = [
-        "string", "int", "boolean", "json", "list"
+        "string", "int", "boolean", "list", "json"
     ];
     $scope.METHODS = [
         "GET", "POST", "PUT", "DELETE"
@@ -280,8 +284,21 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         }
     };
 
-    //在页面上关闭删除权限，可以在postman发delete删除
-    //http://127.0.0.1:3000/api/v1/m/api?id=5971c9aef0881b2d19f49bc4
+    $scope.add_json_param_children = function(item){
+        var copy = angular.copy(param_demo);
+        console.log(item);
+        item.children.push(copy);
+    };
+
+    $scope.remove_json_param_children = function(collection, item){
+        if(confirm("确认删除param?")) {
+            for(var i = 0; i < collection.length; i++) {
+                if(collection[i] == item) {
+                    collection.splice(i, 1);
+                }
+            }
+        }
+    };
 
     $scope.remove_api = function(item){
         //  <button ng-show="show_edit" class="btn btn-danger btn-xs pull-right" style="margin-right: 5px;" ng-click="remove(apiList, item); save_me();">delete</button>
