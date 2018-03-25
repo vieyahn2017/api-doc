@@ -72,12 +72,12 @@
                             <td ng-if="param.parent">
                                 <input type="text" class="btn-info" ng-model="param.name"/>  <!-- style="width: 164px; background-color: ##39b3d7;" -->
                             </td>
-                            <td><input type="text" style="width: 164px;" ng-model="param.default"/></td>
+                            <td><input type="text" ng-model="param.default"/></td>
                             <td><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="param.required"/></td>
                             <td>
                                 <select ng-model="param.type_" ng-disabled="param.children.length != 0">
                                     <option ng-repeat="item in TYPES" ng-selected="param.type_ == item" value="{{item}}">{{item}}</option>
-                                   </select>
+                                </select>
                             </td>
                             <td><textarea style="width: 320px;" ng-model="param.description"></textarea></td>
                             <td>
@@ -136,17 +136,27 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="param in current.responseList">
-                            <td><input type="text" ng-model="param.name"/></td>
+                            <td ng-if="!param.parent"><input type="text" ng-model="param.name"/></td>
+                            <td ng-if="param.parent">
+                                <input type="text" class="btn-info" ng-model="param.name"/>  <!-- style="width: 164px; background-color: ##39b3d7;" -->
+                            </td>
                             <td><input type="text" ng-model="param.default"/></td>
                             <td><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="param.required"/></td>
                             <td>
-                                <select ng-model="param.type_">
+                                <select ng-model="param.type_" ng-disabled="param.children.length != 0">
                                     <option ng-repeat="item in TYPES" ng-selected="param.type_ == item" value="{{item}}">{{item}}</option>
                                 </select>
                             </td>
                             <td><textarea style="width: 320px;" ng-model="param.description"></textarea></td>
                             <td>
-                                <button class="btn btn-danger" ng-click="remove_param(current.responseList, param)">删除</button>
+                                <button class="btn btn-danger" ng-show="!param.parent"
+                                        ng-click="remove_param(current.responseList, param)">删除</button>
+                                <button class="btn btn-info" ng-show="param.parent"
+                                        ng-click="remove_json_param_children(current.responseList, param)">删除子项</button>
+                            </td>
+                             <td>
+                                <button class="btn btn-success" ng-show="param.type_ == TYPES[4] && !param.parent"
+                                        ng-click="add_json_param_children(current.responseList, param)">新增子项</button>
                             </td>
                         </tr>
                         </tbody>
