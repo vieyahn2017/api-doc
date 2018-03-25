@@ -67,24 +67,30 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="param in current.paramsList.concat(current.paramsListVirtual)">
-                            <td><input type="text" ng-model="param.name"/></td>
-                            <td><input type="text" ng-model="param.default"/></td>
+                        <tr ng-repeat="param in current.paramsList">
+                            <td ng-if="!param.parent"><input type="text" ng-model="param.name"/></td>
+                            <td ng-if="param.parent">
+                                <input type="text" class="btn-info" ng-model="param.name"/>  <!-- style="width: 164px; background-color: ##39b3d7;" -->
+                            </td>
+                            <td><input type="text" style="width: 164px;" ng-model="param.default"/></td>
                             <td><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="param.required"/></td>
                             <td>
                                 <select ng-model="param.type_" ng-disabled="param.children.length != 0">
                                     <option ng-repeat="item in TYPES" ng-selected="param.type_ == item" value="{{item}}">{{item}}</option>
                                    </select>
                             </td>
-                            <td><textarea style="width: 400px;" ng-model="param.description"></textarea></td>
+                            <td><textarea style="width: 320px;" ng-model="param.description"></textarea></td>
                             <td>
-                                <button class="btn btn-danger" ng-click="remove_param(current.paramsList, param)">删除</button>
+                                <button class="btn btn-danger" ng-show="!param.parent"
+                                        ng-click="remove_param(current.paramsList, param)">删除</button>
+                                <button class="btn btn-info" ng-show="param.parent"
+                                        ng-click="remove_json_param_children(current.paramsList, param)">删除子项</button>
                             </td>
                              <td>
-                                <button class="btn btn-info" ng-show="param.type_ == TYPES[4] && param.valid"
-                                        ng-click="add_json_param_children(param, current.paramsListVirtual)">新增子项</button>
+                                <button class="btn btn-success" ng-show="param.type_ == TYPES[4] && !param.parent"
+                                        ng-click="add_json_param_children(current.paramsList, param)">新增子项</button>
                             </td>
-                            <!--
+                            <!-- 这样才是最合适的格式，严格父子展开，但是前端这边的格式也不好处理。 现在的实现方式，虽然功能没问题，但是为了适配结构数据的正确性，多了好多工作
                             <td>
                                 <table>
                                     <tr ng-repeat="child in param.children">
@@ -96,7 +102,7 @@
                                                 <option ng-repeat="item in TYPES" ng-selected="child.type_ == item" value="{{item}}">{{item}}</option>
                                                </select>
                                         </td>
-                                        <td><textarea style="width: 400px;" ng-model="child.description"></textarea></td>
+                                        <td><textarea style="width: 320px;" ng-model="child.description"></textarea></td>
                                         <td>
                                             <button class="btn btn-danger" ng-click="remove_json_param_children(param.children, child)">删除</button>
                                         </td>
@@ -112,7 +118,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">回显数据:</label>
                 <div class="col-sm-10">
-                    <label class="control-label btn btn-info">
+                    <label class="control-label btn btn-success">
                         回显数据格式为 {"msg": "", "code": 1, "result": {} } &nbsp;这边是指result内部的参数字段
                     </label>
                     <table class="table">
@@ -138,7 +144,7 @@
                                     <option ng-repeat="item in TYPES" ng-selected="param.type_ == item" value="{{item}}">{{item}}</option>
                                 </select>
                             </td>
-                            <td><textarea style="width: 400px;" ng-model="param.description"></textarea></td>
+                            <td><textarea style="width: 320px;" ng-model="param.description"></textarea></td>
                             <td>
                                 <button class="btn btn-danger" ng-click="remove_param(current.responseList, param)">删除</button>
                             </td>
@@ -163,6 +169,7 @@
                 <div class="col-sm-offset-2 col-sm-10">
                     <button ng-click="save_api(current);" type="submit" class="btn btn-success">保存</button>
                     <button ng-click="cancel();" type="submit" class="btn btn-default">取消</button>
+                    <button ng-click="log(current);" type="submit" class="btn btn-default">console.log</button>
                 </div>
             </div>
         </form>
