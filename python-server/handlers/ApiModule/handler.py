@@ -142,7 +142,7 @@ class ParamModelTestHandler(BaseMongoHandler):
                 continue
                 # parent_id不为null/None的根param，只是前端展示加入的Mock数据，跳过
 
-            subParamsIdList = [] # children - subParamsIdList
+            subParamsIdList = [] # children -> subParamsIdList
             # json字段，单独处理，目前不支持多层嵌套。
             if type_ == "json":
                 children = body["children"]
@@ -262,7 +262,9 @@ class APiModelTestHandler(BaseMongoHandler):
             query_param = {"_id": id_param}
             object_param = yield ParamModel.find_one(self.db, query_param)
             if object_param:
-                res_list.append(object_param.to_primitive())
+                result = yield object_param.to_primitive_ex()
+                del result["subParamsIdList"]
+                res_list.append(result)
             # if len(object_param.subParamsIdList):
             #     assert object_param.type_ == 'json'
             for sub_id_param in object_param.subParamsIdList:
@@ -270,7 +272,9 @@ class APiModelTestHandler(BaseMongoHandler):
                 query_param_sub = {"_id": sub_id_param}
                 object_param_sub = yield ParamModel.find_one(self.db, query_param_sub)
                 if object_param_sub:
-                    res_list.append(object_param_sub.to_primitive())
+                    result = yield object_param.to_primitive_ex()
+                    del result["subParamsIdList"]
+                    res_list.append(result)
         raise Return(res_list)
 
     @coroutine

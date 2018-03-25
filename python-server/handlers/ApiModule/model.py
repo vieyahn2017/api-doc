@@ -9,7 +9,7 @@ from schematics.types import StringType, IntType, BooleanType
 from schematics.types.compound import ListType, DictType
 from schematics.contrib.mongo import ObjectIdType
 from handlers.mongo_orm import BaseMongoModel
-
+from tornado import gen
 from core import context
 
 
@@ -49,6 +49,18 @@ class ParamModel(BaseAPIModel):
 
     # _id = ObjectIdType(serialize_when_none=False)
     MONGO_COLLECTION = 'params'
+
+    @gen.coroutine
+    def to_primitive_ex(self):
+        """ # subParamsIdList -> children """
+        result = self.to_primitive()
+        children = []
+        for sub_id in self.subParamsIdList:
+            query_param_sub = {"_id": sub_id}
+            object_param_sub = yield self.find_one(self.db, query_param_sub)
+            children.append(object_param_sub.to_primitive())
+        result.update({"children": children})
+        raise gen.Return(result)
 
 
 class APiModel(BaseAPIModel):
