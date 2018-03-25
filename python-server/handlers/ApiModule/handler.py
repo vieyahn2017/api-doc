@@ -126,7 +126,7 @@ class ParamModelTestHandler(BaseMongoHandler):
     def post(self):
         """ add more; 新增加的api_id暂时设置为-1"""
         bodys = json.loads(self.request.body)
-        print bodys
+        # print bodys
         id_rows = []
         api_id = str(uuid.uuid1())
 
@@ -139,9 +139,8 @@ class ParamModelTestHandler(BaseMongoHandler):
             _id = body["uuid"]  # 直接使用前端传来的uuid
             parent_id = body.get("parent_id")
             if parent_id:
-                # parent_id不为null/None的根param，只是前端展示加入的Mock数据，跳过
-                print 112233, body
                 continue
+                # parent_id不为null/None的根param，只是前端展示加入的Mock数据，跳过
 
             subParamsIdList = [] # children - subParamsIdList
             # json字段，单独处理，目前不支持多层嵌套。
@@ -151,7 +150,7 @@ class ParamModelTestHandler(BaseMongoHandler):
                     child_id = child["uuid"]  # 直接使用前端传来的uuid
                     subParamsIdList.append(child_id)
                     print _id, child["parent_id"]
-                    # assert _id == child["parent_id"]
+                    assert _id == child["parent_id"]
                     yield ParamModel({
                             "name": child["name"],
                             "required": child["required"],
@@ -262,19 +261,33 @@ class APiModelTestHandler(BaseMongoHandler):
         paramsList = []
         for id_param in paramsIdList:
             query_param = {"_id": id_param}
-            # cursor_param = ParamModel.get_cursor(self.db, query_param)
-            # object_param = yield ParamModel.find(cursor_param)
             object_param = yield ParamModel.find_one(self.db, query_param)
             if object_param:
                 paramsList.append(object_param.to_primitive())
+            if len(object_param.subParamsIdList):
+                assert object_param.type_ == 'json'
+            for sub_id_param in object_param.subParamsIdList:
+                assert object_param.type_ == 'json'
+                query_param_sub = {"_id": sub_id_param}
+                object_param_sub = yield ParamModel.find_one(self.db, query_param_sub)
+                if object_param:
+                    paramsList.append(object_param_sub.to_primitive())
 
         responseIdList = item.pop("responseIdList")
         responseList = []
         for id_param in responseIdList:
-            query_param = {"_id" : id_param}
+            query_param = {"_id": id_param}
             object_param = yield ParamModel.find_one(self.db, query_param)
             if object_param:
                 responseList.append(object_param.to_primitive())
+            if len(object_param.subParamsIdList):
+                assert object_param.type_ == 'json'
+            for sub_id_param in object_param.subParamsIdList:
+                assert object_param.type_ == 'json'
+                query_param_sub = {"_id": sub_id_param}
+                object_param_sub = yield ParamModel.find_one(self.db, query_param_sub)
+                if object_param:
+                    responseList.append(object_param_sub.to_primitive())
 
         item["paramsList"] = paramsList
         item["responseList"] = responseList
