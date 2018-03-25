@@ -256,39 +256,33 @@ class APiModelCheckExistHandler(BaseMongoHandler):
 class APiModelTestHandler(BaseMongoHandler):
 
     @coroutine
+    def parse_param_sub_list(self, sub_list):
+        res_list = []
+        for id_param in sub_list:
+            query_param = {"_id": id_param}
+            object_param = yield ParamModel.find_one(self.db, query_param)
+            if object_param:
+                if object_param.parent_id == '-1':
+                    object_param.parent_id = None
+                res_list.append(object_param.to_primitive())
+            # if len(object_param.subParamsIdList):
+            #     assert object_param.type_ == 'json'
+            for sub_id_param in object_param.subParamsIdList:
+                assert object_param.type_ == 'json'
+                query_param_sub = {"_id": sub_id_param}
+                object_param_sub = yield ParamModel.find_one(self.db, query_param_sub)
+                if object_param_sub:
+                    if object_param_sub.parent_id == '-1':
+                        object_param_sub.parent_id = None
+                    res_list.append(object_param_sub.to_primitive())
+        raise Return(res_list)
+
+    @coroutine
     def parse_param_one(self, item):
         paramsIdList = item.pop("paramsIdList")
-        paramsList = []
-        for id_param in paramsIdList:
-            query_param = {"_id": id_param}
-            object_param = yield ParamModel.find_one(self.db, query_param)
-            if object_param:
-                paramsList.append(object_param.to_primitive())
-            if len(object_param.subParamsIdList):
-                assert object_param.type_ == 'json'
-            for sub_id_param in object_param.subParamsIdList:
-                assert object_param.type_ == 'json'
-                query_param_sub = {"_id": sub_id_param}
-                object_param_sub = yield ParamModel.find_one(self.db, query_param_sub)
-                if object_param:
-                    paramsList.append(object_param_sub.to_primitive())
-
+        paramsList = yield self.parse_param_sub_list(paramsIdList)
         responseIdList = item.pop("responseIdList")
-        responseList = []
-        for id_param in responseIdList:
-            query_param = {"_id": id_param}
-            object_param = yield ParamModel.find_one(self.db, query_param)
-            if object_param:
-                responseList.append(object_param.to_primitive())
-            if len(object_param.subParamsIdList):
-                assert object_param.type_ == 'json'
-            for sub_id_param in object_param.subParamsIdList:
-                assert object_param.type_ == 'json'
-                query_param_sub = {"_id": sub_id_param}
-                object_param_sub = yield ParamModel.find_one(self.db, query_param_sub)
-                if object_param:
-                    responseList.append(object_param_sub.to_primitive())
-
+        responseList = yield self.parse_param_sub_list(responseIdList)
         item["paramsList"] = paramsList
         item["responseList"] = responseList
         raise Return(item)
