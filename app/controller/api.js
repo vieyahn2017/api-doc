@@ -48,13 +48,11 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             "description": "",
             "uuid": uuid(),
             "children": [],
-            "parent": null, //parent ==null, valid:true,; parent!=null, valid:false
-            "valid": true
+            "parent": null
         }
     };
     var json_sub_param_demo = function(parent_uuid) {
         var param = param_demo();
-        param.valid = false;
         param.name = "json:param";
         param.parent = parent_uuid;
         return param;
@@ -71,8 +69,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         "responseList":[
             param_demo()
         ],
-        "paramsListVirtual": [],
-        "responseListVirtual": [],
         "responseDemo": "{\n    \"msg\": \"\", \n    \"result\": {},  \n    \"code\": 1\n}",
         "paramsDemo": "\\",
         "category_href": href
