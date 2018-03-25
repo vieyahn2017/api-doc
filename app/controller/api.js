@@ -36,9 +36,19 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         "required": "false",
         "type_": "string",
         "description": "",
-        "children": []
+        "children": [],
+        "valid": true
     };
 
+    var json_sub_param_demo = {
+        "name": "json:param",
+        "default": "",
+        "required": "false",
+        "type_": "string",
+        "description": "",
+        "children": [],
+        "valid": false
+    };
     var empty = {
         "_id": "-1",
         "name": "接口名",
@@ -52,7 +62,8 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 "required": "false",
                 "type_": "int",
                 "description": "",
-                "children": []
+                "children": [],
+                "valid": true
             }
         ],
         "responseList":[
@@ -62,17 +73,12 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 "required": "false",
                 "type_": "int",
                 "description": "id.",
-                "children": []
-            },
-            {
-                "name": "name",
-                "default": "",
-                "required": "true",
-                "type_": "string",
-                "description": "the name",
-                "children": []
+                "children": [],
+                "valid": true
             }
         ],
+        "paramsListVirtual": [],
+        "responseListVirtual": [],
         "responseDemo": "{\n    \"msg\": \"\", \n    \"result\": {},  \n    \"code\": 1\n}",
         "paramsDemo": "\\",
         "category_href": href
@@ -119,6 +125,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     };
 
     $scope.save_api = function(current_item){
+        console.log(current_item);
         if($scope.apiForm.$invalid) {
             return;
         }
@@ -284,10 +291,12 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         }
     };
 
-    $scope.add_json_param_children = function(item){
+
+    $scope.add_json_param_children = function(item, collection_virtual){
         var copy = angular.copy(param_demo);
-        console.log(item);
         item.children.push(copy);
+        var copy_2 = angular.copy(json_sub_param_demo);
+        collection_virtual.push(copy_2);
     };
 
     $scope.remove_json_param_children = function(collection, item){
@@ -312,13 +321,9 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 });
         }
     };
-    $scope.add_param = function(current){
+    $scope.add_param = function(collection){
         var copy = angular.copy(param_demo);
-        current.paramsList.push(copy);
-    };
-    $scope.add_response = function(current){
-        var copy = angular.copy(param_demo);
-        current.responseList.push(copy);
+        collection.push(copy);
     };
 
     $scope.back = function(){

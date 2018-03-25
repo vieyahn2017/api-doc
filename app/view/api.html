@@ -8,12 +8,15 @@
         <button  ng-show="authenticated" class="btn btn-success" ng-click="add();">Add</button>
         <button  ng-show="!authenticated" class="btn btn-success">Api:</button>
         <a ng-show="!menu" ng-repeat="item in apiList" class="btn btn-default btn-xs" ng-href="#/api/{{href}}/{{item._id}}">{{$index+1}}.{{item.name}}</a>
-        <button  class="btn btn-info btn-xs" ng-click="menu=!menu">{{menu?'展开':'收起'}}目录</button>
+        <button  class="btn btn-danger btn-xs" ng-click="menu=!menu">{{menu?'展开':'收起'}}目录</button>
     </div>
 </div>
 
         <div style="position: fixed;right: 0; bottom: 20px;">
-            <button class="btn btn-info" ng-click="back();">回到顶部</button>
+            <div class="btn-group-vertical">
+                <button class="btn btn-success" ng-click="back();">回到顶部</button>
+                <button class="btn btn-info" ng-click="show_edit = !show_edit">{{!show_edit?'开启编辑':'关闭编辑'}}</button>
+            </div>
         </div>
 
 <div>
@@ -59,17 +62,17 @@
                             <th>类型</th>
                             <th>描述</th>
                             <th>
-                                <button class="btn btn-success" ng-click="add_param(current)">新增</button>
+                                <button class="btn btn-success" ng-click="add_param(current.paramsList)">新增</button>
                             </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="param in current.paramsList">
+                        <tr ng-repeat="param in current.paramsList.concat(current.paramsListVirtual)">
                             <td><input type="text" ng-model="param.name"/></td>
                             <td><input type="text" ng-model="param.default"/></td>
                             <td><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="param.required"/></td>
                             <td>
-                                <select ng-model="param.type_">
+                                <select ng-model="param.type_" ng-disabled="param.children.length != 0">
                                     <option ng-repeat="item in TYPES" ng-selected="param.type_ == item" value="{{item}}">{{item}}</option>
                                    </select>
                             </td>
@@ -78,9 +81,10 @@
                                 <button class="btn btn-danger" ng-click="remove_param(current.paramsList, param)">删除</button>
                             </td>
                              <td>
-                                <button class="btn btn-info" ng-show="param.type_ == TYPES[4]"
-                                        ng-click="add_json_param_children(param)">新增子项</button>
+                                <button class="btn btn-info" ng-show="param.type_ == TYPES[4] && param.valid"
+                                        ng-click="add_json_param_children(param, current.paramsListVirtual)">新增子项</button>
                             </td>
+                            <!--
                             <td>
                                 <table>
                                     <tr ng-repeat="child in param.children">
@@ -99,6 +103,7 @@
                                     </tr>
                                 </table>
                             </td>
+                            -->
                         </tr>
                         </tbody>
                     </table>
@@ -119,7 +124,7 @@
                             <th>类型</th>
                             <th>描述</th>
                             <th>
-                                <button class="btn btn-success" ng-click="add_response(current)">新增</button>
+                                <button class="btn btn-success" ng-click="add_param(current.responseList)">新增</button>
                             </th>
                         </tr>
                         </thead>
