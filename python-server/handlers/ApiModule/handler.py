@@ -126,6 +126,7 @@ class ParamModelTestHandler(BaseMongoHandler):
     def post(self):
         """ add more; 新增加的api_id暂时设置为-1"""
         bodys = json.loads(self.request.body)
+        print bodys
         id_rows = []
         api_id = str(uuid.uuid1())
 
@@ -135,37 +136,43 @@ class ParamModelTestHandler(BaseMongoHandler):
             default = body["default"]
             type_ = body["type_"]
             description = body["description"]
-            _id = ObjectId()
-            parent_id = body.get("parent_id", "")
-            subParamsIdList = []
+            _id = body["uuid"]  # 直接使用前端传来的uuid
+            parent_id = body.get("parent_id")
+            if parent_id:
+                # parent_id不为null/None的根param，只是前端展示加入的Mock数据，跳过
+                print 112233, body
+                continue
 
+            subParamsIdList = [] # children - subParamsIdList
             # json字段，单独处理，目前不支持多层嵌套。
             if type_ == "json":
                 children = body["children"]
                 for child in children:
-                    child_id = ObjectId()
+                    child_id = child["uuid"]  # 直接使用前端传来的uuid
+                    subParamsIdList.append(child_id)
+                    print _id, child["parent_id"]
+                    # assert _id == child["parent_id"]
                     yield ParamModel({
                             "name": child["name"],
                             "required": child["required"],
                             "default": child["default"],
                             "type_": child["type_"],
                             "description": child["description"],
-                            "api_id": api_id,
-                            "parent_id": str(_id),
+                            "parent_id": child["parent_id"],
                             "subParamsIdList": [],
-                            "_id": child_id
+                            "_id": child_id,
+                            "api_id": api_id
                         }).save()
-                    subParamsIdList.append(str(child_id))
             yield ParamModel({
                 "name": name,
                 "required": required,
                 "default": default,
                 "type_": type_,
                 "description": description,
-                "api_id": api_id,
                 "parent_id": "-1",
                 "subParamsIdList": subParamsIdList,
-                "_id": _id
+                "_id": _id,
+                "api_id": api_id
             }).save()
             id_rows.append(str(_id))
         self.write_rows(rows={

@@ -28,7 +28,6 @@ class BaseAPIModel(BaseMongoModel):
 
 
 class CategoryModel(BaseAPIModel):
-    """ [{"name":"Type1","href":"type1","description":"this is type1"}]  """
     name = StringType()
     href = StringType()
     description = StringType()
@@ -38,7 +37,7 @@ class CategoryModel(BaseAPIModel):
 
 
 class ParamModel(BaseAPIModel):
-    # id = IntType()
+    _id = StringType()
     name = StringType()
     required = BooleanType()
     default = StringType()
@@ -48,7 +47,7 @@ class ParamModel(BaseAPIModel):
     parent_id = StringType() # 如果是api_id的直系节点。此字段为None；【与之对应的是type_=="json"类型参数的子节点】
     api_id = StringType()
 
-    _id = ObjectIdType(serialize_when_none=False)
+    # _id = ObjectIdType(serialize_when_none=False)
     MONGO_COLLECTION = 'params'
 
 
