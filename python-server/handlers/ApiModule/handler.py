@@ -149,7 +149,7 @@ class ParamModelTestHandler(BaseMongoHandler):
                 for child in children:
                     child_id = child["uuid"]  # 直接使用前端传来的uuid
                     subParamsIdList.append(child_id)
-                    print _id, child["parent_id"]
+                    # print _id, child["parent_id"]
                     assert _id == child["parent_id"]
                     yield ParamModel({
                             "name": child["name"],
@@ -168,7 +168,7 @@ class ParamModelTestHandler(BaseMongoHandler):
                 "default": default,
                 "type_": type_,
                 "description": description,
-                "parent_id": "-1",
+                "parent_id": None,
                 "subParamsIdList": subParamsIdList,
                 "_id": _id,
                 "api_id": api_id
@@ -262,8 +262,6 @@ class APiModelTestHandler(BaseMongoHandler):
             query_param = {"_id": id_param}
             object_param = yield ParamModel.find_one(self.db, query_param)
             if object_param:
-                if object_param.parent_id == '-1':
-                    object_param.parent_id = None
                 res_list.append(object_param.to_primitive())
             # if len(object_param.subParamsIdList):
             #     assert object_param.type_ == 'json'
@@ -272,8 +270,6 @@ class APiModelTestHandler(BaseMongoHandler):
                 query_param_sub = {"_id": sub_id_param}
                 object_param_sub = yield ParamModel.find_one(self.db, query_param_sub)
                 if object_param_sub:
-                    if object_param_sub.parent_id == '-1':
-                        object_param_sub.parent_id = None
                     res_list.append(object_param_sub.to_primitive())
         raise Return(res_list)
 
