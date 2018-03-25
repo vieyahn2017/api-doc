@@ -48,13 +48,13 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             "description": "",
             "uuid": uuid(),
             "children": [],
-            "parent": null
+            "parent_id": null
         }
     };
     var json_sub_param_demo = function(parent_uuid) {
         var param = param_demo();
         param.name = "json:param";
-        param.parent = parent_uuid;
+        param.parent_id = parent_uuid;
         return param;
     };
     var empty = {
@@ -281,7 +281,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         var pos = collection.length - 1;
         do {
             var t = collection[pos];
-            if(!t.parent) {  // !t.parent && t.type_ =='json'
+            if(!t.parent_id) {  // !t.parent_id && t.type_ =='json'
                 break;
             }
             pos -= 1;
@@ -312,8 +312,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     };
 
     $scope.remove_param = function(collection, item){
-
-
         if(confirm("确认删除param?")) {
             if (item.type_ == 'json' && item.children.length) {
                 if(confirm("该param有子元素，请再次确认删除param?")) {
@@ -321,7 +319,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                     remove_i(collection, item);
                     // 2.
                     for(var i = 0; i < collection.length; i++) {
-                        if(collection[i].parent == item.uuid) {
+                        if(collection[i].parent_id == item.uuid) {
                             remove_i(collection, collection[i]);
                             i--;
                             //这种用collection.length作为循环条件，但是在内部因为splice的操作，导致循环条件动态变化，并不符合真正的编程科学...
@@ -341,7 +339,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             remove_i(collection, item);
             // 2.
             for(var i = 0; i < collection.length; i++) {
-                if(collection[i].uuid == item.parent) {
+                if(collection[i].uuid == item.parent_id) {
                     remove_i(collection[i].children, item);
                     break;
                 }

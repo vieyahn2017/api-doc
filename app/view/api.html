@@ -68,8 +68,8 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="param in current.paramsList">
-                            <td ng-if="!param.parent"><input type="text" ng-model="param.name"/></td>
-                            <td ng-if="param.parent">
+                            <td ng-if="!param.parent_id"><input type="text" ng-model="param.name"/></td>
+                            <td ng-if="param.parent_id">
                                 <input type="text" class="btn-info" ng-model="param.name"/>  <!-- style="width: 164px; background-color: ##39b3d7;" -->
                             </td>
                             <td><input type="text" ng-model="param.default"/></td>
@@ -81,13 +81,13 @@
                             </td>
                             <td><textarea style="width: 320px;" ng-model="param.description"></textarea></td>
                             <td>
-                                <button class="btn btn-danger" ng-show="!param.parent"
+                                <button class="btn btn-danger" ng-show="!param.parent_id"
                                         ng-click="remove_param(current.paramsList, param)">删除</button>
-                                <button class="btn btn-info" ng-show="param.parent"
+                                <button class="btn btn-info" ng-show="param.parent_id"
                                         ng-click="remove_json_param_children(current.paramsList, param)">删除子项</button>
                             </td>
                              <td>
-                                <button class="btn btn-success" ng-show="param.type_ == TYPES[4] && !param.parent"
+                                <button class="btn btn-success" ng-show="param.type_ == TYPES[4] && !param.parent_id"
                                         ng-click="add_json_param_children(current.paramsList, param)">新增子项</button>
                             </td>
                             <!-- 这样才是最合适的格式，严格父子展开，但是前端这边的格式也不好处理。 现在的实现方式，虽然功能没问题，但是为了适配结构数据的正确性，多了好多工作
@@ -136,8 +136,8 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="param in current.responseList">
-                            <td ng-if="!param.parent"><input type="text" ng-model="param.name"/></td>
-                            <td ng-if="param.parent">
+                            <td ng-if="!param.parent_id"><input type="text" ng-model="param.name"/></td>
+                            <td ng-if="param.parent_id">
                                 <input type="text" class="btn-info" ng-model="param.name"/>  <!-- style="width: 164px; background-color: ##39b3d7;" -->
                             </td>
                             <td><input type="text" ng-model="param.default"/></td>
@@ -149,13 +149,13 @@
                             </td>
                             <td><textarea style="width: 320px;" ng-model="param.description"></textarea></td>
                             <td>
-                                <button class="btn btn-danger" ng-show="!param.parent"
+                                <button class="btn btn-danger" ng-show="!param.parent_id"
                                         ng-click="remove_param(current.responseList, param)">删除</button>
-                                <button class="btn btn-info" ng-show="param.parent"
+                                <button class="btn btn-info" ng-show="param.parent_id"
                                         ng-click="remove_json_param_children(current.responseList, param)">删除子项</button>
                             </td>
                              <td>
-                                <button class="btn btn-success" ng-show="param.type_ == TYPES[4] && !param.parent"
+                                <button class="btn btn-success" ng-show="param.type_ == TYPES[4] && !param.parent_id"
                                         ng-click="add_json_param_children(current.responseList, param)">新增子项</button>
                             </td>
                         </tr>
