@@ -51,15 +51,19 @@ class ParamModel(BaseAPIModel):
     MONGO_COLLECTION = 'params'
 
     @gen.coroutine
-    def to_primitive_ex(self):
+    def to_primitive_fix(self):
         """ # subParamsIdList -> children """
         result = self.to_primitive()
         children = []
+        if len(self.subParamsIdList):
+            assert self.type_ == 'json'
         for sub_id in self.subParamsIdList:
-            query_param_sub = {"_id": sub_id}
-            object_param_sub = yield self.find_one(self.db, query_param_sub)
-            children.append(object_param_sub.to_primitive())
+            query = {"_id": sub_id}
+            object_sub = yield self.find_one(self.db, query)
+            children.append(object_sub.to_primitive())
         result.update({"children": children})
+        del result["subParamsIdList"]
+        # print "to_primitive_fix===", result
         raise gen.Return(result)
 
 

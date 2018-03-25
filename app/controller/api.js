@@ -9,15 +9,50 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     $scope.base_url = get_base_url();
     // $http.get($scope.base_url + "m/api?desc=true&href=" + href).success(function(data){  //添加的时候倒序方便点
     $http.get($scope.base_url + "m/api?href=" + href).success(function(data){
-        $scope.apiList = data.rows;
+        //console.log(data.rows);
+        var apiListTemp = data.rows;
+        for(var i = 0; i < apiListTemp.length; i++) {
+            api_extend_fn(apiListTemp[i]);
+        }
+        $scope.apiList = apiListTemp;
         console.log($scope.apiList);
         $timeout(function(){
-            var id = $routeParams.name;
+            var id = $routeParams.id;
             $scope.scrollTo(id);
         });
     }).error(function(){
         $scope.apiList = [];
     });
+
+    var api_extend_fn = function (api) {
+        console.log(api);
+        var paramsList = api.paramsList;
+        for(var i = 0; i < paramsList.length; i++) {
+            var skip = 0;
+            if(paramsList[i].children.length > 0) {
+                for(var j = 0; j < paramsList[i].children.length; j++) {
+                    var item = paramsList[i].children[j];
+                    paramsList.splice(i, 0, item); // splice(i, 0, item) i处，增加item, 0是删除0个元素
+                }
+                skip = paramsList[i].children.length;
+            }
+            i += skip;
+        }
+        var responseList = api.responseList;
+        for(var i = 0; i < responseList.length; i++) {
+            var skip = 0;
+            if(responseList[i].children.length > 0) {
+                for(var j = 0; j < responseList[i].children.length; j++) {
+                    var item = responseList[i].children[j];
+                    responseList.splice(i, 0, item); // splice(i, 0, item) i处，增加item, 0是删除0个元素
+                }
+                skip = responseList[i].children.length;
+            }
+            i += skip;
+        }
+        console.log(api);
+        return api;
+    }
 
     $http.get($scope.base_url + "m/api/authenticated").success(function(data){
         if(data.code == 1) {
@@ -305,7 +340,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     var remove_i = function(collection, item){
         for(var i = 0; i < collection.length; i++) {
             if(collection[i] == item) {
-                collection.splice(i, 1);
+                collection.splice(i, 1);  // 在i处删除1个元素
                 break;
             }
         }

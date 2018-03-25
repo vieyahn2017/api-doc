@@ -259,22 +259,18 @@ class APiModelTestHandler(BaseMongoHandler):
     def parse_param_sub_list(self, sub_list):
         res_list = []
         for id_param in sub_list:
-            query_param = {"_id": id_param}
-            object_param = yield ParamModel.find_one(self.db, query_param)
+            object_param = yield ParamModel.find_one(self.db, {"_id": id_param})
             if object_param:
-                result = yield object_param.to_primitive_ex()
-                del result["subParamsIdList"]
+                result = yield object_param.to_primitive_fix()
                 res_list.append(result)
-            # if len(object_param.subParamsIdList):
+            # # 下面是把children代为mock数据append，这种会有问题！
+            # # 还是到前端去append吧，还是同一个对象，处理也省事好多，不需要单独去同步数据
+            # for sub_id_param in object_param.subParamsIdList:
             #     assert object_param.type_ == 'json'
-            for sub_id_param in object_param.subParamsIdList:
-                assert object_param.type_ == 'json'
-                query_param_sub = {"_id": sub_id_param}
-                object_param_sub = yield ParamModel.find_one(self.db, query_param_sub)
-                if object_param_sub:
-                    result = yield object_param.to_primitive_ex()
-                    del result["subParamsIdList"]
-                    res_list.append(result)
+            #     object_param_sub = yield ParamModel.find_one(self.db, {"_id": sub_id_param})
+            #     if object_param_sub:
+            #         result = yield object_param_sub.to_primitive_fix()
+            #         res_list.append(result)
         raise Return(res_list)
 
     @coroutine

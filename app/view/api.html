@@ -68,11 +68,11 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="param in current.paramsList">
-                            <td ng-if="!param.parent_id"><input type="text" ng-model="param.name"/></td>
+                            <td><input type="text" ng-model="param.name"/></td>
+                            <td ng-if="!param.parent_id"><input type="text" ng-model="param.default"/></td>
                             <td ng-if="param.parent_id">
-                                <input type="text" class="btn-info" ng-model="param.name"/>  <!-- style="width: 164px; background-color: ##39b3d7;" -->
+                                <input type="text" class="btn-info" ng-model="param.default"/>  <!-- style="width: 164px; background-color: #39b3d7;" -->
                             </td>
-                            <td><input type="text" ng-model="param.default"/></td>
                             <td><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="param.required"/></td>
                             <td>
                                 <select ng-model="param.type_" ng-disabled="param.children.length != 0">
@@ -136,11 +136,11 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="param in current.responseList">
-                            <td ng-if="!param.parent_id"><input type="text" ng-model="param.name"/></td>
+                            <td><input type="text" ng-model="param.name"/></td>
+                            <td ng-if="!param.parent_id"><input type="text" ng-model="param.default"/></td>
                             <td ng-if="param.parent_id">
-                                <input type="text" class="btn-info" ng-model="param.name"/>  <!-- style="width: 164px; background-color: ##39b3d7;" -->
+                                <input type="text" class="btn-info" ng-model="param.default"/>  <!-- style="width: 164px; background-color: #39b3d7;" -->
                             </td>
-                            <td><input type="text" ng-model="param.default"/></td>
                             <td><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="param.required"/></td>
                             <td>
                                 <select ng-model="param.type_" ng-disabled="param.children.length != 0">
@@ -221,11 +221,16 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="param in item.paramsList">
-                            <td>{{param.name}}</td>
-                            <td>{{param.required}}</td>
-                            <td>{{param.default || "-"}}</td>
-                            <td>{{param.type_}}</td>
-                            <td>{{param.description}}</td>
+                            <td ng-if="!param.parent_id">{{param.name}}</td>
+                            <td ng-if="!param.parent_id">{{param.required}}</td>
+                            <td ng-if="!param.parent_id">{{param.default || "-"}}</td>
+                            <td ng-if="param.parent_id" style="background-color: #39b3d7;">{{param.name}}</td>
+                            <td ng-if="param.parent_id" style="background-color: #39b3d7;">{{param.required}}</td>
+                            <td ng-if="param.parent_id" style="background-color: #39b3d7;">{{param.default || "-"}}</td>
+                            <td ng-if="param.type_ == 'json' || param.parent_id" style="background-color: #39b3d7;">{{param.type_}}</td>
+                            <td ng-if="param.type_ != 'json' && !param.parent_id">{{param.type_}}</td>
+                            <td ng-if="!param.parent_id">{{param.description}}</td>
+                            <td ng-if="param.parent_id" style="background-color: #39b3d7;">{{param.description}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -257,11 +262,23 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="param in item.responseList">
+                            <!--
                             <td>{{param.name}}</td>
                             <td>{{param.required}}</td>
                             <td>{{param.default || "-"}}</td>
                             <td>{{param.type_}}</td>
                             <td>{{param.description}}</td>
+                            -->
+                            <td ng-if="!param.parent_id">{{param.name}}</td>
+                            <td ng-if="!param.parent_id">{{param.required}}</td>
+                            <td ng-if="!param.parent_id">{{param.default || "-"}}</td>
+                            <td ng-if="param.parent_id" style="background-color: #39b3d7;">{{param.name}}</td>
+                            <td ng-if="param.parent_id" style="background-color: #39b3d7;">{{param.required}}</td>
+                            <td ng-if="param.parent_id" style="background-color: #39b3d7;">{{param.default || "-"}}</td>
+                            <td ng-if="param.type_ == 'json' || param.parent_id" style="background-color: #39b3d7;">{{param.type_}}</td>
+                            <td ng-if="param.type_ != 'json' && !param.parent_id">{{param.type_}}</td>
+                            <td ng-if="!param.parent_id">{{param.description}}</td>
+                            <td ng-if="param.parent_id" style="background-color: #39b3d7;">{{param.description}}</td>
                         </tr>
                         </tbody>
                     </table>
