@@ -148,16 +148,16 @@ class ParamModelTestHandler(BaseMongoHandler):
                     # print _id, child["parent_id"]
                     assert _id == child["parent_id"]
                     yield ParamModel({
-                            "name": child["name"],
-                            "required": child["required"],
-                            "default": child["default"],
-                            "type_": child["type_"],
-                            "description": child["description"],
-                            "parent_id": child["parent_id"],
-                            "subParamsIdList": [],
-                            "_id": child_id,
-                            "api_id": api_id
-                        }).save()
+                        "name": child["name"],
+                        "required": child["required"],
+                        "default": child["default"],
+                        "type_": child["type_"],
+                        "description": child["description"],
+                        "parent_id": child["parent_id"],
+                        "subParamsIdList": [],
+                        "_id": child_id,
+                        "api_id": api_id
+                    }).save()
 
             yield ParamModel({
                 "name": body["name"],
@@ -316,7 +316,7 @@ class APiModelTestHandler(BaseMongoHandler):
 
     @coroutine
     def delete(self):
-        """ delete  todo:还要删除api里面两个参数list的子项"""
+        """ delete  同时删除api里面两个param子项参数list"""
         _id = self.get_argument("id", None)
         if _id:
             query = {"_id": _id}
@@ -337,28 +337,19 @@ class APiModelTestHandler(BaseMongoHandler):
         """ add """
         body = json.loads(self.request.body)
         # app_log.info(body)
-        name = body["name"]
-        url = body["url"]
-        method = body["method"]
-        description = body["description"]
-        paramsIdList = body["paramsIdList"]
-        responseIdList = body["responseIdList"]
-        paramsDemo = body["paramsDemo"]
-        responseDemo = body["responseDemo"]
-        category_href = body["category_href"]
         _id = ObjectId()
         model = APiModel({
-                "name": name, 
-                "url": url, 
-                "method": method, 
-                "description": description, 
-                "paramsIdList": paramsIdList, 
-                "responseIdList": responseIdList, 
-                "paramsDemo": paramsDemo, 
-                "responseDemo": responseDemo,
-                "category_href": category_href,
-                "_id": _id
-            })
+            "name": body["name"],
+            "url": body["url"],
+            "method": body["method"],
+            "description": body["description"],
+            "paramsIdList": body["paramsIdList"],
+            "responseIdList": body["responseIdList"],
+            "paramsDemo": body["paramsDemo"],
+            "responseDemo": body["responseDemo"],
+            "category_href": body["category_href"],
+            "_id": _id
+        })
         yield model.save()
         app_log.info(("save APiModel:", str(_id)))
 
@@ -380,36 +371,21 @@ class APiModelTestHandler(BaseMongoHandler):
         """ update """
         body = json.loads(self.request.body)
         # app_log.info(body)
-        name = body["name"]
-        url = body["url"]
-        method = body["method"]
-        description = body["description"]
-        paramsIdList = body["paramsIdList"]
-        responseIdList = body["responseIdList"]
-        paramsDemo = body["paramsDemo"]
-        responseDemo = body["responseDemo"]
-        category_href = body["category_href"]
         _id = body["_id"]
         model = APiModel({
-            "name": name,
-            "url": url,
-            "method": method,
-            "description": description,
-            "paramsIdList": paramsIdList,
-            "responseIdList": responseIdList,
-            "paramsDemo": paramsDemo,
-            "responseDemo": responseDemo,
-            "category_href": category_href,
+            "name": body["name"],
+            "url": body["url"],
+            "method": body["method"],
+            "description": body["description"],
+            "paramsIdList": body["paramsIdList"],
+            "responseIdList": body["responseIdList"],
+            "paramsDemo": body["paramsDemo"],
+            "responseDemo": body["responseDemo"],
+            "category_href": body["category_href"],
             "_id": _id
         })
         yield model.save()
-        app_log.info(("update APiModel:", str(_id)))
-
-        cursor = ParamModel.get_cursor(self.db, {"api_id": "-1"})
-        param_objects = yield ParamModel.find(cursor)
-        for obj in param_objects:
-            obj.api_id = str(_id)
-            yield obj.save(self.db)
+        app_log.info(("update APiModel:", _id))
 
         item = yield self.parse_param_one(model.to_primitive())
         self.write_rows(rows=item)
