@@ -25,7 +25,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     });
 
     var api_extend_fn = function (api) {
-        console.log(api);
+        //console.log(api);
         var paramsList = api.paramsList;
         for(var i = 0; i < paramsList.length; i++) {
             var skip = 0;
@@ -52,7 +52,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             i += skip;
             // if(i>20) break;
         }
-        console.log(api);
+        //console.log(api);
         return api;
     }
 
@@ -74,7 +74,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         });
     };
     var param_equal = function(param1, param2) {
-        return param1.uuid == param2.uuid;
+        return param1._id == param2._id;
     };
     var param_demo = function() {
         return {
@@ -83,15 +83,15 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             "required": "false",
             "type_": "string",
             "description": "",
-            "uuid": uuid(),
+            "_id": uuid(),
             "children": [],
             "parent_id": null
         }
     };
-    var json_sub_param_demo = function(parent_uuid) {
+    var json_sub_param_demo = function(parent_id) {
         var param = param_demo();
-        param.name = "json:param";
-        param.parent_id = parent_uuid;
+        param.name = "json_param";
+        param.parent_id = parent_id;
         return param;
     };
     var empty = {
@@ -330,7 +330,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             alert('只能在末位json param新增子项');
             return;
         }
-        var sub_param = json_sub_param_demo(item.uuid);
+        var sub_param = json_sub_param_demo(item._id);
         item.children.push(sub_param);
         collection.push(sub_param);
         // 上面push的是同一个对象，所以同时更新；
@@ -356,7 +356,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                     remove_i(collection, item);
                     // 2.
                     for(var i = 0; i < collection.length; i++) {
-                        if(collection[i].parent_id == item.uuid) {
+                        if(collection[i].parent_id == item._id) {
                             remove_i(collection, collection[i]);
                             i--;
                             //这种用collection.length作为循环条件，但是在内部因为splice的操作，导致循环条件动态变化，并不符合真正的编程科学...
@@ -376,7 +376,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             remove_i(collection, item);
             // 2.
             for(var i = 0; i < collection.length; i++) {
-                if(collection[i].uuid == item.parent_id) {
+                if(collection[i]._id == item.parent_id) {
                     remove_i(collection[i].children, item);
                     break;
                 }
