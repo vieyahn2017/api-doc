@@ -59,8 +59,11 @@ class ParamModel(BaseAPIModel):
             assert self.type_ == 'json'
         for sub_id in self.subParamsIdList:
             query = {"_id": sub_id}
-            object_sub = yield self.find_one(self.db, query)
-            children.append(object_sub.to_primitive())
+            sub_obj = yield self.find_one(self.db, query)
+            sub_result = sub_obj.to_primitive()
+            sub_result.update({"children": []})
+            del sub_result["subParamsIdList"]
+            children.append(sub_result)
         result.update({"children": children})
         del result["subParamsIdList"]
         # print "to_primitive_fix===", result

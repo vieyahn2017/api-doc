@@ -32,11 +32,12 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             if(paramsList[i].children.length > 0) {
                 for(var j = 0; j < paramsList[i].children.length; j++) {
                     var item = paramsList[i].children[j];
-                    paramsList.splice(i, 0, item); // splice(i, 0, item) i处，增加item, 0是删除0个元素
+                    paramsList.splice(i + 1, 0, item); // splice(i, 0, item) i处，增加item, 0是删除0个元素
                 }
-                skip = paramsList[i].children.length;
+                skip = paramsList[i].children.length + 1;
             }
             i += skip;
+            // if(i>20) break;
         }
         var responseList = api.responseList;
         for(var i = 0; i < responseList.length; i++) {
@@ -44,11 +45,12 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             if(responseList[i].children.length > 0) {
                 for(var j = 0; j < responseList[i].children.length; j++) {
                     var item = responseList[i].children[j];
-                    responseList.splice(i, 0, item); // splice(i, 0, item) i处，增加item, 0是删除0个元素
+                    responseList.splice(i + 1, 0, item); // splice(i, 0, item) i处，增加item, 0是删除0个元素
                 }
-                skip = responseList[i].children.length;
+                skip = responseList[i].children.length + 1;
             }
             i += skip;
+            // if(i>20) break;
         }
         console.log(api);
         return api;
