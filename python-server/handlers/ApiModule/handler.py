@@ -180,14 +180,15 @@ class ParamModelTestHandler(BaseMongoHandler):
 
     @coroutine
     def put(self):
-        """ update """
+        """ update
+        跟post比较大的不同，我在前端多封装了一层，封装了一个api_id和rows
+        """
         bodys = json.loads(self.request.body)
         api_id = "-1" # 本次update, 可能存在之前的param有api_id，也有新的param没有api_id
         if bodys:
+            api_id = bodys["api_id"]
             id_rows = []
-            for body in bodys:
-                if body.get("api_id", None):
-                    api_id = body["api_id"]
+            for body in bodys["rows"]:  # body这个沿袭自post变量名其实不合适
                 type_ = body["type_"]
                 _id = body["_id"]  # 不管是新建的，还是以前存在的，都有从前端传来的_id
                 parent_id = body.get("parent_id")
@@ -228,17 +229,6 @@ class ParamModelTestHandler(BaseMongoHandler):
                     "_id": _id
                 }).save()
                 id_rows.append(_id)
-                print "api_id: ", api_id
-
-            # 本次update, 如果全是新数据, 则api_id==-1，则新建一个uuid，作为临时使用
-            if api_id == "-1":
-                api_id = str(uuid.uuid1())
-                cursor = ParamModel.get_cursor(self.db, {"api_id": api_id})
-                param_objects = yield ParamModel.find(cursor)
-                for obj in param_objects:
-                    obj.api_id = api_id
-                    yield obj.save(self.db)
-                    print obj
 
             self.write_rows(rows=id_rows)
         else:

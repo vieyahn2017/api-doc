@@ -233,10 +233,10 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     $scope.update_me_yh = function(update_item){ //yh
         $scope.save_api_item = angular.copy(update_item);
 
-        var put_paramsList = function() {
+        var put_paramsList = function(api_id) {
             var deferred = $q.defer();
             $http.put($scope.base_url + "m/api/param",
-                angular.toJson(update_item.paramsList, true)
+                angular.toJson({"api_id": api_id, "rows": update_item.paramsList}, true)
             ).success(function (data) {
                     $scope.save_api_item.paramsIdList = data.rows;
                     deferred.resolve($scope.save_api_item);
@@ -246,10 +246,10 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             return deferred.promise;
         };
 
-        var put_responseList = function() {
+        var put_responseList = function(api_id) {
             var deferred = $q.defer();
             $http.put($scope.base_url + "m/api/param",
-                angular.toJson(update_item.responseList, true)
+                angular.toJson({"api_id": api_id, "rows": update_item.responseList}, true)
             ).success(function (data) {
                     $scope.save_api_item.responseIdList = data.rows;
                     deferred.resolve($scope.save_api_item);
@@ -259,7 +259,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             return deferred.promise;
         };
 
-        $q.all([put_paramsList(), put_responseList()])
+        $q.all([put_paramsList(update_item._id), put_responseList(update_item._id)])
             .then(function(result){
                 //console.log($scope.save_api_item);
                 //console.log(result);
