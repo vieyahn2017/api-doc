@@ -39,6 +39,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 for(var j = 0; j < paramsList[i].children.length; j++) {
                     var item = paramsList[i].children[j];
                     paramsList.splice(i + 1, 0, item); // splice(i, 0, item) i处，增加item, 0是删除0个元素
+                    //console.log(paramsList[i+1] == item); //3.27 这边splice进去的item，应该和item是同一个对象？
                 }
                 skip = paramsList[i].children.length + 1;
             }
