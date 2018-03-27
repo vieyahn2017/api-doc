@@ -7,22 +7,28 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     var href = $routeParams.href;
     $scope.href = href;
     $scope.base_url = get_base_url();
-    // $http.get($scope.base_url + "m/api?desc=true&href=" + href).success(function(data){  //添加的时候倒序方便点
-    $http.get($scope.base_url + "m/api?href=" + href).success(function(data){
-        //console.log(data.rows);
-        var apiListTemp = data.rows;
-        for(var i = 0; i < apiListTemp.length; i++) {
-            api_extend_fn(apiListTemp[i]);
-        }
-        $scope.apiList = apiListTemp;
-        console.log($scope.apiList);
-        $timeout(function(){
-            var id = $routeParams.id;
-            $scope.scrollTo(id);
+
+    $scope.show_api_list = function () {
+        // $http.get($scope.base_url + "m/api?desc=true&href=" + href).success(function(data){  //添加的时候倒序方便点
+        $http.get($scope.base_url + "m/api?href=" + href).success(function(data){
+            //console.log(data.rows);
+            var apiListTemp = data.rows;
+            for(var i = 0; i < apiListTemp.length; i++) {
+                api_extend_fn(apiListTemp[i]);
+            }
+            $scope.apiList = apiListTemp;
+            console.log($scope.apiList);
+            $timeout(function(){
+                var id = $routeParams.id;
+                $scope.scrollTo(id);
+            });
+        }).error(function(){
+            $scope.apiList = [];
         });
-    }).error(function(){
-        $scope.apiList = [];
-    });
+    };
+
+    $scope.show_api_list();
+
 
     var api_extend_fn = function (api) {
         //console.log(api);
@@ -215,7 +221,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                     angular.toJson($scope.save_api_item, true)
                 ).success(function (data) {
                         //console.log(data.rows);
-                        $scope.apiList.push(data.rows);
+                        $scope.apiList.push(api_extend_fn(data.rows));
                         $scope.isNew = false;
                         $scope.current = null;
                         var scroll_id = data.rows._id;
@@ -267,7 +273,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                     angular.toJson($scope.save_api_item, true)
                 ).success(function (data) {
                         //console.log(data.rows);
-                        angular.extend($scope.edit_api_item, data.rows);
+                        angular.extend($scope.edit_api_item, api_extend_fn(data.rows));
                         //这一句浅拷贝，对页面当前自动更新尤为关键
                         $scope.isNew = false;
                         $scope.current = null;

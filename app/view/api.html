@@ -27,14 +27,14 @@
                 <label for="name" class="col-sm-2 control-label">接口名:</label>
                 <div class="col-sm-10">
                     <input type="text" required class="form-control" name="name" ng-model="current.name" id="name" placeholder="接口名称">
-                    <span class=" error" ng-show="apiForm.name.$error.required">请填写分类名</span>
+                    <span class=" error" ng-if="apiForm.name.$error.required">请填写分类名</span>
                 </div>
             </div>
             <div class="form-group">
                 <label for="url"  class="col-sm-2 control-label">url:</label>
                 <div class="col-sm-10">
                     <input type="text" required class="form-control" name="url" id="url" ng-model="current.url" placeholder="url">
-                    <span class=" error" ng-show="apiForm.url.$error.required">请填写分类名</span>
+                    <span class=" error" ng-if="apiForm.url.$error.required">请填写分类名</span>
                 </div>
             </div>
             <div class="form-group">
@@ -81,13 +81,13 @@
                             </td>
                             <td><textarea style="width: 320px;" ng-model="param.description"></textarea></td>
                             <td>
-                                <button class="btn btn-danger" ng-show="!param.parent_id"
+                                <button class="btn btn-danger" ng-if="!param.parent_id"
                                         ng-click="remove_param(current.paramsList, param)">删除</button>
-                                <button class="btn btn-info" ng-show="param.parent_id"
+                                <button class="btn btn-info" ng-if="param.parent_id"
                                         ng-click="remove_json_param_children(current.paramsList, param)">删除子项</button>
                             </td>
                              <td>
-                                <button class="btn btn-success" ng-show="param.type_ == TYPES[4] && !param.parent_id"
+                                <button class="btn btn-success" ng-if="param.type_ == TYPES[4] && !param.parent_id"
                                         ng-click="add_json_param_children(current.paramsList, param)">新增子项</button>
                             </td>
                             <!-- 这样才是最合适的格式，严格父子展开，但是前端这边的格式也不好处理。 现在的实现方式，虽然功能没问题，但是为了适配结构数据的正确性，多了好多工作
@@ -149,13 +149,13 @@
                             </td>
                             <td><textarea style="width: 320px;" ng-model="param.description"></textarea></td>
                             <td>
-                                <button class="btn btn-danger" ng-show="!param.parent_id"
+                                <button class="btn btn-danger" ng-if="!param.parent_id"
                                         ng-click="remove_param(current.responseList, param)">删除</button>
-                                <button class="btn btn-info" ng-show="param.parent_id"
+                                <button class="btn btn-info" ng-if="param.parent_id"
                                         ng-click="remove_json_param_children(current.responseList, param)">删除子项</button>
                             </td>
                              <td>
-                                <button class="btn btn-success" ng-show="param.type_ == TYPES[4] && !param.parent_id"
+                                <button class="btn btn-success" ng-if="param.type_ == TYPES[4] && !param.parent_id"
                                         ng-click="add_json_param_children(current.responseList, param)">新增子项</button>
                             </td>
                         </tr>
@@ -200,14 +200,14 @@
             <div id="{{item._id}}" class="panel-heading">
                 <h3 class="panel-title">
                     {{item.name}}
-                    <button ng-show="show_edit" class="btn btn-info btn-xs pull-right" ng-click="edit(item);">edit</button>
-                    <button ng-show="show_edit" class="btn btn-danger btn-xs pull-right" style="margin-right: 5px;" ng-click="remove_api(item);">delete</button>
+                    <button ng-if="show_edit" class="btn btn-info btn-xs pull-right" ng-click="edit(item);">edit</button>
+                    <button ng-if="show_edit" class="btn btn-danger btn-xs pull-right" style="margin-right: 5px;" ng-click="remove_api(item);">delete</button>
                 </h3>
                 <h4><kbd>{{item.method || 'GET'}}</kbd> - <kbd>{{item.url}}</kbd></h4>
             </div>
             <div class="panel-body">
                 <div class="alert alert-info">{{item.description}}</div>
-                <div ng-show="item.paramsList.length > 0">
+                <div ng-if="item.paramsList.length > 0">
                     <h5>请求参数</h5>
                     <table class="table">
                         <thead>
@@ -235,20 +235,20 @@
                         </tbody>
                     </table>
                 </div>
-                <div ng-show="item.paramsList.length == 0">
+                <div ng-if="item.paramsList.length == 0">
                     <div class="form-group">
                         <h5>请求参数</h5>
                         <table class="table"><tr><td>无</td></tr> </table>
                         <!--<label for="url"  class="col-sm-offset-2  col-sm-10 alert-danger">无</label> -->
                     </div>
                 </div>
-                <div ng-show="item.responseList.length == 0">
+                <div ng-if="item.responseList.length == 0">
                     <div class="form-group">
                         <h5>返回值</h5>
                         <table class="table"><tr><td>无</td></tr> </table>
                     </div>
                 </div>
-                <div ng-show="item.responseList.length > 0">
+                <div ng-if="item.responseList.length > 0">
                     <h5>返回值</h5>
                     <table class="table">
                         <thead>
@@ -285,11 +285,11 @@
                 </div>
                 <h4>Demo:</h4>
                 <p>输入</p>
-                <div ng-show="item.paramsDemo">
+                <div ng-if="item.paramsDemo">
                     <pre>{{item.paramsDemo}}</pre>
                 </div>
                 <p>输出</p>
-                <div ng-show="item.responseDemo">
+                <div ng-if="item.responseDemo">
                     <pre>{{item.responseDemo}}</pre>
                 </div>
             </div>
