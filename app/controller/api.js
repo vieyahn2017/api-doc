@@ -341,6 +341,8 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         // 但是如果是用下面这种方式，肯定就不同时更新了
         // var copy = angular.copy(sub_param);
         // collection.push(copy);
+
+        console.log(assert_children_equal_at_collection(collection, item));
     };
 
     var remove_i = function(collection, item){
@@ -386,6 +388,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 }
             }
         }
+        console.log(assert_children_equal_at_collection(collection, item));
     };
 
     $scope.remove_api = function(item){
@@ -410,6 +413,40 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         console.log(current_item);
         if(current_param) {
             console.log(current_param);
+        }
+    };
+
+    var is_param_equal = function(param1, param2) {
+        // return param1._id == param2._id;
+        for (k in param1) {
+            if (param1[k] != param2[k]) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    $scope.assert_children_equal = function(collection, item){
+        if(item.type_ != 'json') {
+            console.log("item is not json.");
+            return false;
+        }
+        if(!item.children.length) {
+            console.log("item's children is empty.");
+            return false;
+        }
+        var pos = collection.indexOf(item);
+        if(pos == -1) {
+            console.log("item is in collection.");
+            return false;
+        }
+
+        for(var i = 0; i < item.children.length; i++) {
+            if(!is_param_equal(collection[pos + 1 + i], item.children[i])) {
+                console.log(collection[pos + 1 + i]);
+                console.log(item.children[i]);
+                return false;
+            }
         }
     };
 }
