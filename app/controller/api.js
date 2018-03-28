@@ -80,9 +80,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             return v.toString(16);
         });
     };
-    var param_equal = function(param1, param2) {
-        return param1._id == param2._id;
-    };
+
     var param_demo = function() {
         return {
             "name": "param",
@@ -131,8 +129,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         $scope.isNew = true;
     };
     $scope.edit = function(api_item) {
-        $scope.current = angular.copy(api_item);
-        $scope.edit_api_item = api_item;
+        $scope.current = api_item;
         $scope.isNew = false;
     };
 
@@ -183,7 +180,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     };
 
     $scope.save_me_yh = function(new_item){ //yh
-        $scope.save_api_item = angular.copy(new_item);
+        $scope.save_api_item = new_item;
         $scope.save_api_item.temp_api_ids = [];
 
         var post_paramsList = function() {
@@ -238,7 +235,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     };
 
     $scope.update_me_yh = function(update_item){ //yh
-        $scope.save_api_item = angular.copy(update_item);
+        $scope.save_api_item = update_item;
 
         var put_paramsList = function(api_id) {
             var deferred = $q.defer();
@@ -274,7 +271,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                     angular.toJson($scope.save_api_item, true)
                 ).success(function (data) {
                         //console.log(data.rows);
-                        angular.extend($scope.edit_api_item, api_extend_fn(data.rows));
+                        //angular.extend($scope.edit_api_item, api_extend_fn(data.rows));
                         //这一句浅拷贝，对页面当前自动更新尤为关键
                         $scope.isNew = false;
                         $scope.current = null;
