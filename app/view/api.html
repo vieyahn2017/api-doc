@@ -89,7 +89,7 @@
                              <td>
                                 <button class="btn btn-success" ng-if="param.type_ == TYPES[4] && !param.parent_id"
                                         ng-click="add_json_param_children(current.paramsList, param)">新增子项</button>
-                                 <button class="btn btn-info" ng-if="param.type_ == TYPES[4] && !param.parent_id"
+                                 <button class="btn btn-info" ng-if="param.type_ == TYPES[4] && !param.parent_id && testing"
                                         ng-click="assert_children_equal(current.paramsList, param)">验证</button>
                             </td>
                             <!-- 这样才是最合适的格式，严格父子展开，但是前端这边的格式也不好处理。 现在的实现方式，虽然功能没问题，但是为了适配结构数据的正确性，多了好多工作
@@ -159,6 +159,8 @@
                              <td>
                                 <button class="btn btn-success" ng-if="param.type_ == TYPES[4] && !param.parent_id"
                                         ng-click="add_json_param_children(current.responseList, param)">新增子项</button>
+                                 <button class="btn btn-info" ng-if="param.type_ == TYPES[4] && !param.parent_id && testing"
+                                        ng-click="assert_children_equal(current.responseList, param)">验证</button>
                             </td>
                         </tr>
                         </tbody>
@@ -181,7 +183,7 @@
                 <div class="col-sm-offset-2 col-sm-10">
                     <button ng-click="save_api(current);" type="submit" class="btn btn-success">保存</button>
                     <button ng-click="cancel();" type="submit" class="btn btn-default">取消</button>
-                    <button ng-click="log(current);" type="submit" class="btn btn-default">console.log</button>
+                    <button ng-if="testing" ng-click="log(current);" type="submit" class="btn btn-default">console.log</button>
                 </div>
             </div>
         </form>

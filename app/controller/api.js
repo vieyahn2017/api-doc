@@ -63,6 +63,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         return api;
     }
 
+    /*
     $http.get($scope.base_url + "m/api/authenticated").success(function(data){
         if(data.code == 1) {
             $scope.authenticated = true;
@@ -73,6 +74,11 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     }).error(function(){
         $scope.authenticated = false;
     });
+    */
+    // $scope.authenticated = is_authenticated($scope, $http);
+
+    $scope.authenticated = is_authenticated();
+    $scope.testing = is_testing();
 
     var uuid = function () {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -341,8 +347,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         // 但是如果是用下面这种方式，肯定就不同时更新了
         // var copy = angular.copy(sub_param);
         // collection.push(copy);
-
-        console.log(assert_children_equal_at_collection(collection, item));
     };
 
     var remove_i = function(collection, item){
@@ -388,7 +392,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 }
             }
         }
-        console.log(assert_children_equal_at_collection(collection, item));
     };
 
     $scope.remove_api = function(item){
@@ -427,27 +430,45 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     };
 
     $scope.assert_children_equal = function(collection, item){
+
         if(item.type_ != 'json') {
             console.log("item is not json.");
             return false;
         }
-        if(!item.children.length) {
+        var len = item.children.length;
+        if(!len) {
             console.log("item's children is empty.");
             return false;
         }
         var pos = collection.indexOf(item);
         if(pos == -1) {
-            console.log("item is in collection.");
+            console.log("item is not in collection.");
             return false;
         }
 
-        for(var i = 0; i < item.children.length; i++) {
-            if(!is_param_equal(collection[pos + 1 + i], item.children[i])) {
-                console.log(collection[pos + 1 + i]);
-                console.log(item.children[i]);
-                return false;
+        console.log(collection.slice(pos + 1, pos + 1 + len));
+        console.log(item.children);
+
+        for(var i = 0; i < len; i++) {
+            //collection[pos + 1 + i] ~~ item.children[i] 顺序不是一一对应的，只能挨个迭代。
+            //is_param_equal(collection[pos + 1 + i], item.children[i]) 这样行不通
+            var foo = collection[pos + 1 + i];
+            for(var j = 0; j < len; j++) {
+                if(item.children[j]._id == foo._id) {
+                    var equal_ = is_param_equal(foo, item.children[j]);
+                    if(equal_) {
+                        break; //判断下一个子元素
+                    } else {
+                        console.log(foo);
+                        console.log(item.children[j]);
+                        return false;
+                    }
+                }
             }
         }
+
+        console.log("is equal by validate");
     };
+
 }
 

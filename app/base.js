@@ -8,6 +8,9 @@ function is_authenticated() {
     return true;
 }
 
+function is_testing() {
+    return true;
+}
 /*
 
 function is_authenticated($scope, $http) {
