@@ -5,8 +5,8 @@
 </ol>
 <div style="position: fixed; left: 0; top: 100px;" >
     <div class="btn-group-vertical">
-        <button  ng-show="authenticated" class="btn btn-success" ng-click="add();">Add</button>
-        <button  ng-show="!authenticated" class="btn btn-success">Api:</button>
+        <button ng-show="authenticated" class="btn btn-success" ng-click="add();">Add</button>
+        <button ng-show="!authenticated" class="btn btn-success">Api:</button>
         <a ng-show="!menu" ng-repeat="item in apiList" class="btn btn-default btn-xs" ng-href="#/api/{{href}}/{{item._id}}">{{$index+1}}.{{item.name}}</a>
         <button  class="btn btn-danger btn-xs" ng-click="menu=!menu">{{menu?'展开':'收起'}}目录</button>
     </div>
@@ -15,7 +15,7 @@
         <div style="position: fixed;right: 0; bottom: 20px;">
             <div class="btn-group-vertical">
                 <button class="btn btn-success" ng-click="back();">回到顶部</button>
-                <button class="btn btn-info" ng-click="show_edit = !show_edit">{{!show_edit?'开启编辑':'关闭编辑'}}</button>
+                <button class="btn btn-info" ng-show="authenticated" ng-click="show_edit = !show_edit">{{!show_edit?'开启编辑':'关闭编辑'}}</button>
             </div>
         </div>
 
