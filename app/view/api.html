@@ -53,6 +53,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">传入参数:</label>
                 <div class="col-sm-10">
+                    <button class="btn btn-info" ng-show="authenticated" ng-click="current.paramsDemo=make_param_demo(current.paramsList)">生成Demo</button>
                     <table class="table">
                         <thead>
                         <tr>
@@ -87,7 +88,8 @@
                                         ng-click="remove_json_param_children(current.paramsList, param)">删除子项</button>
                             </td>
                              <td>
-                                <button class="btn btn-success" ng-if="param.type_ == TYPES[4] && !param.parent_id"
+                                 <div ng-if="param.type_ != TYPES[4] || param.parent_id">&nbsp;</div>
+                                 <button class="btn btn-success" ng-if="param.type_ == TYPES[4] && !param.parent_id"
                                         ng-click="add_json_param_children(current.paramsList, param)">新增子项</button>
                                  <button class="btn btn-info" ng-if="param.type_ == TYPES[4] && !param.parent_id && testing"
                                         ng-click="assert_children_equal(current.paramsList, param)">验证</button>
@@ -123,6 +125,7 @@
                     <label class="control-label btn btn-success">
                         回显数据格式为 {"msg": "", "code": 1, "result": {} } &nbsp;这边是指result内部的参数字段
                     </label>
+                    <button class="btn btn-info" ng-show="authenticated" ng-click="current.responseDemo=make_param_demo(current.responseList)">生成Demo</button>
                     <table class="table">
                         <thead>
                         <tr>
@@ -133,6 +136,8 @@
                             <th>描述</th>
                             <th>
                                 <button class="btn btn-success" ng-click="add_param(current.responseList)">新增</button>
+                            </th>
+                            <th>
                             </th>
                         </tr>
                         </thead>
@@ -151,16 +156,17 @@
                             </td>
                             <td><textarea style="width: 320px;" ng-model="param.description"></textarea></td>
                             <td>
-                                <button class="btn btn-danger" ng-if="!param.parent_id"
+                                <button class="btn btn-danger" ng-show="!param.parent_id"
                                         ng-click="remove_param(current.responseList, param)">删除</button>
-                                <button class="btn btn-info" ng-if="param.parent_id"
+                                <button class="btn btn-info" ng-show="param.parent_id"
                                         ng-click="remove_json_param_children(current.responseList, param)">删除子项</button>
                             </td>
                              <td>
-                                <button class="btn btn-success" ng-if="param.type_ == TYPES[4] && !param.parent_id"
+                                 <div ng-if="param.type_ != TYPES[4] || param.parent_id">&nbsp;</div>
+                                 <button class="btn btn-success" ng-show="param.type_ == TYPES[4] && !param.parent_id"
                                         ng-click="add_json_param_children(current.responseList, param)">新增子项</button>
-                                 <button class="btn btn-info" ng-if="param.type_ == TYPES[4] && !param.parent_id && testing"
-                                        ng-click="assert_children_equal(current.responseList, param)">验证</button>
+                                 <button class="btn btn-info" ng-show="param.type_ == TYPES[4] && !param.parent_id && param.children.length && testing"
+                                        ng-click="assert_children_equal(current.responseList, param)">验证Item</button>
                             </td>
                         </tr>
                         </tbody>
