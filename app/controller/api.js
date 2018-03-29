@@ -96,7 +96,8 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             "description": "",
             "_id": uuid(),
             "children": [],
-            "parent_id": null
+            "parent_id": null,
+            "category_href": href
         }
     };
     var json_sub_param_demo = function(parent_id) {
@@ -105,7 +106,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         param.parent_id = parent_id;
         return param;
     };
-    var empty = {
+    var empty_api = {
         "_id": "-1",
         "name": "接口名",
         "url": "接口url",
@@ -131,7 +132,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
 
 
     $scope.add = function(){
-        $scope.current = angular.copy(empty);
+        $scope.current = angular.copy(empty_api);
         $scope.isNew = true;
     };
     $scope.edit = function(api_item) {

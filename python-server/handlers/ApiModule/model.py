@@ -46,6 +46,7 @@ class ParamModel(BaseAPIModel):
     subParamsIdList = ListType(StringType)   # type_=="json"，此项有值。
     parent_id = StringType() # 如果是api_id的直系节点。此字段为None；【与之对应的是type_=="json"类型参数的子节点】
     api_id = StringType()
+    category_href = StringType()
 
     # _id = ObjectIdType(serialize_when_none=False)
     MONGO_COLLECTION = 'params'

@@ -154,6 +154,7 @@ class ParamModelTestHandler(BaseMongoHandler):
                         "type_": child["type_"],
                         "description": child["description"],
                         "parent_id": child["parent_id"],
+                        "category_href": child["category_href"],
                         "subParamsIdList": [],
                         "_id": child_id,
                         "api_id": api_id
@@ -166,6 +167,7 @@ class ParamModelTestHandler(BaseMongoHandler):
                 "type_": type_,
                 "description": body["description"],
                 "parent_id": None,
+                "category_href": body["category_href"],
                 "subParamsIdList": subParamsIdList,
                 "_id": _id,
                 "api_id": api_id
@@ -212,6 +214,7 @@ class ParamModelTestHandler(BaseMongoHandler):
                             "type_": child["type_"],
                             "description": child["description"],
                             "parent_id": child["parent_id"],
+                            "category_href": child["category_href"],
                             "subParamsIdList": [],
                             "_id": child_id,
                             "api_id": api_id
@@ -224,6 +227,7 @@ class ParamModelTestHandler(BaseMongoHandler):
                     "type_": type_,
                     "description": body["description"],
                     "parent_id": None,
+                    "category_href": body["category_href"],
                     "subParamsIdList": subParamsIdList,
                     "api_id": api_id,
                     "_id": _id
