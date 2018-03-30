@@ -550,8 +550,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         if(_re_ids && _re_ids[0]) {
             key_in_path = _re_ids[0];
             key_in_path = key_in_path.substring(1, key_in_path.length - 1);
-            console.log(key_in_path);
-            console.log(url.indexOf(key_in_path));
         }
 
         var param_filters = "?";

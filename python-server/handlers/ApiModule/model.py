@@ -79,7 +79,8 @@ class APiModel(BaseAPIModel):
     description = StringType()
     paramsIdList = ListType(StringType)
     responseIdList = ListType(StringType)
-    paramsDemo = StringType()
+    requestUrlDemo = StringType()
+    requestParamsDemo = StringType()
     responseDemo = StringType()
 
     _id = ObjectIdType(serialize_when_none=False)
@@ -91,50 +92,3 @@ class APiModel(BaseAPIModel):
 
 # # 在mongodb的shell里面手动修改：
 #  db.getCollection('params').update({"api_id": "-1"}, {$set:{"api_id": "596ecb42f0881b24e51c3e1a"}} , {multi: true})
-
-
-"""
-{
-    "Name": "param_1_name", 
-    "Required": "false",
-    "Default": "", 
-    "Type": "string", 
-    "Description": "Description of the first parameter."
-}, 
-
-
-{
-    "name": "接口名1", 
-    "url": "接口url", 
-    "method": "GET", 
-    "description": "接口描述", 
-    "params": [
-        {
-            "Name": "param_1_name", 
-            "Required": "true",
-            "Default": "", 
-            "Type": "string", 
-            "Description": "Description of the first parameter."
-        }, 
-        {}
-    ], 
-    "response": [
-        {
-            "Name": "param_1_name", 
-            "Required": "true",
-            "Default": "", 
-            "Type": "string", 
-            "Description": "Description of the first parameter."
-        }, 
-        {
-            "Name": "userId", 
-            "Required": "true",
-            "Default": "", 
-            "Type": "string", 
-            "Description": "The userId parameter that is in the URI."
-        }
-    ], 
-    "demo": "<?php  var_dump(123);"
-}, 
-
-"""

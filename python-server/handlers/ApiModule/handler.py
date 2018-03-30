@@ -349,7 +349,8 @@ class APiModelTestHandler(BaseMongoHandler):
             "description": body["description"],
             "paramsIdList": body["paramsIdList"],
             "responseIdList": body["responseIdList"],
-            "paramsDemo": body["paramsDemo"],
+            "requestUrlDemo": body["requestUrlDemo"],
+            "requestParamsDemo": body["requestParamsDemo"],
             "responseDemo": body["responseDemo"],
             "category_href": body["category_href"],
             "_id": _id
@@ -383,7 +384,8 @@ class APiModelTestHandler(BaseMongoHandler):
             "description": body["description"],
             "paramsIdList": body["paramsIdList"],
             "responseIdList": body["responseIdList"],
-            "paramsDemo": body["paramsDemo"],
+            "requestUrlDemo": body["requestUrlDemo"],
+            "requestParamsDemo": body["requestParamsDemo"],
             "responseDemo": body["responseDemo"],
             "category_href": body["category_href"],
             "_id": _id
