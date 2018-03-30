@@ -53,7 +53,10 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">传入参数:</label>
                 <div class="col-sm-10">
-                    <button class="btn btn-info" ng-show="authenticated" ng-click="current.paramsDemo=make_param_demo(current.paramsList)">生成Demo</button>
+                    <button class="btn btn-info" ng-show="authenticated"
+                            ng-click="current.requestUrlDemo=make_url_demo(current.url, current.paramsList)">生成URL</button>
+                    <button class="btn btn-info" ng-show="authenticated && current.method != 'GET'"
+                            ng-click="current.requestParamsDemo=make_param_demo(current.paramsList)">生成Demo</button>
                     <table class="table">
                         <thead>
                         <tr>
@@ -174,15 +177,20 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-2 control-label">URL地址:</label>
+                <div class="col-sm-offset-2 col-sm-10">
+                    <textarea ng-model="current.requestUrlDemo" style="width: 100%;height: 60px;"></textarea>
+                </div>
+
                 <label class="col-sm-2 control-label">输入demo:</label>
                 <div class="col-sm-offset-2 col-sm-10">
-                    <textarea ng-model="current.paramsDemo" style="width: 100%;height: 300px;"></textarea>
-                    </div>
+                    <textarea ng-model="current.requestParamsDemo" style="width: 100%;height: 200px;"></textarea>
+                </div>
 
                 <label class="col-sm-2 control-label">输出demo:</label>
                 <div class="col-sm-offset-2 col-sm-10">
                     <textarea ng-model="current.responseDemo" style="width: 100%;height: 300px;"></textarea>
-                    </div>
+                </div>
 
             </div>
             <div class="form-group">
@@ -294,12 +302,16 @@
                     </table>
                 </div>
                 <h4>Demo:</h4>
+                <p>请求</p>
+                <div>
+                    <pre>{{item.requestUrlDemo}}</pre>
+                </div>
                 <p>输入</p>
-                <div ng-if="item.paramsDemo">
-                    <pre>{{item.paramsDemo}}</pre>
+                <div ng-if="item.requestParamsDemo">
+                    <pre>{{item.requestParamsDemo}}</pre>
                 </div>
                 <p>输出</p>
-                <div ng-if="item.responseDemo">
+                <div>
                     <pre>{{item.responseDemo}}</pre>
                 </div>
             </div>

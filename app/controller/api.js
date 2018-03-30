@@ -118,8 +118,9 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         "responseList":[
             param_demo()
         ],
+        "requestUrlDemo": "\\",
+        "requestParamsDemo": "",
         "responseDemo": "{\n    \"msg\": \"\", \n    \"result\": {},  \n    \"code\": 1\n}",
-        "paramsDemo": "\\",
         "category_href": href
     };
 
@@ -486,6 +487,8 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                         return item.default || [];
                     case 'json':
                         return item.default || {};
+                    default:
+                        return item.default || "";
                 }
             }(item, item.type_);
         };
@@ -522,6 +525,40 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
 
     }
 
+
+    $scope.make_url_demo = function(url, collection) {
+
+        var _chose = function(item) {
+            return function(item, type) {
+                switch (type) {
+                    case 'int':
+                        return item.default || 0;
+                    case 'boolean':
+                        return item.default || false;
+                    case 'string':
+                        return item.default || "";
+                    default:
+                        return item.default || "";
+                }
+            }(item, item.type_);
+        };
+
+        // url 没有json和子属性这么复杂的情况, 所以_chose也简化些
+
+        var result = url + "?";
+        for (var i = 0; i < collection.length; i++){
+            var item = collection[i];
+            if(item.parent_id) {
+                continue;
+            }
+            var key = item.name;
+            var value = _chose(item);
+            result += key + '=' + value + '&';
+        }
+        result = result.substring(0, result.length-1);
+        return result;
+
+    }
 
 
 }
