@@ -472,42 +472,48 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     };
 
     $scope.make_param_demo = function(collection) {
-        // 基本ok了，还有个问题是， param名字覆盖的问题
-        console.log(collection);
 
-        var _chose = function(item, type) {
-            switch (type) {
-                case 'int':
-                    return item.default || 0;
-                case 'string':
-                    return item.default || "";
-                case 'boolean':
-                    return item.default || false;
-                case 'list':
-                    return item.default || [];
-                case 'json':
-                    return item.default || {};
-            }
-        }
-
-        var _item_chose = function(item) {
-            return _chose(item, item.type_)
+        var _chose = function(item) {
+            return function(item, type) {
+                switch (type) {
+                    case 'int':
+                        return item.default || 0;
+                    case 'string':
+                        return item.default || "";
+                    case 'boolean':
+                        return item.default || false;
+                    case 'list':
+                        return item.default || [];
+                    case 'json':
+                        return item.default || {};
+                }
+            }(item, item.type_);
         };
 
         var result = {};
         for (var i = 0; i < collection.length; i++){
             var item = collection[i];
-            if(item.parent_id) {continue;}
+            var key = item.name;
+            if(result.hasOwnProperty(key)){
+                key = key + '~' + i;
+            };
+            if(item.parent_id) {
+                continue;
+            }
             if(item.type_ != 'json') {
-                result[item.name] = _item_chose(item);
+                result[key] = _chose(item);
             } else if(item.type_ == 'json') {
                 var obj = {};
                 if(item.children.length) {
                     for (var j = 0; j < item.children.length; j++){
-                        obj[item.children[j].name]  = _item_chose(item.children[j]);
+                        var obj_key = item.children[j].name;
+                        if(obj.hasOwnProperty(obj_key)){
+                            obj_key = obj_key + '~' + j;
+                        };
+                        obj[obj_key]  = _chose(item.children[j]);
                     }
                 }
-                result[item.name] = obj;
+                result[key] = obj;
             }
         }
         var str = JSON.stringify(result, null, 4);
