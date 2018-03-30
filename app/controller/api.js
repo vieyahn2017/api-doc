@@ -528,6 +528,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
 
     $scope.make_url_demo = function(url, collection) {
 
+        // url 没有json和子属性这么复杂的情况, 所以_chose也简化些
         var _chose = function(item) {
             return function(item, type) {
                 switch (type) {
@@ -543,20 +544,33 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             }(item, item.type_);
         };
 
-        // url 没有json和子属性这么复杂的情况, 所以_chose也简化些
+        // key_in_path, such as <id>
+        var key_in_path = null;
+        var _re_ids = url.match(/<[\w]+>/)
+        if(_re_ids && _re_ids[0]) {
+            key_in_path = _re_ids[0];
+            key_in_path = key_in_path.substring(1, key_in_path.length - 1);
+            console.log(key_in_path);
+            console.log(url.indexOf(key_in_path));
+        }
 
-        var result = url + "?";
+        var param_filters = "?";
         for (var i = 0; i < collection.length; i++){
             var item = collection[i];
             if(item.parent_id) {
                 continue;
             }
             var key = item.name;
+            if(key==key_in_path) {
+                url = url.replace("<" + key_in_path + ">", "<" + _chose(item) + ">");
+                continue;
+            }
             var value = _chose(item);
-            result += key + '=' + value + '&';
+            param_filters += key + '=' + value + '&';
         }
-        result = result.substring(0, result.length-1);
-        return result;
+        param_filters = param_filters.substring(0, param_filters.length - 1);
+
+        return url + param_filters;
 
     }
 
