@@ -7,8 +7,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     var href = $routeParams.href;
     $scope.href = href;
     $scope.base_url = get_base_url();
-    $scope.clipboard_api = null;
-    $scope.clipboard_params = null;
 
     $scope.show_api_list = function () {
         // $http.get($scope.base_url + "m/api?desc=true&href=" + href).success(function(data){  //添加的时候倒序方便点
@@ -126,6 +124,9 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         "responseDemo": "{\n    \"msg\": \"\", \n    \"result\": {},  \n    \"code\": 1\n}",
         "category_href": href
     };
+
+    $scope.clipboard_api = angular.copy(empty_api);
+    $scope.clipboard_params = [param_demo()];
 
     $scope.TYPES = [
         "string", "int", "boolean", "list", "json"
@@ -581,15 +582,39 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             console.log('Sorry, copy to clipboard is not supported');
             return;
         }
-        // 这个是可用的，把内容确实拷贝进了clipboard，但是目前怎么用clipboard组件传递到前端，没弄清。还是用$scope绑定变量传递吧。
-        // clipboard.copyText(JSON.stringify(current, null, 4));
+        // 这个是可用的，把内容确实拷贝进了clipboard，
+        clipboard.copyText(JSON.stringify(current, null, 4));
+        // 但是目前怎么用clipboard组件传递到前端，没弄清。还是用$scope绑定变量传递吧。
         $scope.clipboard_api = current;
 
     };
 
-
     $scope.paste_api = function () {
-        return angular.copy($scope.clipboard_api);
+        console.log(JSON.stringify($scope.clipboard_api, null, 4));
+        if(confirm("确认粘贴api?")) {
+            // 校验
+            return angular.copy($scope.clipboard_api);
+        }
+
+    };
+
+    $scope.copy_params = function (paramList) {
+        if (!clipboard.supported) {
+            console.log('Sorry, copy to clipboard is not supported');
+            return;
+        }
+        clipboard.copyText(JSON.stringify(paramList, null, 4));
+        console.log(JSON.stringify(paramList, null, 4));
+        $scope.clipboard_params = paramList;
+
+    };
+
+    $scope.paste_params = function () {
+        console.log(JSON.stringify($scope.clipboard_params, null, 4));
+        if(confirm("确认粘贴params?")) {
+            // 校验
+            return angular.copy($scope.clipboard_params);
+        }
     };
 }
 

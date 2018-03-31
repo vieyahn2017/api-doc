@@ -58,9 +58,13 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">传入参数:</label>
                 <div class="col-sm-10">
-                    <button class="btn btn-info" ng-show="authenticated"
+                    <button class="btn btn-danger btn-xs" ng-show="authenticated"
+                            ng-click="copy_params(current.paramsList);">copy</button>
+                    <button class="btn btn-danger btn-xs" ng-show="authenticated"
+                            ng-click="current.paramsList=paste_params();">paste</button>
+                    <button class="btn btn-info btn-xs" ng-show="authenticated"
                             ng-click="current.requestUrlDemo=make_url_demo(current.url, current.paramsList)">生成URL</button>
-                    <button class="btn btn-info" ng-show="authenticated && current.method != 'GET'"
+                    <button class="btn btn-success btn-xs" ng-show="authenticated && current.method != 'GET'"
                             ng-click="current.requestParamsDemo=make_param_demo(current.paramsList)">生成Demo</button>
                     <table class="table">
                         <thead>
@@ -130,10 +134,14 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">回显数据:</label>
                 <div class="col-sm-10">
-                    <label class="control-label btn btn-success">
-                        回显数据格式为 {"msg": "", "code": 1, "result": {} } &nbsp;这边是指result内部的参数字段
-                    </label>
-                    <button class="btn btn-info" ng-show="authenticated" ng-click="current.responseDemo=make_param_demo(current.responseList)">生成Demo</button>
+                    <!--<label class="control-label btn btn-success">-->
+                        <!--回显数据格式为 {"msg": "", "code": 1, "result": {} } &nbsp;这边是指result内部的参数字段-->
+                    <!--</label>-->
+                    <button class="btn btn-danger btn-xs" ng-show="authenticated"
+                            ng-click="copy_params(current.responseList);">copy</button>
+                    <button class="btn btn-danger btn-xs" ng-show="authenticated"
+                            ng-click="current.responseList=paste_params();">paste</button>
+                    <button class="btn btn-success btn-xs" ng-show="authenticated" ng-click="current.responseDemo=make_param_demo(current.responseList)">生成Demo</button>
                     <table class="table">
                         <thead>
                         <tr>
@@ -232,9 +240,14 @@
             <div class="panel-body">
                 <div class="alert alert-info">{{item.description}}</div>
                 <div ng-if="item.paramsList.length > 0">
-                    <h5>请求参数
-
-                    </h5>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <h5 style="margin-left: -10px;">请求参数</h5>
+                        </div>
+                        <div class="col-sm-2">
+                            <button ng-if="show_edit" class="btn btn-success btn-xs pull-right" ng-click="copy_params(item.paramsList);">&nbsp;copy&nbsp;</button>
+                        </div>
+                    </div>
                     <table class="table">
                         <thead>
                         <tr>
@@ -275,7 +288,14 @@
                     </div>
                 </div>
                 <div ng-if="item.responseList.length > 0">
-                    <h5>返回值</h5>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <h5 style="margin-left: -10px;">请求参数</h5>
+                        </div>
+                        <div class="col-sm-2">
+                            <button ng-if="show_edit" class="btn btn-success btn-xs pull-right" ng-click="copy_params(item.responseList);">&nbsp;copy&nbsp;</button>
+                        </div>
+                    </div>
                     <table class="table">
                         <thead>
                         <tr>
