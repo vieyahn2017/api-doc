@@ -552,7 +552,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
 
         // key_in_path, such as <id>
         var key_in_path = null;
-        var _re_ids = url.match(/<[\w]+>/)
+        var _re_ids = url.match(/<[\w]+>/);
         if(_re_ids && _re_ids[0]) {
             key_in_path = _re_ids[0];
             key_in_path = key_in_path.substring(1, key_in_path.length - 1);
@@ -578,7 +578,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
 
     }
 
-
     $scope.copy_api = function (current) {
         if (!clipboard.supported) {
             console.log('Sorry, copy to clipboard is not supported');
@@ -593,11 +592,33 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
 
     };
 
+    var check_api_before_paste = function (api) {
+        var result = {"validity": false, "msg": ""};
+        if(!api) {
+            return result;
+        }
+        if(!api.hasOwnProperty("_id")){return result;}
+        if(!api.hasOwnProperty("name")){return result;}
+        if(!api.hasOwnProperty("url")){return result;}
+        if(!api.hasOwnProperty("paramsList")){return result;}
+        if(!api.hasOwnProperty("responseList")){return result;}
+        if(!api.hasOwnProperty("method")){return result;}
+        result.validity = true;
+        result.msg = "name=" + api.name + ", url=" + api.url;
+        return result;
+    };
+
     $scope.paste_api = function () {
-        console.log(JSON.stringify($scope.clipboard_api, null, 4));
-        if(confirm("确认粘贴api?")) {
-            // 校验
-            return angular.copy($scope.clipboard_api);
+        //console.log(JSON.stringify($scope.clipboard_api, null, 4));
+        var result = check_api_before_paste($scope.clipboard_api);
+        if(result.validity) {
+            if(confirm("确认粘贴api? " + result.msg)) {
+                return angular.copy($scope.clipboard_api);
+            }
+        } else {
+            var copy = angular.copy(empty_api);
+            copy.name = "接口名paste_failure";
+            return copy;
         }
 
     };
@@ -608,7 +629,6 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             return;
         }
         clipboard.copyText(JSON.stringify(paramList, null, 4));
-        console.log(JSON.stringify(paramList, null, 4));
         $scope.clipboard_params = paramList;
 
     };
@@ -624,12 +644,12 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 //for (var key in bar) { console.log(key); console.log(bar[key]); }  //遍历
                 if(i == 0) {
                     //简化工作量：就对第一项校验即可。
-                    if(!bar.hasOwnProperty("name")){break;};
-                    if(!bar.hasOwnProperty("default")){break;};
-                    if(!bar.hasOwnProperty("type_")){break;};
-                    if(!bar.hasOwnProperty("_id")){break;};
-                    if(!bar.hasOwnProperty("children")){break;};
-                    if(!bar.hasOwnProperty("parent_id")){break;};
+                    if(!bar.hasOwnProperty("name")){break;}
+                    if(!bar.hasOwnProperty("default")){break;}
+                    if(!bar.hasOwnProperty("type_")){break;}
+                    if(!bar.hasOwnProperty("_id")){break;}
+                    if(!bar.hasOwnProperty("children")){break;}
+                    if(!bar.hasOwnProperty("parent_id")){break;}
                 }
                 result.items.push(bar.name);
             }
@@ -643,7 +663,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     $scope.paste_params = function () {
         //console.log(JSON.stringify($scope.clipboard_params, null, 4));
         var result = check_params_before_paste($scope.clipboard_params);
-        console.log(result);
+        //console.log(result);
         if(result.validity) {
             if(confirm("确认粘贴params? 包括：" + result.items.toString())) {
                 return angular.copy($scope.clipboard_params);
