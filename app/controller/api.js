@@ -88,9 +88,13 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         });
     };
 
-    var param_demo = function() {
+    var param_demo = function(param_name) {
+        var name = "param";
+        if(param_name) {
+           name = param_name;
+        }
         return {
-            "name": "param",
+            "name": name,
             "default": "",
             "required": "false",
             "type_": "string",
@@ -110,7 +114,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     var empty_api = {
         "_id": "-1",
         "name": "接口名",
-        "url": "接口url",
+        "url": "/url",
         "method": "GET",
         "description": "接口描述",
         "paramsList": [
@@ -525,10 +529,9 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
                 result[key] = obj;
             }
         }
+
         var str = JSON.stringify(result, null, 4);
-
         return str;
-
     }
 
 
@@ -572,10 +575,9 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             var value = _chose(item);
             param_filters += key + '=' + value + '&';
         }
+
         param_filters = param_filters.substring(0, param_filters.length - 1);
-
         return url + param_filters;
-
     }
 
     $scope.copy_api = function (current) {
@@ -587,9 +589,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         clipboard.copyText(JSON.stringify(current, null, 4));
         // 但是目前怎么用clipboard组件传递到前端，没弄清。还是用$scope绑定变量传递吧。
         // 目前这种方式，不能跨分类粘贴，所以局限性很大。
-        $scope.clipboard_api = current;
-
-
+        $scope.clipboard_api = angular.copy(current);
     };
 
     var check_api_before_paste = function (api) {
@@ -608,29 +608,62 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         return result;
     };
 
-    $scope.paste_api = function () {
+    $scope.paste_api = function (api_id) {
         //console.log(JSON.stringify($scope.clipboard_api, null, 4));
         var result = check_api_before_paste($scope.clipboard_api);
         if(result.validity) {
             if(confirm("确认粘贴api? " + result.msg)) {
-                return angular.copy($scope.clipboard_api);
+                if(api_id && api_id != -1) {
+                    // POST的_id可以不管， PUT的_id必须使用之前的_id
+                    $scope.clipboard_api._id = api_id;
+                }
+                return $scope.clipboard_api;
             }
         } else {
             var copy = angular.copy(empty_api);
-            copy.name = "接口名paste_failure";
+            copy.name = "api_paste_fail_demo";
             return copy;
         }
-
     };
 
-    $scope.copy_params = function (paramList) {
+    $scope.copy_params = function (collection) {
         if (!clipboard.supported) {
             console.log('Sorry, copy to clipboard is not supported');
             return;
         }
-        clipboard.copyText(JSON.stringify(paramList, null, 4));
-        $scope.clipboard_params = paramList;
+        console.log(JSON.stringify(collection, null, 4));
 
+        var newCollection = angular.copy(collection);
+        // @必须换掉每个param的_id
+        //先全部换id，从根元素param到json的children-param;  //再把children里面的换成对应的
+        var json_id_map = {};
+        var children_id_item_map = {};
+        for(var i = 0; i < newCollection.length; i++) {
+            var item = newCollection[i];
+            var old_id = item._id;
+            var new_id = uuid();
+            item._id = new_id;
+            if(item.type_ == 'json' && item.children.length) {
+                json_id_map[old_id] = new_id;
+            }
+            if(item.parent_id) {
+                // 换parent_id，应该不存在子元素还排在前面的情况
+                item.parent_id = json_id_map[item.parent_id];
+                children_id_item_map[old_id] = item;
+            }
+        }
+        for(var i = 0; i < newCollection.length; i++) {
+            var item = newCollection[i];
+            if(item.type_ == 'json' && item.children.length) {
+                for(var j = 0; j < item.children.length; j++) {
+                    var child = item.children[j];
+                    item.children[j] = children_id_item_map[child._id];
+                }
+            }
+        }
+        clipboard.copyText(JSON.stringify(newCollection, null, 4));
+        $scope.clipboard_params = newCollection;
+        return $scope.clipboard_params;
     };
 
     var check_params_before_paste = function (bars) {
@@ -660,16 +693,23 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         return result;
     };
 
-    $scope.paste_params = function () {
+    $scope.paste_params = function (api_id) {
         //console.log(JSON.stringify($scope.clipboard_params, null, 4));
         var result = check_params_before_paste($scope.clipboard_params);
         //console.log(result);
         if(result.validity) {
             if(confirm("确认粘贴params? 包括：" + result.items.toString())) {
-                return angular.copy($scope.clipboard_params);
+                if(!api_id && api_id != -1) {
+                    api_id = -1;
+                }
+                // POST的_id可以不管， PUT的_id必须使用之前的_id
+                for(var i= 0; i < $scope.clipboard_params.length; i++){
+                    $scope.clipboard_params[i].api_id = api_id;
+                }
+                return $scope.clipboard_params;
             }
         } else {
-            return [param_demo(), param_demo()];
+            return [param_demo(), param_demo("param~2")];
         }
     };
 

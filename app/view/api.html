@@ -24,8 +24,8 @@
     <div ng-show="current" >
         <form class="form-horizontal" name="apiForm" role="form">
             <div class="form-group">
-                <div class="col-sm-10">
-                    <button class="btn btn-sm btn-info pull-right" ng-click="current=paste_api();">Paste Api.</button>
+                <div class="col-sm-12">
+                    <button class="btn btn-xs btn-danger pull-right" ng-click="current=paste_api(current._id);">paste api.</button>
                 </div>
             </div>
             <div class="form-group">
@@ -61,7 +61,7 @@
                     <button class="btn btn-danger btn-xs" ng-show="authenticated"
                             ng-click="copy_params(current.paramsList);">copy</button>
                     <button class="btn btn-danger btn-xs" ng-show="authenticated"
-                            ng-click="current.paramsList=paste_params();">paste</button>
+                            ng-click="current.paramsList=paste_params(current._id);">paste</button>
                     <button class="btn btn-info btn-xs" ng-show="authenticated"
                             ng-click="current.requestUrlDemo=make_url_demo(current.url, current.paramsList)">生成URL</button>
                     <button class="btn btn-success btn-xs" ng-show="authenticated && current.method != 'GET'"
@@ -140,7 +140,7 @@
                     <button class="btn btn-danger btn-xs" ng-show="authenticated"
                             ng-click="copy_params(current.responseList);">copy</button>
                     <button class="btn btn-danger btn-xs" ng-show="authenticated"
-                            ng-click="current.responseList=paste_params();">paste</button>
+                            ng-click="current.responseList=paste_params(current._id);">paste</button>
                     <button class="btn btn-success btn-xs" ng-show="authenticated" ng-click="current.responseDemo=make_param_demo(current.responseList)">生成Demo</button>
                     <table class="table">
                         <thead>
@@ -290,7 +290,7 @@
                 <div ng-if="item.responseList.length > 0">
                     <div class="form-group">
                         <div class="col-sm-10">
-                            <h5 style="margin-left: -10px;">请求参数</h5>
+                            <h5 style="margin-left: -10px;">返回参数</h5>
                         </div>
                         <div class="col-sm-2">
                             <button ng-if="show_edit" class="btn btn-success btn-xs pull-right" ng-click="copy_params(item.responseList);">&nbsp;copy&nbsp;</button>
