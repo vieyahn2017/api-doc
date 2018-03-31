@@ -24,6 +24,11 @@
     <div ng-show="current" >
         <form class="form-horizontal" name="apiForm" role="form">
             <div class="form-group">
+                <div class="col-sm-10">
+                    <button class="btn btn-sm btn-info pull-right" ng-click="current=paste_api();">Paste Api.</button>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="name" class="col-sm-2 control-label">接口名:</label>
                 <div class="col-sm-10">
                     <input type="text" required class="form-control" name="name" ng-model="current.name" id="name" placeholder="接口名称">
@@ -218,15 +223,18 @@
             <div id="{{item._id}}" class="panel-heading">
                 <h3 class="panel-title">
                     {{item.name}}
-                    <button ng-if="show_edit" class="btn btn-info btn-xs pull-right" ng-click="edit(item);">edit</button>
+                    <button ng-if="show_edit" class="btn btn-success btn-xs pull-right" ng-click="copy_api(item);">&nbsp;copy&nbsp;</button>
                     <button ng-if="show_edit" class="btn btn-danger btn-xs pull-right" style="margin-right: 5px;" ng-click="remove_api(item);">delete</button>
+                    <button ng-if="show_edit" class="btn btn-info btn-xs pull-right" style="margin-right: 5px;" ng-click="edit(item);">&nbsp;edit&nbsp;</button>
                 </h3>
                 <h4><kbd>{{item.method || 'GET'}}</kbd> - <kbd>{{item.url}}</kbd></h4>
             </div>
             <div class="panel-body">
                 <div class="alert alert-info">{{item.description}}</div>
                 <div ng-if="item.paramsList.length > 0">
-                    <h5>请求参数</h5>
+                    <h5>请求参数
+
+                    </h5>
                     <table class="table">
                         <thead>
                         <tr>
@@ -302,6 +310,7 @@
                     </table>
                 </div>
                 <h4>Demo:</h4>
+
                 <p>请求</p>
                 <div>
                     <pre>{{item.requestUrlDemo}}</pre>

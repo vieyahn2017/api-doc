@@ -11,6 +11,7 @@
 
     <script src="lib/angular.min.js"></script>
     <script src="lib/angular.ngRoute.js"></script>
+    <script src="lib/angular-clipboard.js"></script>
     <style type="text/css">
         body {
             padding-bottom: 40px;
@@ -37,7 +38,7 @@
 <script src="controller/api.js"></script>
 <script src="controller/about.js"></script>
 <script>
-    var app = angular.module("ngAPI", ["ngRoute"]);
+    var app = angular.module("ngAPI", ["ngRoute", 'angular-clipboard']);
 
     app.config(['$routeProvider',
         function ($routeProvider) {

@@ -2,11 +2,13 @@
  ** yanghao 2017-7-14.
  */
 
-function apiController($scope, $http, $q, $routeParams, $location, $window, $anchorScroll, $timeout) {
+function apiController($scope, $http, $q, $routeParams, $location, $window, $anchorScroll, $timeout, clipboard) {
 
     var href = $routeParams.href;
     $scope.href = href;
     $scope.base_url = get_base_url();
+    $scope.clipboard_api = null;
+    $scope.clipboard_params = null;
 
     $scope.show_api_list = function () {
         // $http.get($scope.base_url + "m/api?desc=true&href=" + href).success(function(data){  //添加的时候倒序方便点
@@ -78,6 +80,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     // $scope.authenticated = is_authenticated($scope, $http);
 
     $scope.authenticated = is_authenticated();
+    $scope.show_edit = $scope.authenticated;
     $scope.testing = is_testing();
 
     var uuid = function () {
@@ -573,5 +576,20 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
     }
 
 
+    $scope.copy_api = function (current) {
+        if (!clipboard.supported) {
+            console.log('Sorry, copy to clipboard is not supported');
+            return;
+        }
+        // 这个是可用的，把内容确实拷贝进了clipboard，但是目前怎么用clipboard组件传递到前端，没弄清。还是用$scope绑定变量传递吧。
+        // clipboard.copyText(JSON.stringify(current, null, 4));
+        $scope.clipboard_api = current;
+
+    };
+
+
+    $scope.paste_api = function () {
+        return angular.copy($scope.clipboard_api);
+    };
 }
 
