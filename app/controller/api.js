@@ -125,8 +125,10 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         "category_href": href
     };
 
-    $scope.clipboard_api = angular.copy(empty_api);
-    $scope.clipboard_params = [param_demo()];
+    //$scope.clipboard_api = angular.copy(empty_api);
+    //$scope.clipboard_params = [param_demo()];
+    $scope.clipboard_api = null;
+    $scope.clipboard_params = null;
 
     $scope.TYPES = [
         "string", "int", "boolean", "list", "json"
@@ -585,7 +587,9 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         // 这个是可用的，把内容确实拷贝进了clipboard，
         clipboard.copyText(JSON.stringify(current, null, 4));
         // 但是目前怎么用clipboard组件传递到前端，没弄清。还是用$scope绑定变量传递吧。
+        // 目前这种方式，不能跨分类粘贴，所以局限性很大。
         $scope.clipboard_api = current;
+
 
     };
 
@@ -609,12 +613,46 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
 
     };
 
+    var check_params_before_paste = function (bars) {
+        var result = {"validity": false, "items": []};
+        if(!bars) {
+            return result;
+        }
+        if(bars instanceof Array) {
+            for(var i = 0; i < bars.length; i++) {
+                var bar = bars[i];
+                //for (var key in bar) { console.log(key); console.log(bar[key]); }  //遍历
+                if(i == 0) {
+                    //简化工作量：就对第一项校验即可。
+                    if(!bar.hasOwnProperty("name")){break;};
+                    if(!bar.hasOwnProperty("default")){break;};
+                    if(!bar.hasOwnProperty("type_")){break;};
+                    if(!bar.hasOwnProperty("_id")){break;};
+                    if(!bar.hasOwnProperty("children")){break;};
+                    if(!bar.hasOwnProperty("parent_id")){break;};
+                }
+                result.items.push(bar.name);
+            }
+            if(result.items.length) {
+                result.validity = true;
+            }
+        }
+        return result;
+    };
+
     $scope.paste_params = function () {
-        console.log(JSON.stringify($scope.clipboard_params, null, 4));
-        if(confirm("确认粘贴params?")) {
-            // 校验
-            return angular.copy($scope.clipboard_params);
+        //console.log(JSON.stringify($scope.clipboard_params, null, 4));
+        var result = check_params_before_paste($scope.clipboard_params);
+        console.log(result);
+        if(result.validity) {
+            if(confirm("确认粘贴params? 包括：" + result.items.toString())) {
+                return angular.copy($scope.clipboard_params);
+            }
+        } else {
+            return [param_demo(), param_demo()];
         }
     };
+
+
 }
 
