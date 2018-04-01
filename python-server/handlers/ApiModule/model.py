@@ -93,22 +93,4 @@ class APiModel(BaseAPIModel):
 #  db.getCollection('params').update({"api_id": "-1"}, {$set:{"api_id": "596ecb42f0881b24e51c3e1a"}} , {multi: true})
 
 
-class RecordAPiModel(BaseAPIModel):
-    api_id = StringType()
-    name = StringType()
-    category_href = StringType()
-    time = StringType()
-    content = StringType()
 
-    _id = ObjectIdType(serialize_when_none=False)
-    MONGO_COLLECTION = 'recordapi'
-
-
-class RecordModel(BaseAPIModel):
-    name = StringType()
-    version = StringType()
-    time = StringType()
-    RecordApiIdList = ListType(StringType)
-
-    _id = ObjectIdType(serialize_when_none=False)
-    MONGO_COLLECTION = 'record'

@@ -185,7 +185,7 @@ class BaseConnectionPool(Thread):
                     self.check_server()
                 else:
                     self._recycle()
-                    # app_log.debug("%s have %d idle, %d busy" % (self._name, len(self._idle), len(self._busy)))
+                # app_log.debug("%s have %d idle, %d busy" % (self._name, len(self._idle), len(self._busy)))
             time.sleep(self._check_interval)
 
     @property
@@ -314,7 +314,7 @@ class StoreContext(object):
             # self._store.autocommit(self._autocommit)
         except:
             # if self._store:
-            # self._store.close()
+            #     self._store.close()
             raise
         return self._store
 

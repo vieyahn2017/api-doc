@@ -98,8 +98,7 @@ class CacheFlushWatcher(BaseWatcher):
                     final_keys.append(rel_key)
 
             app_log.debug(
-                "invalidate model cache %s with keys %s " % \
-                (table, str(final_keys)))
+                "invalidate model cache %s with keys %s " % (table, str(final_keys)))
             self._cache.delete_multi(final_keys)
 
 
