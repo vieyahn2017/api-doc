@@ -11,9 +11,9 @@ from .admin_model import user_model
 
 import json
 
+
 @Route(r"/api/register")
 class RegisterHandler(BaseHandler):
-
     def get(self):
         Session.logout(self)
         self.write_response()
@@ -21,10 +21,9 @@ class RegisterHandler(BaseHandler):
 
 @Route(r'/api/login')
 class LoginHandler(BaseHandler):
-
     @coroutine
     def post(self):
-        body = json.loads(self.request.body)  #, encoding='utf-8')
+        body = json.loads(self.request.body)  # , encoding='utf-8')
         # assert "username" in body, "missing argument <username> in body"
         # assert "password" in body, "missing argument <password>  in body"
         # username = body.get('username')
@@ -56,8 +55,6 @@ class LoginHandler(BaseHandler):
 
 @Route(r"/api/logout")
 class LogoutHandler(BaseHandler):
-
     def get(self):
         Session.logout(self)
         self.write_response()
-

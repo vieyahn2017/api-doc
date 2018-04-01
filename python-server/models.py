@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
-#Author: tony - birdaccp at gmail.com
+# -*-coding:utf-8 -*-
+# Author: tony - birdaccp at gmail.com
 from __future__ import absolute_import, with_statement
 from functools import wraps
 
@@ -11,7 +11,6 @@ from tornado.log import app_log
 
 from core import SystemStatus, EventHub
 from connproxy import StoreContext
-
 
 EVTHUB = EventHub()
 
@@ -36,7 +35,7 @@ def cache(func):
             get_cache_func = model.get_filter_by_from_cache
             cache_func = model.cache_filter_by
 
-        cached_result = get_cache_func(func.__name__, args ,kwargs)
+        cached_result = get_cache_func(func.__name__, args, kwargs)
         if cached_result:
             return cached_result
         else:
@@ -44,6 +43,7 @@ def cache(func):
             if db_result:
                 cache_func(func.__name__, args, kwargs, db_result)
             return db_result
+
     return _cache
 
 
@@ -65,7 +65,6 @@ class BaseModel(object):
             res = cur.fetchone()
         raise Return(res)
 
-
     @coroutine
     def execute_0(self, sql, param):
         with StoreContext() as store:
@@ -80,7 +79,6 @@ class BaseModel(object):
                 flag = False
         raise Return(flag)
 
-
     @coroutine
     def execute(self, sql, param=None):
         with StoreContext() as store:
@@ -92,7 +90,6 @@ class BaseModel(object):
                 flag = False
         raise Return(flag)
 
-
     @coroutine
     def batch(self, sql, datas):
         with StoreContext() as store:
@@ -103,7 +100,8 @@ class BaseModel(object):
                 yield ctx.commit()
                 flag = True
             except:
-                app_log.error("batch execute sql failed, raw_sql[{0}], details: {1}".format(sql, traceback.format_exc()))
+                app_log.error(
+                    "batch execute sql failed, raw_sql[{0}], details: {1}".format(sql, traceback.format_exc()))
                 yield ctx.rollback()
                 flag = False
         raise Return(flag)
@@ -119,7 +117,6 @@ class BaseGxmModel(BaseModel):
 
     def __init__(self):
         super(BaseGxmModel, self).__init__()
-
 
     @coroutine
     def execute_lastrowid(self, query, params=None):
@@ -157,5 +154,6 @@ class BaseGxmModel(BaseModel):
 
     @property
     def cache_server(self):
-        with StoreCache() as mc:
-            return mc
+        # with StoreCache() as mc:
+        #     return mc
+        return 1  # to do

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 #
-#Author: tony - birdaccp at gmail.com
-#Create by:2015-05-26 13:28:10
-#Last modified:2017-05-26 15:59:50
-#Filename:core.py
-#Description:
+# Author: tony - birdaccp at gmail.com
+# Create by:2015-05-26 13:28:10
+# Last modified:2017-05-26 15:59:50
+# Filename:core.py
+# Description:
 import sys
 import copy
 import weakref
@@ -16,6 +16,7 @@ from tornado.ioloop import IOLoop
 import utils
 import constant
 from config import settings, MONGODB_CONN
+
 
 class ThreadLocalStore(local):
     __metaclass__ = utils.Singleton
@@ -41,7 +42,9 @@ class ThreadLocalStore(local):
     def instance():
         return ThreadLocalStore._instance
 
+
 localstore = ThreadLocalStore()
+
 
 class Context(object):
     '''
@@ -83,9 +86,9 @@ class Context(object):
         It used to clear all key in self.store
         '''
         keys = filter(lambda key:
-                    key not in ("db", "mc") and (not key.startswith("config.")),
-                    self.store.iterkeys()
-                )
+                      key not in ("db", "mc") and (not key.startswith("config.")),
+                      self.store.iterkeys()
+                      )
 
         for key in keys:
             del self.store[key]
@@ -102,7 +105,9 @@ class Context(object):
         '''
         self.store[key] = value
 
+
 context = Context()
+
 
 class SystemStatus(object):
     @staticmethod
@@ -137,6 +142,7 @@ class SystemStatus(object):
         if "database_server_status" in context:
             return context["database_server_status"]
 
+
 def cache_client():
     if "cache" in localstore:
         return localstore.get("cache")
@@ -146,9 +152,11 @@ def cache_client():
         localstore.save("cache", cache)
         return cache
 
+
 def remove_cache_client():
     if "cache" in localstore:
         localstore.delete("cache")
+
 
 def append_token(token, tokens):
     '''
@@ -157,6 +165,7 @@ def append_token(token, tokens):
     token_list = list(tokens)
     token_list.append(token)
     return tuple(token_list)
+
 
 def remove_token(token, orgi_token):
     '''
@@ -167,6 +176,7 @@ def remove_token(token, orgi_token):
     if index > -1:
         token_list.pop(index)
     return tuple(token_list)
+
 
 class Session(object):
     def __init__(self, user, handler):
@@ -192,11 +202,11 @@ class Session(object):
         token_userid = "%s.userid" % str(self._token)
         self._user["token"] = self._token
         submit_data = {
-                        token_userid: str(self._user['_id']),
-                        user_token_key: (self._token, ),
-                        token_num_key: 1,
-                        queryid: self._user
-                        }
+            token_userid: str(self._user['_id']),
+            user_token_key: (self._token,),
+            token_num_key: 1,
+            queryid: self._user
+        }
         cache.set_multi(submit_data, settings["token_duration"])
         context[self._token] = self
 
@@ -207,9 +217,9 @@ class Session(object):
 
     def get_token(self):
         factor = "%s_%s_%d" % (
-                    repr(self._user['username']),
-                    repr(self._user['_id']),
-                    self._user['roles_id'])
+            repr(self._user['username']),
+            repr(self._user['_id']),
+            self._user['roles_id'])
 
         return utils.build_token(factor)
 
@@ -233,7 +243,7 @@ class Session(object):
                     return
                 if token_value in context:
                     session = context[token_value]
-                    #session.roles = cached_user["roles"]
+                    # session.roles = cached_user["roles"]
                     session.user = cached_user
                     session.update()
                     return session
@@ -256,6 +266,7 @@ class Session(object):
         user_token_key = "%s.token" % userid
 
         cache_client().delete_multi([token, token_userid, token_num_key, user_token_key])
+
 
 class EventHub(object):
     __metaclass__ = utils.Singleton
@@ -299,7 +310,9 @@ class EventHub(object):
         if callback in callbacks:
             callbacks.remove(callback)
 
+
 EVENTBUS = EventHub()
+
 
 class Application(object):
     def __init__(self):
@@ -387,6 +400,7 @@ class Application(object):
             context.get("message_backend").close()
             del context["message_backend"]
             app_log.debug("message backend closed!")
+
         try:
             import config
             backend_cls = utils.module_resolver(config.MESSAGE_BACKEND)
@@ -428,10 +442,10 @@ class Application(object):
         app_log.info("server listen on %s:%d" % (self._options.address, self._options.port))
         tornado.ioloop.IOLoop.instance().start()
 
+
 class MiddleWare(object):
     def process_request(self, handler):
         pass
 
     def process_response(self, handler):
         pass
-

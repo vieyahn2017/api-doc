@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 # @author:yanghao
-# @created:20170426
+# @created:
 ## Description: http_fetch
 
 import json
@@ -28,7 +28,7 @@ class Fetcher(object):
             code = response_body.get('code')
             rows = response_body.get('rows')
             if is_log:
-                app_log.info(("receive_rows:" , rows, type(rows), "code: ", code, "msg: ", response_body.get("msg")))
+                app_log.info(("receive_rows:", rows, type(rows), "code: ", code, "msg: ", response_body.get("msg")))
             # app_log.debug("receive_rows:%s %s" % (rows, type(rows)))
             results = {
                 "rows": rows,
@@ -40,11 +40,11 @@ class Fetcher(object):
             app_log.error('{0}: {1}  Msg: {2}'.format(method.upper(), fetch_url, e))
             raise Return({"url": fetch_url, "code": -1, "msg": e})
         else:
-            app_log.debug("{0}: {1}  Code: {2}  MSG: {3}".format(method.upper(), fetch_url, code, response_body.get('msg')))
+            app_log.debug(
+                "{0}: {1}  Code: {2}  MSG: {3}".format(method.upper(), fetch_url, code, response_body.get('msg')))
             if is_log and body:
                 app_log.info(escape.json_decode(body))
             raise Return(results)
-
 
     @coroutine
     def fetch_rows(self, url, is_log=False):
@@ -83,7 +83,7 @@ CC_MODULES = {
 
 def get_module_url(part, module):
     _url, _port = part[module]
-    return "http://%s:%s/api/v1" %(_url, _port)
+    return "http://%s:%s/api/v1" % (_url, _port)
 
 
 cc_compute_fetcher = Fetcher(get_module_url(CC_MODULES, "Compute"))

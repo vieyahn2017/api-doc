@@ -4,10 +4,12 @@ from tornado.ioloop import IOLoop
 from tornado.concurrent import Future
 from functools import partial
 
+
 class MessageBackEnd(object):
     '''
     创建到消息后端的连接,发送消息
     '''
+
     def __init__(self, config):
         self._config = config
         self._connection = None
@@ -21,12 +23,12 @@ class MessageBackEnd(object):
     def publish(self, topic, queuename, body, callback):
         pass
 
+
 from pika import URLParameters
 from pika.adapters.tornado_connection import TornadoConnection
 
 
 class ChannelProxy(object):
-
     __WRAPPED_METHOD = ("")
 
     def __init__(self, channel):
@@ -54,8 +56,8 @@ class ChannelProxy(object):
     def __getattr__(self, attr):
         return getattr(self._channel, attr)
 
-class RabbitBackend(MessageBackEnd):
 
+class RabbitBackend(MessageBackEnd):
     def __init__(self, config):
         super(RabbitBackend, self).__init__(config)
         self._channel = None
@@ -66,9 +68,9 @@ class RabbitBackend(MessageBackEnd):
         url_params = self._config.MQ_URI
         future = Future()
         TornadoConnection(URLParameters(url_params),
-                                        partial(self.on_connection_open, future),
-                                        partial(self.on_open_error, future)
-                                        )
+                          partial(self.on_connection_open, future),
+                          partial(self.on_open_error, future)
+                          )
         return future
 
     def on_connection_open(self, future, unused_connection):
@@ -133,11 +135,11 @@ class RabbitBackend(MessageBackEnd):
         return declare_future
 
     def publish(self,
-            routing_key,
-            body,
-            exchange="",
-            exchange_type="direct",
-            **kwargs):
+                routing_key,
+                body,
+                exchange="",
+                exchange_type="direct",
+                **kwargs):
 
         def publish_callback(future):
             self._channel.basic_publish(exchange, routing_key, body)
@@ -147,16 +149,16 @@ class RabbitBackend(MessageBackEnd):
         return declare_future
 
     def consume(self,
-            queue,
-            routing_key=None,
-            callback=None,
-            no_ack=True,
-            exclusive=False,
-            exchange="",
-            channel=None
-            ):
-        #怎么做到一直hold住一个连接并持续写回数据
-        #不调用self.finish方法并把连接标为异步
+                queue,
+                routing_key=None,
+                callback=None,
+                no_ack=True,
+                exclusive=False,
+                exchange="",
+                channel=None
+                ):
+        # 怎么做到一直hold住一个连接并持续写回数据
+        # 不调用self.finish方法并把连接标为异步
 
 
         def on_queue_bind(unused_frame):
@@ -169,6 +171,7 @@ class RabbitBackend(MessageBackEnd):
             else:
                 self._channel.basic_consume(callback, queue, no_ack, exclusive)
                 # self._channel.basic_consume(on_message, queue, no_ack, exclusive)
+
         declare_future = self.queue_declare(queue)
         self._ioloop.add_future(declare_future, start_consume)
 

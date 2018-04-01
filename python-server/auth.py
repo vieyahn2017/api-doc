@@ -14,7 +14,6 @@ class AuthorizationException(Exception):
 
 
 class RbacChecker(object):
-
     @staticmethod
     def get_config(path):
         rbac_config = context["rbac"]
@@ -54,17 +53,15 @@ def must_login(handler):
 
 
 class SetDefaultHeader(MiddleWare):
-
     def process_request(self, request):
         request.set_header("Server", "")
         request.set_header("Cache-Control", "no-cache, no-store, must-revalidate")
         request.set_header("Pragma", "no-cache")
-        request.set_header("Expires","0")
+        request.set_header("Expires", "0")
         request.set_header("X-Content-Type-Options", "nosniff")
 
 
 class CheckLogin(MiddleWare):
-
     def process_request(self, request):
         if must_login(request):
             if not self.is_login(request):
@@ -75,7 +72,6 @@ class CheckLogin(MiddleWare):
 
 
 class CheckRights(MiddleWare):
-
     def process_request(self, request):
         self.check_roles(request)
 

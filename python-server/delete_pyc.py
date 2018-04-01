@@ -1,13 +1,14 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 #
-#Author: tony - birdaccp at gmail.com
-#Create by:2015-09-30 14:04:12
-#Last modified:2015-11-27 16:24:19
-#Filename:delete_pyc.py
-#Description:
+# Author: tony - birdaccp at gmail.com
+# Create by:2015-09-30 14:04:12
+# Last modified:2015-11-27 16:24:19
+# Filename:delete_pyc.py
+# Description:
 
 import os
+
 
 class listFiles(object):
     def __init__(self, destPath):
@@ -26,6 +27,7 @@ class listFiles(object):
             elif os.path.isfile(p):
                 self.files.append(p)
 
+
 ls = listFiles(os.getcwd())
 for l in ls.getAllFiles():
     file, ext = os.path.splitext(l)
@@ -35,4 +37,3 @@ for l in ls.getAllFiles():
     if ext in ['.pyc']:
         print l
         os.unlink(l)
-

@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
 # @author:yanghao 
-# @created:20170414
+# @created:
 # # Description: motor ORM by schematics, this file is the models.
-
 
 from schematics.types import StringType, IntType, BooleanType
 from schematics.types.compound import ListType, DictType
 from schematics.contrib.mongo import ObjectIdType
+from tornado.gen import coroutine, Return
 from handlers.mongo_orm import BaseMongoModel
-from tornado import gen
 from core import context
 
 
-# 想写一个公有类，实现这两个属性的自动化，未完成
+# 想在公有类，实现这两个属性的自动化，未完成
 # class MyBaseModel(BaseModel):
 #     MONGO_COLLECTION = ""
 #     _id = ObjectIdType(serialize_when_none=False)
@@ -43,15 +42,15 @@ class ParamModel(BaseAPIModel):
     default = StringType()
     type_ = StringType()
     description = StringType()
-    subParamsIdList = ListType(StringType)   # type_=="json"，此项有值。
-    parent_id = StringType() # 如果是api_id的直系节点。此字段为None；【与之对应的是type_=="json"类型参数的子节点】
+    subParamsIdList = ListType(StringType)  # type_=="json"，此项有值。
+    parent_id = StringType()  # 如果是api_id的直系节点。此字段为None；【与之对应的是type_=="json"类型参数的子节点】
     api_id = StringType()
     category_href = StringType()
 
     # _id = ObjectIdType(serialize_when_none=False)
     MONGO_COLLECTION = 'params'
 
-    @gen.coroutine
+    @coroutine
     def to_primitive_fix(self):
         """ # subParamsIdList -> children """
         result = self.to_primitive()
@@ -68,7 +67,7 @@ class ParamModel(BaseAPIModel):
         result.update({"children": children})
         del result["subParamsIdList"]
         # print "to_primitive_fix===", result
-        raise gen.Return(result)
+        raise Return(result)
 
 
 class APiModel(BaseAPIModel):
@@ -92,3 +91,24 @@ class APiModel(BaseAPIModel):
 
 # # 在mongodb的shell里面手动修改：
 #  db.getCollection('params').update({"api_id": "-1"}, {$set:{"api_id": "596ecb42f0881b24e51c3e1a"}} , {multi: true})
+
+
+class RecordAPiModel(BaseAPIModel):
+    api_id = StringType()
+    name = StringType()
+    category_href = StringType()
+    time = StringType()
+    content = StringType()
+
+    _id = ObjectIdType(serialize_when_none=False)
+    MONGO_COLLECTION = 'recordapi'
+
+
+class RecordModel(BaseAPIModel):
+    name = StringType()
+    version = StringType()
+    time = StringType()
+    RecordApiIdList = ListType(StringType)
+
+    _id = ObjectIdType(serialize_when_none=False)
+    MONGO_COLLECTION = 'record'

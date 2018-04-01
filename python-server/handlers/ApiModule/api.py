@@ -1,36 +1,25 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 # @author:yanghao
-# @created:20170712
-## Description: export models.
-
-
+# @created:
+## Description:
 
 from __future__ import absolute_import
-
 from tornado.gen import coroutine
-from tornado.log import app_log
-
 from handlers import BaseProxyHandler, Route
-from core import context, cache_client
-from config import settings
 from config import BASE_URL
-
 import json
-
-
-from handlers.fetcher import *
 
 
 @Route("m")
 class ApiSaveHandler(BaseProxyHandler):
-
     def get(self):
         base_url = BASE_URL
 
         api = [
             'm/api/type',
             'm/api/param',
+            'm/api/record',
             'm/api',
             'm/api/exist',
         ]
@@ -51,59 +40,14 @@ class ApiSaveHandler(BaseProxyHandler):
 
 @Route("m/api/save")
 class ApiSaveHandler(BaseProxyHandler):
-
     @coroutine
     def post(self):
-        body = json.loads(self.request.body)  #, encoding='utf-8')
+        body = json.loads(self.request.body)
         print body
 
 
 @Route("m/api/test")
 class ApiTestHandler(BaseProxyHandler):
-
     @coroutine
     def get(self):
         self.write_rows()
-
-
-
-"""
-
-<?php
-/**
- * Created by PhpStorm.
- * User: danghongyang
- * Date: 13-12-26
- * Time: 下午11:41
- */
-$href = $_POST["href"];
-
-$content = json_decode($content, true);
-$content = json_encode($content);
-
-$filename = "../data/".$href.".json";
-
-copy($filename, "../data/".$href."-".date("Y-m-d")."-".time().".json");
-
-unlink($filename);
-
-
-<?php
-/**
- * Created by PhpStorm.
- * User: danghongyang
- * Date: 13-12-26
- * Time: 下午11:41
- */
-
-$content = $_POST["content"];
-$href = $_POST["href"];
-
-$content = json_decode($content, true);
-$content = json_encode($content);
-
-$r = file_put_contents("../data/".$href.".json", $content);
-$r = file_put_contents("../data/".$href."-".date("Y-m-d")."-".time().".json", $content);
-
-"""
-

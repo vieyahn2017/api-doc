@@ -1,29 +1,27 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 # @author: yanghao 
-# @ date 20170606
-## Description: cc_web.py
+# @created:
+## Description:
 
 
 from __future__ import absolute_import
 
 from tornado.gen import coroutine, Return
-from tornado.ioloop import IOLoop
 from tornado.log import app_log
 
 from handlers import BaseProxyHandler, Route
 from core import context, cache_client
-from config import settings
 
+import datetime
 import json
 import uuid
 from bson import ObjectId
 
-from .model import CategoryModel, ParamModel, APiModel
+from .model import CategoryModel, ParamModel, APiModel, RecordAPiModel, RecordModel
 
 
 class BaseMongoHandler(BaseProxyHandler):
-
     @property
     def db(self):
         return context['dbconn']
@@ -47,21 +45,20 @@ class BaseMongoHandler(BaseProxyHandler):
         except:
             self.write_failure(msg="write_model error")
 
+
 false = False
 true = True
 
 
 @Route("m/api/authenticated")
-class APiModelCheckExistHandler(BaseMongoHandler):
-
+class ApiAuthenticatedHandler(BaseMongoHandler):
     @coroutine
     def get(self):
         self.write_ok()
 
 
 @Route("m/api/category")
-class CategoryModelTestHandler(BaseMongoHandler):
-
+class CategoryModelHandler(BaseMongoHandler):
     @coroutine
     def get(self):
         """ by href"""
@@ -89,7 +86,8 @@ class CategoryModelTestHandler(BaseMongoHandler):
         _id = body.get("_id", None)
         app_log.info((body, _id))
         if _id:
-            yield CategoryModel({"name": name, "href": href, "description": description}).update(query={"_id": ObjectId(_id)})
+            yield CategoryModel({"name": name, "href": href, "description": description}).update(
+                query={"_id": ObjectId(_id)})
             # 这里并不一定正确，还需要test
         else:
             yield CategoryModel({"name": name, "href": href, "description": description}).save()
@@ -104,8 +102,7 @@ class CategoryModelTestHandler(BaseMongoHandler):
 
 
 @Route("m/api/param")
-class ParamModelTestHandler(BaseMongoHandler):
-
+class ParamModelHandler(BaseMongoHandler):
     @coroutine
     def get(self):
         objects = []
@@ -138,7 +135,7 @@ class ParamModelTestHandler(BaseMongoHandler):
                 continue
                 # parent_id不为null/None的根param，只是前端展示加入的Mock数据，跳过
 
-            subParamsIdList = [] # children -> subParamsIdList
+            subParamsIdList = []  # children -> subParamsIdList
             # json字段，单独处理，目前不支持多层嵌套。
             if type_ == "json":
                 children = body["children"]
@@ -179,14 +176,12 @@ class ParamModelTestHandler(BaseMongoHandler):
             "temp_api_id": api_id
         })
 
-
     @coroutine
     def put(self):
         """ update
         跟post比较大的不同，我在前端多封装了一层，封装了一个api_id和rows
         """
         bodys = json.loads(self.request.body)
-        api_id = "-1" # 本次update, 可能存在之前的param有api_id，也有新的param没有api_id
         if bodys:
             api_id = bodys["api_id"]
             id_rows = []
@@ -198,7 +193,7 @@ class ParamModelTestHandler(BaseMongoHandler):
                     continue
                     # parent_id不为null/None的根param，只是前端展示加入的Mock数据，跳过
 
-                subParamsIdList = [] # children -> subParamsIdList
+                subParamsIdList = []  # children -> subParamsIdList
                 # json字段，单独处理，目前不支持多层嵌套。
                 if type_ == "json":
                     children = body["children"]
@@ -257,7 +252,6 @@ def cmp_by_object_id_desc(x, y):
 
 @Route("m/api/exist")
 class APiModelCheckExistHandler(BaseMongoHandler):
-
     @coroutine
     def get(self):
         name = self.get_argument('name')
@@ -272,8 +266,7 @@ class APiModelCheckExistHandler(BaseMongoHandler):
 
 
 @Route("m/api")
-class APiModelTestHandler(BaseMongoHandler):
-
+class APiModelHandler(BaseMongoHandler):
     @coroutine
     def parse_param_sub_list(self, sub_list):
         res_list = []
@@ -282,14 +275,14 @@ class APiModelTestHandler(BaseMongoHandler):
             if object_param:
                 result = yield object_param.to_primitive_fix()
                 res_list.append(result)
-            # # 下面是把children代为mock数据append，这种会有问题！
-            # # 还是到前端去append吧，还是同一个对象，处理也省事好多，不需要单独去同步数据
-            # for sub_id_param in object_param.subParamsIdList:
-            #     assert object_param.type_ == 'json'
-            #     object_param_sub = yield ParamModel.find_one(self.db, {"_id": sub_id_param})
-            #     if object_param_sub:
-            #         result = yield object_param_sub.to_primitive_fix()
-            #         res_list.append(result)
+                # # 下面是把children代为mock数据append，这种会有问题！
+                # # 还是到前端去append吧，还是同一个对象，处理也省事好多，不需要单独去同步数据
+                # for sub_id_param in object_param.subParamsIdList:
+                #     assert object_param.type_ == 'json'
+                #     object_param_sub = yield ParamModel.find_one(self.db, {"_id": sub_id_param})
+                #     if object_param_sub:
+                #         result = yield object_param_sub.to_primitive_fix()
+                #         res_list.append(result)
         raise Return(res_list)
 
     @coroutine
@@ -396,3 +389,81 @@ class APiModelTestHandler(BaseMongoHandler):
         item = yield self.parse_param_one(model.to_primitive())
         self.write_rows(rows=item)
 
+
+@Route("m/api/record/api")
+class RecordApiModelHandler(BaseMongoHandler):
+    @coroutine
+    def get(self):
+        objects = []
+        _id = self.get_argument('id', None)
+        if _id:
+            obj = yield RecordAPiModel.find_one(self.db, {"_id": _id})
+            objects.append(obj)
+        else:
+            cursor = RecordAPiModel.get_cursor(self.db, {})
+            objects = yield RecordAPiModel.find(cursor)
+        if objects:
+            self.write_models(objects)
+        else:
+            self.write_ok(msg="no result")
+
+    @coroutine
+    def post(self):
+        bodys = json.loads(self.request.body)
+        id_rows = []
+        for body in bodys:
+            _id = ObjectId()
+            yield RecordAPiModel({
+                "name": body["name"],
+                "category_href": body["category_href"],
+                "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "content": body["content"],
+                "api_id": body["api_id"],
+                "_id": _id  # _id是这个RecordApiModel本身的_id, api_id 是对应的api的_id
+            }).save()
+            id_rows.append(str(_id))
+        self.write_rows(rows=id_rows)
+
+
+@Route("m/api/record")
+class RecordModelHandler(BaseMongoHandler):
+    @coroutine
+    def get(self):
+        objects = []
+        _id = self.get_argument('id', None)
+        if _id:
+            obj = yield RecordModel.find_one(self.db, {"_id": _id})
+            objects.append(obj)
+        else:
+            cursor = RecordModel.get_cursor(self.db, {})
+            objects = yield RecordModel.find(cursor)
+
+        if objects:
+            self.write_models(objects)
+        else:
+            self.write_ok(msg="no result")
+
+    @coroutine
+    def post(self):
+        body = json.loads(self.request.body)
+        yield RecordModel({
+            "name": body["name"],
+            "version": body["version"],
+            "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "RecordApiIdList": body["RecordApiIdList"],
+            "_id": ObjectId()
+        }).save()
+        self.write_ok()
+
+    @coroutine
+    def put(self):
+        """ 只允许，修改版本 version """
+        body = json.loads(self.request.body)
+        yield RecordModel({
+            "name": body["name"],
+            "version": body["version"],
+            "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "RecordApiIdList": body["RecordApiIdList"],
+            "_id": ObjectId()
+        }).save()
+        self.write_ok()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 # @author:yanghao 
-# @created:20170524
+# @created:
 ## Description: model of  __init__.py  [@Route(r'/api/login') , etc...]
 
 import time
@@ -13,23 +13,15 @@ from connproxy import StoreContext
 from models import BaseModel
 
 
-class SmsModel(BaseModel):
-    @coroutine
-    def get_one_sms(self):
-        res = yield self.get("SELECT account, password, url, content FROM sys_sms_config WHERE flag='1' LIMIT 1")
-        raise Return(res)
-sms_model = SmsModel()
-
 class UserModel(BaseModel):
-
     @coroutine
     def check_user(self, user_name, password_add_token=None, is_log=False):
         """检查username是否存在，如果username存在，检查password是否正确"""
         if password_add_token is None:
-            result = yield model.get("""SELECT _id  FROM webservice_user WHERE username=%s LIMIT 1;""",  (user_name,))
+            result = yield self.get("""SELECT _id  FROM webservice_user WHERE username=%s LIMIT 1;""", (user_name,))
         else:
-            result = yield model.get("""SELECT _id  FROM webservice_user WHERE username=%s AND password=%s LIMIT 1;
-                                                 """,  (user_name, password_add_token))
+            result = yield self.get("""SELECT _id  FROM webservice_user WHERE username=%s AND password=%s LIMIT 1;
+                                                 """, (user_name, password_add_token))
         if is_log:
             app_log.info(result)
         raise Return(result)
@@ -43,8 +35,8 @@ class UserModel(BaseModel):
             ctx = yield store.begin()
             try:
                 yield ctx.execute("""INSERT INTO webservice_user (username, email, phone, password, email_token, reg_date, flag) 
-                                               VALUES (%s,%s,%s,%s,%s,%s, 0)""", 
-                                               (email, email, phone, password, email_token, reg_timestamp))
+                                               VALUES (%s,%s,%s,%s,%s,%s, 0)""",
+                                  (email, email, phone, password, email_token, reg_timestamp))
                 yield ctx.commit()
                 flag = True
             except:
@@ -165,5 +157,5 @@ class UserModel(BaseModel):
             app_log.info(("update_user success ? ", flag, user_id, key, vaule))
         raise Return(flag)
 
-user_model = UserModel()
 
+user_model = UserModel()

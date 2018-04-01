@@ -5,6 +5,7 @@ import constant
 from tornado.log import app_log
 from core import EventHub, cache_client, SystemStatus, context
 
+
 class BaseWatcher(object):
     def __init__(self):
         self._evthub = EventHub()
@@ -17,6 +18,7 @@ class BaseWatcher(object):
     def install(watcher):
         watcher()
         app_log.debug("Event Hook [%s] install ok" % watcher)
+
 
 class SystemAlertWatcher(BaseWatcher):
     def register_user_evts(self):
@@ -53,7 +55,6 @@ class SystemAlertWatcher(BaseWatcher):
 
 
 class UserLoginWatcher(BaseWatcher):
-
     def register_user_evts(self):
         self._evthub.hook("user.logined", self.user_login_event)
 
@@ -71,7 +72,6 @@ class SyncSystemMessage(BaseWatcher):
 
 
 class CacheFlushWatcher(BaseWatcher):
-
     def __init__(self):
         super(CacheFlushWatcher, self).__init__()
         self._cache = cache_client()
@@ -98,13 +98,12 @@ class CacheFlushWatcher(BaseWatcher):
                     final_keys.append(rel_key)
 
             app_log.debug(
-                        "invalidate model cache %s with keys %s " % \
-                                            (table, str(final_keys)))
+                "invalidate model cache %s with keys %s " % \
+                (table, str(final_keys)))
             self._cache.delete_multi(final_keys)
 
 
 class UserWatcher(CacheFlushWatcher):
-
     def __init__(self):
         super(UserWatcher, self).__init__()
 

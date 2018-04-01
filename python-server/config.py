@@ -5,44 +5,44 @@ base_host = "127.0.0.1"
 
 settings = {
     "gzip": False,
-    "salt":"dL4+QD38pvumyQ+4KH1txZkNt3cez3+NtL2Sz70XNCo=",
+    "salt": "dL4+QD38pvumyQ+4KH1txZkNt3cez3+NtL2Sz70XNCo=",
     "token_duration": 3600,
     "token_name": "X-Xsrf-Token",
     "logfile": "log/api_doc.log",
-    "executor_number": 10  #真正运行时估计不够
+    "executor_number": 10  # 真正运行时估计不够
 }
 
 dbConf = {
     "host": base_host,
     "port": 3306,
-    "db":  "test",
+    "db": "test",
     "user": "test",
     "password": "test",
     "charset": "utf8",
 }
 
 dbPool = {
-    "max_idle_connections": 20, #最大保持连接数
-    "max_recycle_sec": 3, #回收时间
+    "max_idle_connections": 20,  # 最大保持连接数
+    "max_recycle_sec": 3,  # 回收时间
 }
 
 cacheServers = ["{0}:11211".format(base_host)]
 
 EVENT_HOOKS = (
-            "events.UserLoginWatcher",
-            "events.CacheFlushWatcher",
-            "events.UserWatcher",
-            "events.SyncSystemMessage",
-            "events.SystemAlertWatcher",
-            "events.NoticeWatcher",
-        )
+    "events.UserLoginWatcher",
+    "events.CacheFlushWatcher",
+    "events.UserWatcher",
+    "events.SyncSystemMessage",
+    "events.SystemAlertWatcher",
+    "events.NoticeWatcher",
+)
 
 MIDDLEWARE_CLASSES = (
-            "auth.CheckLogin",
-            "auth.CheckRights",
-            #"cache.CacheMyWorkResponse",
-            "auth.SetDefaultHeader",
-        )
+    "auth.CheckLogin",
+    "auth.CheckRights",
+    # "cache.CacheMyWorkResponse",
+    "auth.SetDefaultHeader",
+)
 
 RBAC_FILE = "./rights.yml"
 
@@ -60,6 +60,7 @@ DEFAULT_MODULE = "ApiModule"
 BASE_URL = "http://%s:%s" % (base_host, DEFAULT_PORT)
 
 import motor
+
 mongodb_host = "{0}:27017".format(base_host)
 mongodb_client = motor.motor_tornado.MotorClient('mongodb://%s' % mongodb_host)
 MONGODB_CONN = mongodb_client.apis

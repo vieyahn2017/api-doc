@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 # @author: yanghao 
 # @ date 20170606
 ## Description: cc_web.py
@@ -22,7 +22,6 @@ from .model import CategoryModel, ParamModel, APiModel
 
 
 class BaseMongoHandler(BaseProxyHandler):
-
     @property
     def db(self):
         return context['dbconn']
@@ -42,13 +41,13 @@ class BaseMongoHandler(BaseProxyHandler):
         except:
             self.write_failure(msg="write_model error")
 
+
 false = False
 true = True
 
 
 @Route("m/api/authenticated")
 class APiModelCheckExistHandler(BaseMongoHandler):
-
     @coroutine
     def get(self):
         self.write_failure()
@@ -56,7 +55,6 @@ class APiModelCheckExistHandler(BaseMongoHandler):
 
 @Route("m/api/category")
 class CategoryModelTestHandler(BaseMongoHandler):
-
     @coroutine
     def get(self):
         """ by href"""
@@ -77,7 +75,6 @@ class CategoryModelTestHandler(BaseMongoHandler):
 
 @Route("m/api/param")
 class ParamModelTestHandler(BaseMongoHandler):
-
     @coroutine
     def get(self):
         objects = []
@@ -113,7 +110,6 @@ def cmp_by_object_id_desc(x, y):
 
 @Route("m/api/exist")
 class APiModelCheckExistHandler(BaseMongoHandler):
-
     @coroutine
     def get(self):
         name = self.get_argument('name')
@@ -129,7 +125,6 @@ class APiModelCheckExistHandler(BaseMongoHandler):
 
 @Route("m/api")
 class APiModelTestHandler(BaseMongoHandler):
-
     @coroutine
     def parse_param_one(self, item):
         paramsIdList = item.pop("paramsIdList")
@@ -145,7 +140,7 @@ class APiModelTestHandler(BaseMongoHandler):
         responseIdList = item.pop("responseIdList")
         responseList = []
         for id_param in responseIdList:
-            query_param = {"_id" : id_param}
+            query_param = {"_id": id_param}
             object_param = yield ParamModel.find_one(self.db, query_param)
             if object_param:
                 responseList.append(object_param.to_primitive())
@@ -169,6 +164,3 @@ class APiModelTestHandler(BaseMongoHandler):
             self.write_rows(rows=sorted(objects_list, cmp_by_object_id_desc))
         else:
             self.write_rows(rows=sorted(objects_list, cmp_by_object_id))
-
-
-

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 #
-#Author: tony - birdaccp at gmail.com
-#Create by:2015-08-26 13:51:41
-#Last modified:2017-05-26 17:13:32
-#Filename:handlers.__init__.py
-#Description:
+# Author: tony - birdaccp at gmail.com
+# Create by:2015-08-26 13:51:41
+# Last modified:2017-05-26 17:13:32
+# Filename:handlers.__init__.py
+# Description:
 
 from __future__ import absolute_import
 from cStringIO import StringIO
@@ -24,6 +24,7 @@ from tornado.log import app_log
 from core import context, Session
 from config import API_VERSION
 
+
 class Route(object):
     urls = []
 
@@ -35,7 +36,10 @@ class Route(object):
                 _url = r"/api/%s/%s" % (API_VERSION, url)
             self.urls.append(tornado.web.URLSpec(_url, cls, name=name))
             return cls
+
         return _
+
+
 Route = Route()
 
 
@@ -68,7 +72,6 @@ class WireCallable(object):
 
 
 class BaseHandler(tornado.web.RequestHandler):
-
     def check_xsrf_cookie(self):
         return False
 
@@ -108,7 +111,7 @@ class BaseHandler(tornado.web.RequestHandler):
     def write_error(self, status_code, **kwargs):
         exc_cls, exc_instance, trace = kwargs.get("exc_info")
         if not hasattr(exc_instance, "status_code"):
-            exc_instance.status_code=500
+            exc_instance.status_code = 500
         status_code = exc_instance.status_code
         if status_code not in httputil.responses:
             status_code = 500
@@ -181,11 +184,11 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def get_page_query(self, form):
         form_params = {
-                    "curpage": form.curpage.data,
-                    "perpage": form.perpage.data,
-                    "totalpage": form.totalpage.data,
-                    "keywords": form.keywords.data
-                }
+            "curpage": form.curpage.data,
+            "perpage": form.perpage.data,
+            "totalpage": form.totalpage.data,
+            "keywords": form.keywords.data
+        }
         return form_params
 
     def write_rows(self, code=1, msg='', form=None, rows=()):
@@ -285,7 +288,7 @@ class BaseProxyHandler(BaseHandler):
         self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header("Access-Control-Allow-Headers", 'Content-Type')
         self.set_header('Access-Control-Allow-Methods', 'PUT, DELETE, POST, GET')
-        self.set_header('Access-Control-Allow-Credentials',  "true")
+        self.set_header('Access-Control-Allow-Credentials', "true")
 
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
@@ -325,8 +328,8 @@ class BaseProxyHandler(BaseHandler):
         self.write_rows(code=code, msg="the lsp_err_e codes: {0}".format(rets))
 
     def parse_fetch(self, item):
-        if item.get('code') in [404, 500]: # 404, 500
-            #self.write_error(status_code=item.get('code'), exc_info=item)
+        if item.get('code') in [404, 500]:  # 404, 500
+            # self.write_error(status_code=item.get('code'), exc_info=item)
             # item = {'url': 'http://10.0.0.252:30002/api/v1/compute/az', 'msg': '[Errno 111] Connection refused', 'code': 404}
             self.write(item)
             self.finish()
@@ -335,10 +338,11 @@ class BaseProxyHandler(BaseHandler):
         if item.get("rows"):
             return item.get("rows")
 
-    #@coroutine #有这个就会因为write而RuntimeError: Cannot write() after finish()
+    # @coroutine #有这个就会因为write而RuntimeError: Cannot write() after finish()
     @asynchronous
     def unblock(self, func, *args, **kwargs):
         """实现了传值rows， 不过还是有很大局限性, *args, **kwargs 是func的参数"""
+
         def _callback(future, rows, msg, code, callback):
             # future.set_result({"rows"=rows, "msg"=msg, "code"=code})
             # app_log.info(future.result()) # None
@@ -346,7 +350,7 @@ class BaseProxyHandler(BaseHandler):
                 callback()
             self.write_rows(rows=rows, msg=msg, code=code)
             self.finish()
-            #callback_done(rows)  # add a param: callback_done ?
+            # callback_done(rows)  # add a param: callback_done ?
 
         app_log.warn(("run in executor for unblocking:", self._request_summary()))
         rows = kwargs.get('rows', [])
@@ -355,11 +359,12 @@ class BaseProxyHandler(BaseHandler):
         callback = kwargs.get('callback', None)
 
         self.executor.submit(
-                functools.partial(func, *args, **kwargs)
-            ).add_done_callback(
-                lambda future: IOLoop.instance().add_callback(
-                    functools.partial(_callback, future, rows, msg, code, callback))
-            )
+            functools.partial(func, *args, **kwargs)
+        ).add_done_callback(
+            lambda future: IOLoop.instance().add_callback(
+                functools.partial(_callback, future, rows, msg, code, callback))
+        )
+
 
 @Route(r"/")
 class IndexHandler(BaseHandler):
@@ -376,12 +381,12 @@ def unblock_wraps(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
         self = args[0]
- 
+
         def callback(future):
             app_log.info(future.result())
             self.write_ok()
             self.finish()
- 
+
         EXECUTOR = context["executor"]
         EXECUTOR.submit(
             functools.partial(f, *args, **kwargs)
@@ -389,9 +394,8 @@ def unblock_wraps(f):
             lambda future: IOLoop.instance().add_callback(
                 functools.partial(callback, future))
         )
- 
+
     return wrapper
 
 
 from . import admin
-

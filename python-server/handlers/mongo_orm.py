@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 # @author:yanghao 
 # @created:20170414
 ## mongodb_models.py
@@ -23,12 +23,13 @@ import logging
 # l = logging.getLogger(__name__)
 
 from tornado.log import app_log
+
 l = app_log
 
-
 MAX_FIND_LIST_LEN = 100
-MONGO_RECONNECT_TRIES =  5
+MONGO_RECONNECT_TRIES = 5
 MONGO_RECONNECT_TIMEOUT = 2  # in seconds
+
 
 class BaseMongoModel(Model):
     """
@@ -216,7 +217,7 @@ class BaseMongoModel(Model):
 
     @gen.coroutine
     def update(self, db=None, query=None, collection=None, update=None, ser=None,
-            upsert=False, multi=False):
+               upsert=False, multi=False):
         """
         Updates the object. If object has _id, then try to update the object.
         If object with given _id is not found in database, or object doesn't
@@ -264,7 +265,6 @@ class BaseMongoModel(Model):
         query = cls.process_query(query)
         return db[c].find(query, fields) if fields else db[c].find(query)
 
-
     @classmethod
     @gen.coroutine
     def find(cls, cursor, model=True, list_len=None):
@@ -311,7 +311,6 @@ class BaseMongoModel(Model):
             else:
                 raise gen.Return(result)
 
-
     @staticmethod
     def reconnect_amount():
         return xrange(MONGO_RECONNECT_TRIES + 1)
@@ -325,7 +324,7 @@ class BaseMongoModel(Model):
             timeout = MONGO_RECONNECT_TIMEOUT
             l.warning("ConnectionFailure #{0} in {1}.{2}. Waiting {3} seconds"
                 .format(
-                    reconnect_number + 1, cls.__name__, func_name, timeout))
+                reconnect_number + 1, cls.__name__, func_name, timeout))
             io_loop = ioloop.IOLoop.instance()
             yield gen.Task(io_loop.add_timeout, timedelta(seconds=timeout))
 
@@ -350,8 +349,7 @@ class BaseMongoModel(Model):
             l.warning(
                 "'{0}' has unhandled fields in DB: "
                 "'{1}'. {2} returned data: '{3}'"
-                .format(cls.__name__, new_keys, data, method_name))
+                    .format(cls.__name__, new_keys, data, method_name))
             for new_key in new_keys:
                 del data[new_key]
         return cls(raw_data=data, db=db)
-

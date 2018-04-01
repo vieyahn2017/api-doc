@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-#Author alex8224 at gmail.com
+# Author alex8224 at gmail.com
 
 from __future__ import absolute_import, with_statement
 import time
@@ -31,11 +31,10 @@ class NoMoreConnectionException(ConnectionPoolException): pass
 
 
 class BaseConnectionPool(Thread):
-
     def __init__(self, max_conn_number,
-                       min_conn_number,
-                       idle_timeout,
-                       check_interval):
+                 min_conn_number,
+                 idle_timeout,
+                 check_interval):
 
         super(BaseConnectionPool, self).__init__()
         self.setDaemon(True)
@@ -154,7 +153,7 @@ class BaseConnectionPool(Thread):
         pass
 
     def _recycle(self):
-        now  = time.time()
+        now = time.time()
         if now - self._last > self._idle_timeout:
             self._keep_alived()
             self._idle.extend(self._busy)
@@ -186,7 +185,7 @@ class BaseConnectionPool(Thread):
                     self.check_server()
                 else:
                     self._recycle()
-                # app_log.debug("%s have %d idle, %d busy" % (self._name, len(self._idle), len(self._busy)))
+                    # app_log.debug("%s have %d idle, %d busy" % (self._name, len(self._idle), len(self._busy)))
             time.sleep(self._check_interval)
 
     @property
@@ -197,18 +196,19 @@ class BaseConnectionPool(Thread):
         self._event.wait()
         return self._run, self.errors
 
+
 class CacheConnectionPool(BaseConnectionPool):
     __metaclass__ = Singleton
 
     def __init__(self, max_conn_number,
-                       min_conn_number,
-                       idle_timeout,
-                       check_interval
-                       ):
+                 min_conn_number,
+                 idle_timeout,
+                 check_interval
+                 ):
         super(CacheConnectionPool, self).__init__(
-                                                max_conn_number,
-                                                min_conn_number,
-                                                idle_timeout, check_interval)
+            max_conn_number,
+            min_conn_number,
+            idle_timeout, check_interval)
         self._name = "CacheConnection Pool"
 
     def _create_raw_connection(self):
@@ -230,7 +230,6 @@ class CacheConnectionPool(BaseConnectionPool):
     def _close_conn(self, conn):
         conn.disconnect_all()
 
-
     @staticmethod
     def shutdown():
         CacheConnectionPool.instance().exit()
@@ -245,7 +244,6 @@ class CacheConnectionPool(BaseConnectionPool):
 
 
 class CacheConnectionProxy(object):
-
     def __init__(self, mc):
         self._raw_mc_conn = mc
 
@@ -283,6 +281,7 @@ class CacheConnectionProxy(object):
     def delete(self, key):
         return self._call_whatever(self._raw_mc_conn.delete, key)
 
+
 def install_cache_pool():
     cache_pool = CacheConnectionPool(10, 5, 60, 5)
     cache_pool.start()
@@ -290,11 +289,13 @@ def install_cache_pool():
     if not started:
         raise DbPoolNotStartedException("Cache Pool bootstrap failed!")
 
+
 def get_proxy_mc():
     # cache_pool = CacheConnectionPool.instance()
     # raw_mc = cache_pool.get_connection()
     from utils import getmc
     return CacheConnectionProxy(getmc())
+
 
 class StoreContext(object):
     def __init__(self, dictCursor=True, autocommit=False):
@@ -313,13 +314,13 @@ class StoreContext(object):
             # self._store.autocommit(self._autocommit)
         except:
             # if self._store:
-                # self._store.close()
+            # self._store.close()
             raise
         return self._store
 
     def __exit__(self, exc_type, exc_value, traceback):
         pass
-        #if self._store:
+        # if self._store:
         #    if exc_type is None:
         #        if not self._autocommit:
         #            try:
