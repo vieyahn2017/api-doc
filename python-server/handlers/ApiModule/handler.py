@@ -391,3 +391,80 @@ class APiModelHandler(BaseMongoHandler):
         self.write_rows(rows=item)
 
 
+@Route("m/api/record/api")
+class RecordApiModelHandler(BaseMongoHandler):
+    @coroutine
+    def get(self):
+        objects = []
+        _id = self.get_argument('id', None)
+        if _id:
+            obj = yield RecordAPiModel.find_one(self.db, {"_id": _id})
+            objects.append(obj)
+        else:
+            cursor = RecordAPiModel.get_cursor(self.db, {})
+            objects = yield RecordAPiModel.find(cursor)
+        if objects:
+            self.write_models(objects)
+        else:
+            self.write_ok(msg="no result")
+
+    @coroutine
+    def post(self):
+        bodys = json.loads(self.request.body)
+        id_rows = []
+        for body in bodys:
+            _id = ObjectId()
+            yield RecordAPiModel({
+                "name": body["name"],
+                "category_href": body["category_href"],
+                "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "content": body["content"],
+                "api_id": body["api_id"],
+                "_id": _id  # _id是这个RecordApiModel本身的_id, api_id 是对应的api的_id
+            }).save()
+            id_rows.append(str(_id))
+        self.write_rows(rows=id_rows)
+
+
+@Route("m/api/record")
+class RecordModelHandler(BaseMongoHandler):
+    @coroutine
+    def get(self):
+        objects = []
+        _id = self.get_argument('id', None)
+        if _id:
+            obj = yield RecordModel.find_one(self.db, {"_id": _id})
+            objects.append(obj)
+        else:
+            cursor = RecordModel.get_cursor(self.db, {})
+            objects = yield RecordModel.find(cursor)
+
+        if objects:
+            self.write_models(objects)
+        else:
+            self.write_ok(msg="no result")
+
+    @coroutine
+    def post(self):
+        body = json.loads(self.request.body)
+        yield RecordModel({
+            "name": body["name"],
+            "version": body["version"],
+            "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "RecordApiIdList": body["RecordApiIdList"],
+            "_id": ObjectId()
+        }).save()
+        self.write_ok()
+
+    @coroutine
+    def put(self):
+        """ 只允许，修改版本 version """
+        body = json.loads(self.request.body)
+        yield RecordModel({
+            "name": body["name"],
+            "version": body["version"],
+            "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "RecordApiIdList": body["RecordApiIdList"],
+            "_id": ObjectId()
+        }).save()
+        self.write_ok()
