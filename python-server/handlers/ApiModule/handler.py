@@ -275,7 +275,7 @@ class APiModelHandler(BaseMongoHandler):
             if object_param:
                 result = yield object_param.to_primitive_fix()
                 res_list.append(result)
-            pass # 不加这句，自动fromat会把下面这堆注释缩进一个Tab
+            pass # 不加这句，自动format会把下面这堆注释缩进一个Tab
             # # 下面是把children代为mock数据append，这种会有问题！
             # # 还是到前端去append吧，还是同一个对象，处理也省事好多，不需要单独去同步数据
             # for sub_id_param in object_param.subParamsIdList:
@@ -450,6 +450,7 @@ class RecordModelHandler(BaseMongoHandler):
         yield RecordModel({
             "name": body["name"],
             "version": body["version"],
+            "category_href": body["category_href"],
             "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "RecordApiIdList": body["RecordApiIdList"],
             "_id": ObjectId()
@@ -463,6 +464,7 @@ class RecordModelHandler(BaseMongoHandler):
         yield RecordModel({
             "name": body["name"],
             "version": body["version"],
+            "category_href": body["category_href"],
             "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "RecordApiIdList": body["RecordApiIdList"],
             "_id": ObjectId()

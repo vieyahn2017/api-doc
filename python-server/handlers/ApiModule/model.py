@@ -106,6 +106,7 @@ class RecordAPiModel(BaseAPIModel):
 
 class RecordModel(BaseAPIModel):
     name = StringType()
+    category_href = StringType()
     version = StringType()
     time = StringType()
     RecordApiIdList = ListType(StringType)

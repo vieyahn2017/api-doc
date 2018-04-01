@@ -33,9 +33,10 @@
     </footer>
 </div>
 <script src="base.js"></script>
-<script src="controller/index.js"></script>
+<script src="controller/home.js"></script>
 <script src="controller/add.js"></script>
 <script src="controller/api.js"></script>
+<script src="controller/record.js"></script>
 <script src="controller/about.js"></script>
 <script>
     var app = angular.module("ngAPI", ["ngRoute", 'angular-clipboard']);
@@ -44,7 +45,7 @@
         function ($routeProvider) {
             $routeProvider.
                     when('/', {
-                        templateUrl: 'view/index.html',
+                        templateUrl: 'view/home.html',
                         controller: 'indexController'
                     }).when('/add', {
                         templateUrl: 'view/add.html',
@@ -52,6 +53,9 @@
                     }).when('/add/:href', {
                         templateUrl: 'view/add.html',
                         controller: 'addController'
+                    }).when('/record/api/:href', {
+                        templateUrl: 'view/record.html',
+                        controller: 'recordController'
                     }).when('/api/:href', {
                         templateUrl: 'view/api.html',
                         controller: 'apiController'
