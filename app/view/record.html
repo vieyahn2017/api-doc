@@ -1,6 +1,6 @@
-
-<ol class="breadcrumb">
-    <li class="active">Home</li>
+<ol id="top" class="breadcrumb">
+    <li><a href="#/">Home</a></li>
+    <li class="active"> <a href="#/api/{{href}}"> {{href}}</a></li>
 </ol>
 
 <div class="panel panel-default">
@@ -8,16 +8,19 @@
     <div class="panel-body">
 
         <ul class="media-list">
-            <li class="media" ng-repeat="item in typeList">
+            <li class="media" ng-repeat="item in recordList">
                 <a class="pull-left" href="#/api/{{item.href}}">
                     <i class="fa {{loop_icon($index)}}"></i>
                 </a>
                 <div class="media-body">
                     <h4 class="media-heading">
-                        <a href="#/api/{{item.href}}" title="{{item.description}}">{{item.name}}</a>
-                        <small title="当前分类的主键"> - {{item.href}}</small>
-                        <button ng-show="show_edit" ng-click="remove(item)" class="btn btn-danger btn-xs pull-right">删除</button>
-                        <a ng-show="show_edit" class="btn btn-info btn-xs pull-right" href="#/add/{{item.href}}" style="margin-right: 5px;">编辑</a>
+                        <div><a href="#/api/{{item.category_href}}">{{item.name}}</a></div>
+                        <div><small title="版本"> ： &nbsp; {{item.version}}</small></div>
+                        <div>{{item.time}}</div>
+                        <li ng-repeat="api_id in item.RecordApiIdList">
+                            <a href="#/record/api/{{item.category_href}}/{{api_id}}">{{api_id}}</a>
+                            <div> ;</div>
+                        </li>
 
                     </h4>
                     <p>{{item.description}}</p>
@@ -26,10 +29,9 @@
         </ul>
 
 
+
     </div>
-    <div class="panel-footer">
-        <a class="btn btn-default" href="#/add">新建分类</a>
-    </div>
+
     </div>
 
 

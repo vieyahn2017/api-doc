@@ -56,6 +56,9 @@
                     }).when('/record/api/:href', {
                         templateUrl: 'view/record.html',
                         controller: 'recordController'
+                    }).when('/record/api/:href/:id', {
+                        templateUrl: 'view/record.html',
+                        controller: 'recordController'
                     }).when('/api/:href', {
                         templateUrl: 'view/api.html',
                         controller: 'apiController'

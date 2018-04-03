@@ -1,8 +1,8 @@
-
 <ol id="top" class="breadcrumb">
     <li><a href="#/">Home</a></li>
     <li class="active"> <a href="#/api/{{href}}"> {{href}}</a></li>
 </ol>
+
 <div style="position: fixed; left: 0; top: 100px;" >
     <div class="btn-group-vertical">
         <button ng-show="authenticated" class="btn btn-success" ng-click="add();">Add</button>
@@ -12,12 +12,12 @@
     </div>
 </div>
 
-        <div style="position: fixed;right: 0; bottom: 20px;">
-            <div class="btn-group-vertical">
-                <button class="btn btn-success" ng-click="back();">回到顶部</button>
-                <button class="btn btn-info" ng-show="authenticated" ng-click="show_edit = !show_edit">{{!show_edit?'开启编辑':'关闭编辑'}}</button>
-            </div>
-        </div>
+<div style="position: fixed;right: 0; bottom: 20px;">
+    <div class="btn-group-vertical">
+        <button class="btn btn-success" ng-click="back();">回到顶部</button>
+        <button class="btn btn-info" ng-show="authenticated" ng-click="show_edit = !show_edit">{{!show_edit?'开启编辑':'关闭编辑'}}</button>
+    </div>
+</div>
 
 <div>
 
@@ -217,7 +217,6 @@
     </div>
 
 
-
     <div ng-show="!current">
 
      <!-- 去掉可编辑的功能 -->
@@ -346,6 +345,9 @@
             </div>
         </div>
     </div>
+
     <ol id="bottom" class="breadcrumb">
+        <li class="active"><a href="#/record/api/{{href}}"><i class="fa fa-leaf"></i>&nbsp;查看历史记录</a></li>
     </ol>
+
 </div>
