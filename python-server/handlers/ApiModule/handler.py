@@ -430,13 +430,15 @@ class RecordApiModelHandler(BaseMongoHandler):
 class RecordModelHandler(BaseMongoHandler):
     @coroutine
     def get(self):
+        """ db.getCollection('record').find({"category_href": {"$ne":null}}) """
         objects = []
         _id = self.get_argument('id', None)
         if _id:
             obj = yield RecordModel.find_one(self.db, {"_id": _id})
             objects.append(obj)
         else:
-            cursor = RecordModel.get_cursor(self.db, {})
+            href = self.get_argument('href', {"$ne": None})
+            cursor = RecordModel.get_cursor(self.db, {"category_href": href})
             objects = yield RecordModel.find(cursor)
 
         if objects:
