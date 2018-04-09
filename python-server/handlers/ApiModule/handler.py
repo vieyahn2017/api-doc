@@ -410,19 +410,18 @@ class RecordApiModelHandler(BaseMongoHandler):
 
     @coroutine
     def post(self):
-        bodys = json.loads(self.request.body)
+        body = json.loads(self.request.body)
         id_rows = []
-        for body in bodys:
-            _id = ObjectId()
-            yield RecordAPiModel({
-                "name": body["name"],
-                "category_href": body["category_href"],
-                "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "content": body["content"],
-                "api_id": body["api_id"],
-                "_id": _id  # _id是这个RecordApiModel本身的_id, api_id 是对应的api的_id
-            }).save()
-            id_rows.append(str(_id))
+        _id = ObjectId()
+        yield RecordAPiModel({
+            "name": body["name"],
+            "category_href": body["category_href"],
+            "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "content": body["content"],
+            "api_id": body["api_id"],
+            "_id": _id  # _id是这个RecordApiModel本身的_id, api_id 是对应的api的_id
+        }).save()
+        id_rows.append(str(_id))
         self.write_rows(rows=id_rows)
 
 

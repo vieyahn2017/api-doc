@@ -191,9 +191,11 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
 
         if($scope.isNew) {
             $scope.save_me_yh(current_item);
+            $scope.save_record(current_item, "save");
         }
         else {
             $scope.update_me_yh(current_item);
+            $scope.save_record(current_item, "update");
         }
     };
 
@@ -711,6 +713,38 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
         } else {
             return [param_demo(), param_demo("param~2")];
         }
+    };
+
+
+    $scope.save_record = function(new_item, method){
+
+        var record_api = {
+            "name": method,
+            "api_id": new_item._id,
+            "category_href": new_item["category_href"],
+            "content": JSON.stringify(new_item, null, 4)
+        };
+
+        $http.post($scope.base_url + "m/api/record/api",
+            angular.toJson(record_api, true)
+        ).success(function (data) {
+                var record = {
+                    "name": method + new_item._id,
+                    "version": null,
+                    "category_href": new_item["category_href"],
+                    "RecordApiIdList": data.rows,
+                };
+                $http.post($scope.base_url + "m/api/record",
+                    angular.toJson(record, true)
+                ).success(function (data) {
+                        console.log(data);
+                    }).error(function (data, status, headers, config) {
+                        console.log(arguments);
+                    });
+            }).error(function (data, status, headers, config) {
+                console.log(arguments);
+            });
+        return $scope.isUnique;
     };
 
 
