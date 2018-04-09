@@ -15,7 +15,7 @@ function recordController($scope, $http, $location, $routeParams) {
         if($scope.recordList.length) {
             var current_api_id = $scope.recordList[0].RecordApiIdList[0];
             if(current_api_id) {
-                $http.get(base_url + "m/api/record/api?id=" + current_api_id).success(function (data) {
+                $http.get(base_url + "m/api/record_api?id=" + current_api_id).success(function (data) {
                     $scope.current_api = data.rows[0];
                 }).error(function(){
                    //

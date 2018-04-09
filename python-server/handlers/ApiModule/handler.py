@@ -391,7 +391,7 @@ class APiModelHandler(BaseMongoHandler):
         self.write_rows(rows=item)
 
 
-@Route("m/api/record/api")
+@Route("m/api/record_api")
 class RecordApiModelHandler(BaseMongoHandler):
     @coroutine
     def get(self):

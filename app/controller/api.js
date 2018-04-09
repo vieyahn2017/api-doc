@@ -725,7 +725,7 @@ function apiController($scope, $http, $q, $routeParams, $location, $window, $anc
             "content": JSON.stringify(new_item, null, 4)
         };
 
-        $http.post($scope.base_url + "m/api/record/api",
+        $http.post($scope.base_url + "m/api/record_api",
             angular.toJson(record_api, true)
         ).success(function (data) {
                 var record = {
